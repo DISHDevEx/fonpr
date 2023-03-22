@@ -3,27 +3,27 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: respons
-  name: respons
+    app: webapp
+  name: webapp
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: respons
+      app: webapp
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: respons
+        app: webapp
     spec:
       containers:
-      - image: teamrespons/respons_agent:1.0
-        name: respons
+      - image: public.ecr.aws/b5c5s7l4/adityaprakash2811/nodek8:latest
+        name: webapp
         imagePullPolicy: Always
         resources: {}
         ports:
-          - containerPort: 9999 
+          - containerPort: 3080 
 status: {}
 
 ---
@@ -31,13 +31,13 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  name: respons
+  name: webapp
   labels:
     run: webapp
 spec:
   ports:
-  - port: 9999
+  - port: 3080
     protocol: TCP
   selector:
-    app: respons
-  type: targetPort
+    app: webapp
+  type: NodePort

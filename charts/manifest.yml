@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: respons
+  name: respons
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: respons
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: respons
+    spec:
+      containers:
+      - image: teamrespons/respons_agent:1.0
+        name: respons
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 9999 
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: respons
+  labels:
+    run: webapp
+spec:
+  ports:
+  - port: 9999
+    protocol: TCP
+  selector:
+    app: respons
+  type: targetPort

@@ -1,3 +1,10 @@
+'''
+Commands for active development environment:
+
+docker build -t agent:v0.0 .
+docker run -it --name agent1 -p 9999:9999 -v "$(pwd)"/response_ml/:/app/response_ml/ agent:v0.0 bash
+'''
+
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 import gzip
@@ -92,4 +99,4 @@ if __name__ == "__main__":
         logging.info(f'limit_memory: {limit_memory}')
         logging.info(f'request_memory: {request_memory}')
 
-# ssc.stop()
+# # ssc.stop()

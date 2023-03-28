@@ -1,3 +1,4 @@
+COPY
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +7,7 @@ metadata:
     app: webapp
   name: webapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: webapp
@@ -18,26 +19,10 @@ spec:
         app: webapp
     spec:
       containers:
-      - image: public.ecr.aws/b5c5s7l4/adityaprakash2811/nodek8:latest
+      - image: teamrespons/respons_agent:v0.0.1
         name: webapp
         imagePullPolicy: Always
         resources: {}
         ports:
-          - containerPort: 3080 
+          - containerPort: 9999 
 status: {}
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: webapp
-  labels:
-    run: webapp
-spec:
-  ports:
-  - port: 3080
-    protocol: TCP
-  selector:
-    app: webapp
-  type: NodePort

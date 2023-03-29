@@ -1,9 +1,9 @@
 # Echo server program
 import socket
-import logging
+import logging 
 
 HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 8888             # Arbitrary non-privileged port
+PORT = 4443            # Arbitrary non-privileged port
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -12,6 +12,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print('Connected by', addr)
         while True:
             data = conn.recv(1024)
-            logging.info(data)
-            print(data)
+            if not data:
+                break
             conn.sendall(data)
+            logging.info(data)

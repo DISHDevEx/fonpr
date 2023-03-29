@@ -53,7 +53,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 #expose port 9999 for tcp spark streaming
-EXPOSE 9999
+EXPOSE 8888
 
 #using python3 run our agent
 CMD [ "python3", "response_ml/agent.py"]

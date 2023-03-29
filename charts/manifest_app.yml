@@ -18,7 +18,7 @@ spec:
         app: webapp
     spec:
       containers:
-      - image: teamrespons/respons_agent:v0.0.1
+      - image: teamrespons/respons_agent:v0.0.socket
         name: webapp
         imagePullPolicy: Always
         resources: {}

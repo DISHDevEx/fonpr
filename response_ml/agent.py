@@ -9,6 +9,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.listen()
     conn, addr = s.accept()
     with conn:
+        logging.info('Connected by %r', addr)
         print('Connected by', addr)
         while True:
             data = conn.recv(1024)

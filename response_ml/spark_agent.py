@@ -67,9 +67,11 @@ if __name__ == "__main__":
     # logging.info(lines)
     
     # Create DataFrame representing the stream of input logs from connection to fluentbit:9999
-    lines = spark.readStream.format("socket").option("host", "http://10.0.101.214").option("port", 9090).load()
+    lines = spark.readStream.format("socket").option("host", "10.0.101.214").option("port", 9090).load()
     query = lines.writeStream.format("console").start()
-    time.sleep(10)
+    time.sleep(10) # sleep 10 seconds
+    query.stop()
+    
     # df = gz2df(lines)
     # logging.info("data frame created")
     # df['rec_type'] = df.data.apply(get_type)

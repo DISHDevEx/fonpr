@@ -23,5 +23,5 @@ spec:
         imagePullPolicy: Always
         resources: {}
         ports:
-          - containerPort: 9999 
+          - containerPort: 8888 
 status: {}

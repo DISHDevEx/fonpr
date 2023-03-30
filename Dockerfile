@@ -52,7 +52,7 @@ RUN pip install -r requirements.txt
 # copy all files into working dir
 COPY . .
 
-#expose port 9999 for tcp spark streaming
+#expose port 8888 for tcp spark streaming
 EXPOSE 8888
 
 #using python3 run our agent

@@ -1,3 +1,10 @@
+'''
+Commands for active development environment:
+docker build -t agent:v0.0 .
+docker run -it --name agent1 -p 9999:9999 -v "$(pwd)"/response_ml/:/app/response_ml/ agent:v0.0 bash
+'''
+
+from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 import gzip
 import pandas as pd
@@ -5,66 +12,58 @@ import json
 pd.set_option('display.max_columns', None)
 import numpy as np
 import logging
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import explode
-from pyspark.sql.functions import split
+
+
+def gz2df(path):
+    with gzip.open(path, 'rb') as f:
+        """
+        Convert .gz log files into dataframe
+        """
+        content = f.read().decode('utf-8').split('\n')
+        list_rows = []
+
+        for i in range(len(content)-1):
+            row = content[i].split(' ')
+            list_rows.append(row)
+        f.close()
+
+    df = pd.DataFrame(list_rows, columns=['log_timestamp', 'data'])
+
+    return df
+
+def get_type(x):
+    idx1 = x.find('"Type":') + 8
+    idx2 = x.find(',', idx1) - 1
+    rec_type = x[ idx1:idx2 ]
+
+    return rec_type
+
+def filter_by_rec_type(df, rec_type): 
+    return df[df.rec_type == rec_type]
+
+def explode_df(df):
+    return pd.concat([df.log_timestamp, pd.json_normalize(df.data)], axis=1)
 
 
 
-
-# '''
-# helper functions
-# '''
-
-# def gz2df(path):
-#     with gzip.open(path, 'rb') as f:
-#         """
-#         Convert .gz log files into dataframe
-#         """
-#         content = f.read().decode('utf-8').split('\n')
-#         list_rows = []
-
-#         for i in range(len(content)-1):
-#             row = content[i].split(' ')
-#             list_rows.append(row)
-#         f.close()
-
-#     df = pd.DataFrame(list_rows, columns=['log_timestamp', 'data'])
-
-#     return df
-
-# def get_type(x):
-#     idx1 = x.find('"Type":') + 8
-#     idx2 = x.find(',', idx1) - 1
-#     rec_type = x[ idx1:idx2 ]
-
-#     return rec_type
-
-# def filter_by_rec_type(df, rec_type): 
-#     return df[df.rec_type == rec_type]
-
-# def explode_df(df):
-#     return pd.concat([df.log_timestamp, pd.json_normalize(df.data)], axis=1)
-
-
-
-# '''
-# actual agent
-# '''
 
 if __name__ == "__main__":
     # Create a local StreamingContext with two working thread and batch interval of 15 second
-    spark = SparkSession.builder.appName("ResponsAgent").getOrCreate()
+    # sc = SparkContext("local[2]", "responsStream")
+    # ssc = StreamingContext(sc, 1)
+    
+    # Create entrypoint for Spark
+    spark = SparkSession.builder.appName("prometheusprocessor").getOrCreate()
 
-    # Create DataFrame representing the stream of input lines from connection to localhost:9999    
-    stream = spark.readStream.format("socket").option("host","localhost").option("port", 9999).load()
-
-    query = stream \
-    .writeStream \
-    .format("console") \
-    .start()
-
-    query.awaitTermination()
+    # Create a DStream that will connect to hostname:port, like localhost:9999
+    # ssc.start() 
+    # logging.info("ssc started")
+    # ssc.awaitTermination() 
+    # lines = ssc.socketTextStream("localhost", 9999)
+    # logging.info(lines)
+    
+    # Create DataFrame representing the stream of input logs from connection to fluentbit:9999
+    lines = spark.readStream.format("socket").option("host", "localhost").option("port", 9090).load()
 
     # df = gz2df(lines)
     # logging.info("data frame created")
@@ -105,4 +104,4 @@ if __name__ == "__main__":
     #     logging.info(f'limit_memory: {limit_memory}')
     #     logging.info(f'request_memory: {request_memory}')
 
-# ssc.stop()
+# # ssc.stop()

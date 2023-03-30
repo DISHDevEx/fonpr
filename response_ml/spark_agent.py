@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # logging.info(lines)
     
     # Create DataFrame representing the stream of input logs from connection to fluentbit:9999
-    lines = spark.readStream.format("socket").option("host", "fluentbit").option("port", 9999).load()
+    lines = spark.readStream.format("socket").option("host", "http://10.0.101.214").option("port", 9090).load()
     query = lines.writeStream.format("console").start()
     time.sleep(10)
     # df = gz2df(lines)

@@ -12,6 +12,10 @@ import json
 pd.set_option('display.max_columns', None)
 import numpy as np
 import logging
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import explode
+from pyspark.sql.functions import split
+import argparse
 
 
 def gz2df(path):
@@ -53,7 +57,7 @@ if __name__ == "__main__":
     # ssc = StreamingContext(sc, 1)
     
     # Create entrypoint for Spark
-    spark = SparkSession.builder.appName("prometheusprocessor").getOrCreate()
+    spark = SparkSession.builder.appName("LogStreamProcessor").getOrCreate()
 
     # Create a DStream that will connect to hostname:port, like localhost:9999
     # ssc.start() 
@@ -63,7 +67,7 @@ if __name__ == "__main__":
     # logging.info(lines)
     
     # Create DataFrame representing the stream of input logs from connection to fluentbit:9999
-    lines = spark.readStream.format("socket").option("host", "localhost").option("port", 9090).load()
+    lines = spark.readStream.format("socket").option("host", "fluentbit").option("port", 9999).load()
 
     # df = gz2df(lines)
     # logging.info("data frame created")

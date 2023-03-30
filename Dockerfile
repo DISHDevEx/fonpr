@@ -56,4 +56,4 @@ COPY . .
 EXPOSE 8888
 
 #using python3 run our agent
-CMD [ "python3", "response_ml/agent.py"]
+CMD [ "python3", "response_ml/spark_agent.py"]

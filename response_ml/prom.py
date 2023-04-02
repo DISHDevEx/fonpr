@@ -16,12 +16,13 @@ prom = PrometheusConnect(url=prometheus_url)
        (v) rate does not return any results at all if there are less than two samples available.
        (vi) time range should be atleast 2x the scrape interval. So we are using 2m
        ex/ rate(container_cpu_usage_seconds_total[10m]) is 1.34. This means our container spent an avg of 1.34 CPU seconds per seconds. (https://github.com/google/cadvisor/issues/2026)
+       extra:https://blog.freshtracks.io/a-deep-dive-into-kubernetes-metrics-part-3-container-resource-metrics-361c5ee46e66
     (c)[3h:] returns the last 3 hours of the time series
     
- (2) max_over_time calculates the maximum value over raw samples on the given lookbehind window d per ieach time series returned from the given series_selector. 
+ (2) max_over_time calculates the maximum value over raw samples on the given lookbehind window per each time series returned from the given series_selector. 
     (a) avg_over_time does the same operation replacing max with avg
  
- (3) sum by (pod) prints the sum of 30 minute maxes of all containers in a pod 
+ (3) sum by (pod) prints the sum of of all containers in a pod 
 ''' 
 max_cpu_query = 'sum by (pod) (max_over_time(irate (container_cpu_usage_seconds_total[2m]) [3h:]))'
 avg_cpu_query = 'sum by (pod) (avg_over_time(irate (container_cpu_usage_seconds_total[2m]) [3h:]))'

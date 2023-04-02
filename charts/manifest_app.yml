@@ -18,7 +18,7 @@ spec:
         app: respons_agent
     spec:
       containers:
-      - image: teamrespons/respons_agent:v0.0.spark
+      - image: teamrespons/respons_agent:v0.0
         name: respons_agent
         imagePullPolicy: Always
         resources: {}

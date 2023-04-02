@@ -49,10 +49,6 @@ WORKDIR /app
 ## Copy requirements over into working dir
 COPY requirements.txt .
 
-##install cron and vim
-RUN apt-get update
-RUN apt-get -y install cron
-
 # Install pip and install requireiments
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
@@ -61,13 +57,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 #using python3 run our agent
-#CMD [ "python3", "respons_ml/agent.py"]
-
-# Copying the crontab file 
-COPY respons_ml/crontab /etc/cron.d/crontab
-
-RUN chmod +x /etc/cron.d/crontab
-
-
-# Executing crontab command
-CMD ["cron", "-f"]
+CMD [ "python3", "respons_ml/agent.py"]

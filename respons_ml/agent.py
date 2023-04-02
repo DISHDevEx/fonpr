@@ -31,10 +31,10 @@ def print_lim_reqs():
     
     
 if __name__ == "__main__":
-    num_iterations = 1,0000
+    num_iterations = 10000
     time_interval = 5
     
-    for i in (num_iterations):
+    for i in range(num_iterations):
         print_lim_reqs()
         logging.info("iteration: ", i, "! next update in ", time_interval, " seconds")
         print("iteration: ", i, "! next update in ", time_interval, " seconds")

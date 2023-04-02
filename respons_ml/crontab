@@ -1,1 +1,0 @@
-*/1 * * * * cd /app/respons_ml && /usr/bin/python3.9 agent.py >> cron_log.log 2>&1

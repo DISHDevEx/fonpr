@@ -1,6 +1,9 @@
 from prometheus_api_client import PrometheusConnect
 from datetime import datetime, timedelta
 import pprint
+from collections import defaultdict
+import numpy as np
+import pandas as pd
     
 # Set up Prometheus client
 prometheus_url = 'http://10.0.101.214:9090' 
@@ -24,8 +27,8 @@ prom = PrometheusConnect(url=prometheus_url)
  
  (3) sum by (pod) prints the sum of of all containers in a pod 
 ''' 
-max_cpu_query = 'sum by (pod) (max_over_time(irate (container_cpu_usage_seconds_total[2m]) [3h:]))'
-avg_cpu_query = 'sum by (pod) (avg_over_time(irate (container_cpu_usage_seconds_total[2m]) [3h:]))'
+max_cpu_query = 'sum by (pod) (max_over_time(rate (container_cpu_usage_seconds_total[2m]) [3h:]))'
+avg_cpu_query = 'sum by (pod) (avg_over_time(rate (container_cpu_usage_seconds_total[2m]) [3h:]))'
 
 #memory queries are pretty straight forward: take an avg/max over time for the metric. And sum over all containers in the pod. 
 max_memory_query= 'sum by (pod)  (max_over_time(container_memory_usage_bytes[3h]))'
@@ -42,12 +45,18 @@ avg_memory_query = prom.custom_query(query=avg_memory_query)
 
 
 #turn the data into a pandas dataframe
-import numpy as np
-import pandas as pd
 
-for i in avg_memory_query:
+dict_lim_req = defaultdict(list)
+
+for i in range(len(max_cpu_data)):
  try:
-  print(i['metric']['pod'])
+  dict_lim_req[max_cpu_data[i]['metric']['pod']].append(max_cpu_data[i]['value'][1])
+  dict_lim_req[avg_cpu_data[i]['metric']['pod']].append(avg_cpu_data[i]['value'][1])
+  dict_lim_req[max_memory_query[i]['metric']['pod']].append(max_memory_query[i]['value'][1])
+  dict_lim_req[avg_memory_query[i]['metric']['pod']].append(avg_memory_query[i]['value'][1])
  except KeyError:
   print("empty records found, ignoring")
- 
+
+df_lim_req = pd.DataFrame.from_dict(dict_lim_req,orient='index', columns = ["lim_cpu_cores","req_cpu_cores","lim_memory_bytes","req_memory_bytes"])
+
+print(df_lim_req.head(100))

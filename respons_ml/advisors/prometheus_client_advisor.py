@@ -16,8 +16,6 @@ class PromClient():
  def get_queries(self):
   return self.queries 
  
- # max_cpu_query,avg_cpu_query,max_memory_query,avg_memory_query = prom_cpu_mem_queries()
- 
  def run_queries(self):
   ## Aggregate all data:
   for query in self.queries:

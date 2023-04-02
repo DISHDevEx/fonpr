@@ -3,23 +3,23 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: webapp
-  name: webapp
+    app: respons_agent
+  name: respons_agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: respons_agent
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: webapp
+        app: respons_agent
     spec:
       containers:
       - image: teamrespons/respons_agent:v0.0.spark
-        name: webapp
+        name: respons_agent
         imagePullPolicy: Always
         resources: {}
         ports:

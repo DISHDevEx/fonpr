@@ -50,7 +50,7 @@ class SocketAdvisor():
         
     def run_server(self):
         """
-        Open up specified port and listen until connection bonded. Then stream all results in and yeld them (return without exit)
+        Open up specified port and listen until connection bonded. Then stream all results in and yield them (return without exit)
         Input: None
         Output: List of query results
         """

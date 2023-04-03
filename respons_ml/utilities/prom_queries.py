@@ -4,23 +4,28 @@ create prometheus queries for the prometheus advisor to query prometheus server
 
 
 def prom_cpu_mem_queries():
-    """how cpu queries works:
-    (1)rate(container_cpu_usage_seconds_total[2m])[3h:]  returns the cpu cores avg for 2 minute windows for the last 3 hours
-       (a) by taking the rate of increase of container_cpu_usage_seconds_total we get the number of CPU-seconds consumed per second.
-          (i) container_cpu_usage_seconds_total is a counter (https://prometheus.io/docs/concepts/metric_types/#counter). 1 CPU Second = 1 Core fired up for that second.
-          (ii) rate(m[d])[timewindow] - returns the per-second rate of change for metric for a certain time window
-          (iii) rate(x[35s]) = difference in value over 35 seconds / 35s
-          (v) rate does not return any results at all if there are less than two samples available.
-          (vi) time range should be atleast 2x the scrape interval. So we are using 2m
-          ex/ rate(container_cpu_usage_seconds_total[10m]) is 1.34. This means our container spent an avg of 1.34 CPU seconds per seconds. (https://github.com/google/cadvisor/issues/2026)
-          extra:https://blog.freshtracks.io/a-deep-dive-into-kubernetes-metrics-part-3-container-resource-metrics-361c5ee46e66
-       (c)[3h:] returns the last 3 hours of the time series
+   """
+   function to store and return queries that find cpu/memory metrics in prometheus
 
-    (2) max_over_time calculates the maximum value over raw samples on the given lookbehind window per each time series returned from the given series_selector.
-       (a) avg_over_time does the same operation replacing max with avg
+   Inputs: None
+   Outputs: List of queries (list[str])
 
-    (3) sum by (pod) prints the sum of of all containers in a pod
-    """
+   Notes:
+   how cpu queries works:
+   (1) The feature container_cpu_usage_seconds_total is a counter; it monotonically increases. 
+      (See https://prometheus.io/docs/concepts/metric_types/#counter). 
+   (2) That feature comes in units of CPU seconds. One CPU seconds is one core running for one second. 
+   (3) The Prometheus function rate takes in a time series and a width of a scrape window. 
+      (i)The time rate of change of the time series m over the scrape interval of width d is rate(m[d]). 
+         It is a time series. Its units are CPU seconds per second, or just CPUs. 
+         (See https://github.com/google/cadvisor/issues/2026#issuecomment-1003120833.)  
+         e.g.If for a container rate(container_cpu_usage_seconds_total[10m]) is 1.34 then that container used an average of 1.34 CPU seconds per second. 
+         You could say that the container was using 1.34 of the total available CPUs. 
+      (ii)The restriction of this rate time series to the time window tw is rate(m[d])[tw].
+          (e.g. The time series from four hours ago to 3 hours ago is rate(m[d])[4h:3h]. )
+      (iii)The query rate(m[d])[tw] does not return any results if there are less than two times from the time series m within the time window tw. 
+           Thus, the width of the time window should be at least twice the scrape interval d.
+   """
     max_cpu_query = "sum by (pod) (max_over_time(rate (container_cpu_usage_seconds_total[2m]) [3h:]))"
     avg_cpu_query = "sum by (pod) (avg_over_time(rate (container_cpu_usage_seconds_total[2m]) [3h:]))"
 

@@ -1,11 +1,9 @@
 """
 Module to contain spark advisor to connect to target and stream logs in
 """
-
-import logging
-from pyspark.sql import SparkSession
-import argparse
 import time
+from pyspark.sql import SparkSession
+
 
 
 class SparkAdvisor:

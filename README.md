@@ -1,4 +1,4 @@
-# response-ml: agent creation and machine learning integration
+# respons-ml: agent creation and machine learning integration
 
 > This readme is devoted to aid building agents that respond in real time to eks cluster setttings:
 > 1. Agent <br/>

@@ -6,11 +6,12 @@ from prometheus_api_client import PrometheusConnect
 from datetime import datetime, timedelta
 import pprint
 
+
 class PromClient:
     def __init__(self, prom_endpoint="http://10.0.101.214:9090"):
         """
-        Constructor to the advisor. 
-        Inputs: 
+        Constructor to the advisor.
+        Inputs:
             prom_endpoint: STR (formatted typically as http://ip:port)
         outputs: None
         """
@@ -26,8 +27,8 @@ class PromClient:
         Output: prometheus endpoint
         """
         return self.prom_endpoint
-        
-    def set_endpoint(self,new_prom_endpoint):
+
+    def set_endpoint(self, new_prom_endpoint):
         """
         Set prometheus endpoint
         Input: prometheus endpoint
@@ -35,7 +36,7 @@ class PromClient:
         """
         self.prom_endpoint = new_prom_endpoint
         self.prom = PrometheusConnect(url=self.prom_endpoint)
-        
+
     def set_queries(self, query_building_function):
         """
         Set queries

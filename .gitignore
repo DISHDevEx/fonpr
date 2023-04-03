@@ -104,3 +104,8 @@ core.18172
 dask-worker-space/
 *.parquet
 .env
+.venv
+
+#misc
+dummy_data
+kubectl

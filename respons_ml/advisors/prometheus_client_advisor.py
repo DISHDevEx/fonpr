@@ -25,7 +25,7 @@ class PromClient:
         Input: None
         Output: prometheus endpoint
         """
-        return self. prom_endpoint
+        return self.prom_endpoint
         
     def set_endpoint(self,new_prom_endpoint):
         """

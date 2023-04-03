@@ -3,6 +3,7 @@ FROM python:3.9.1
 #install wget
 RUN apt-get install curl wget
 
+################################################################################
 # # uncomment for spark usage
 # VERSIONS
 # ENV SPARK_VERSION=3.3.1 \
@@ -39,6 +40,7 @@ RUN apt-get install curl wget
 
 # #expose port 8888 for tcp spark streaming
 # EXPOSE 8888
+##################################################################################
 
 # Let's change to  "$NB_USER" command so the image runs as a non root user by default
 USER $NB_UID

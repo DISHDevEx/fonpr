@@ -1,14 +1,12 @@
 """
 Module to contain respons agent. it is also the module that runs as a container in eks. 
 """
-from advisors import PromClient
-from utilities import prom_cpu_mem_queries
-from collections import defaultdict
-import numpy as np
-import pandas as pd
 import time
 import logging
-
+from collections import defaultdict
+import pandas as pd
+from advisors import PromClient
+from utilities import prom_cpu_mem_queries
 
 def print_lim_reqs():
     """
@@ -68,8 +66,8 @@ if __name__ == "__main__":
     num_iterations = 10000
     time_interval = 5
 
-    for i in range(num_iterations):
+    for iterate in range(num_iterations):
         print_lim_reqs()
-        logging.info("iteration: ", i, "! next update in ", time_interval, " seconds")
-        print("iteration: ", i, "! next update in ", time_interval, " seconds")
+        logging.info("iteration: ", iterate, "! next update in ", time_interval, " seconds")
+        print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
         time.sleep(time_interval)

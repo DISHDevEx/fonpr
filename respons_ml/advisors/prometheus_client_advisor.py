@@ -3,9 +3,6 @@ Module to contain prometheus client to connect and query the prometheus server
 """
 
 from prometheus_api_client import PrometheusConnect
-from datetime import datetime, timedelta
-import pprint
-
 
 class PromClient:
     def __init__(self, prom_endpoint="http://10.0.101.214:9090"):

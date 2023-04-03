@@ -58,6 +58,6 @@ Deployment:
      - "file image: teamrespons/respons_agent:version"
 2. deploy 
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/response-ml/vinny/responseAgent/charts/respons_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/response-ml/vinny/responseAgent/deployment/respons_agent_manifest.yml
 ```
 

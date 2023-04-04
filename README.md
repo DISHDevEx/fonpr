@@ -1,6 +1,6 @@
 # respons-ml: agent creation and machine learning integration
 
-> This readme is devoted to aid building agents that respond in real time to eks cluster settings:
+> This readme is devoted to aid deployment of agents that respond in real time to eks cluster settings:
 > 1. Agent <br/>
 > 2. Advisor <br/>
 > 3. Docker<br/>

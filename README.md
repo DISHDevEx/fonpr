@@ -23,7 +23,7 @@
 ## __Docker__ 
 1. To build docker image
 ```console
-docker build -t imagename:version . 
+docker build -t teamrespons/respons_agent:tagname . 
 ```
 2. To run docker image locally as a container
 ```console

@@ -16,6 +16,8 @@ echo $TOKEN
 ```
 Navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'
 
+Copy the file found at PaperArmada/hello-world/test/test.txt and paste it into your own GitHub directory for testing.
+
 Run the following code within the python shell (replace the PaperArmada GitHub path / branch name with your own):
 
 ```Python

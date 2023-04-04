@@ -25,10 +25,7 @@ echo $TOKEN
 Navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'
 
 
-<<<<<<< HEAD
-=======
-Run the following code within the python shell (you can update values for requests and limits as desired to see effect):
->>>>>>> 4911162 (Updated readme with instructions for fine-grained token creation, and added DISHDevEx specific path to existing test file that can be used for testing purposes.)
+
 
 ```Python
 >>> import action_handler

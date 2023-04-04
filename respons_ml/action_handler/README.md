@@ -31,10 +31,15 @@ echo $TOKEN
 Navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Copy the file found at PaperArmada/hello-world/test/test.txt and paste it into your own GitHub directory for testing.
 
 Run the following code within the python shell (you can update values for requests and limits as desired to see effect):
 =======
+=======
+Copy the file found at PaperArmada/hello-world/test/test.txt and paste it into your own GitHub directory for testing.
+
+>>>>>>> 1299c76 (Updated main readme.)
 Run the following code within the python shell (replace the PaperArmada GitHub path / branch name with your own):
 >>>>>>> 9a83522 (Added readme with manual test instructions for the action handler)
 

@@ -228,7 +228,7 @@ class ActionHandler():
             print('Failed to push to repo with the following exception:')
             print(f'{excp}')
             
-    # def fetch_update_push(self) -> None:
-    #     current_values = self.get_value_file_contents()
-    #     updated_file = self.get_updated_value_file(current_values)
-    #     self.push_to_repository(updated_file)
+    def fetch_update_push(self) -> None:
+        current_values = self.get_value_file_contents()
+        updated_file = self.get_updated_value_file(current_values)
+        self.push_to_repository(updated_file)

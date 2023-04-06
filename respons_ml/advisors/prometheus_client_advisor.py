@@ -1,11 +1,35 @@
 """
-Module to contain prometheus client to connect and query the prometheus server
+Module to contain prometheus client to connect and query the Prometheus server
 """
 
 from prometheus_api_client import PrometheusConnect
 
 class PromClient:
+    """PromClient utilizes prometheus_api_client to query Prometheus server.
+
+        The SparkAdvisor is meant to send prebuilt queries to the Prometheus server.
+        
+        The Prometheus server will send back results to the queries, 
+            which PromClient will expose to respons agent. 
+    
+
+    Attributes:
+        prom_endpoint: str
+            "ip:port" for the prometheus server endpoint
+    """
     def __init__(self, prom_endpoint="http://10.0.101.214:9090"):
+        """
+        Initalizes the instance based on prometheus server endpoint.
+           
+
+        Parameters
+        ----------
+            host: string
+                Ip address or host name from where the data originates. 
+            port: int
+                The port from which the host will be exposing data. 
+        """
+        
         """
         Constructor to the advisor.
         Inputs:

@@ -37,10 +37,6 @@ docker pull -t teamrespons/respons_agent:v0.0 .
 ```console
 docker run imageid
 ```
-3. To push docker image to dockerhub under the response-ml
-```console
-docker push teamrespons/respons_agent:tagname
-```
 
 ## __Agent Deployment__ 
 Pre-Requisites:

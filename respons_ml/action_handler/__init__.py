@@ -5,3 +5,4 @@ changes to value.yaml files.
 """
 
 from .action_handler import ActionHandler
+from .action_handler import get_token

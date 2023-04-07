@@ -24,20 +24,17 @@ echo $TOKEN
 ```
 Navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'
 
-
-
-
 ```Python
->>> import action_handler
->>> import os
->>> requested_actions = {
-... 'target_pod' : 'amf',
-... 'requests' : {'memory' : 3, 'cpu' : 1},
-... 'limits' : {'memory' : 1, 'cpu' : 3}
-... }
->>> hndl = action_handler.ActionHandler(os.environ['TOKEN'], <'DISHDevEx/openverso-charts/charts/respons/test.txt'>, 'matt/gh_api_test', requested_actions)
->>> hndl.establish_github_connection()
->>> hndl.fetch_update_push()
+import action_handler
+import os
+requested_actions = {
+'target_pod' : 'amf',
+'requests' : {'memory' : 3, 'cpu' : 1},
+'limits' : {'memory' : 1, 'cpu' : 3}
+}
+hndl = action_handler.ActionHandler(os.environ['TOKEN'], <'DISHDevEx/openverso-charts/charts/respons/test.txt'>, <'matt/gh_api_test'>, requested_actions)
+hndl.establish_github_connection()
+hndl.fetch_update_push()
 Attempting fetch of contents from test/test.txt:
 Fetch successful.
 Updating YAML values:

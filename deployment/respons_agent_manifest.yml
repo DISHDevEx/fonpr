@@ -18,7 +18,7 @@ spec:
         app: respons-agent
     spec:
       containers:
-      - image: teamrespons/respons_agent:v0.0
+      - image: teamrespons/respons_agent:v0.0.mssdemo
         name: respons-agent
         imagePullPolicy: Always
         resources: {}

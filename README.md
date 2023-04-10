@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# FONPR: agent creation and machine learning integration
-=======
-# respons-ml: Automated 5G Network Control and Continuous Improvement
->>>>>>> 94bca0e (Updated readme for clarity)
+# FONPR: Automated 5G Network Control and Continuous Improvement
 
 > This readme is intended to provide background on RESPONS 5G network control agents and their deployment.
 

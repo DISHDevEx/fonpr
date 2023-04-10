@@ -48,28 +48,28 @@ The Agent and its helper functions are containerized using Docker.
 To view existing docker images locally:
 To pull docker image from registry
 ```console
-docker pull -t imagename:version . 
+docker pull -t <imagename>:<version> . 
 
 # e.g.
 docker pull -t teamrespons/respons_agent:v0.0 .
 ```
 To run docker image locally as a container
 ```console
-docker run imageid
+docker run <imageid>
 ```
 
 To create new images and contribute them:
 To build docker image from an updated Dockerfile
 ```console
-docker build -t teamrespons/respons_agent:tagname . 
+docker build -t teamrespons/respons_agent:<tagname> . 
 ```
 To run docker image locally as a container
 ```console
-docker run imageid
+docker run <imageid>
 ```
 To push docker image to dockerhub under the response-ml
 ```console
-docker push teamrespons/respons_agent:tagname
+docker push teamrespons/respons_agent:<tagname>
 ```
 
 ## __5. Agent Deployment__ 
@@ -92,7 +92,7 @@ export AWS_SESSION_TOKEN=""
 3. Update local kubectl config file:
 
 ```console
-aws eks --region {region} update-kubeconfig --name {clustername}
+aws eks --region <region> update-kubeconfig --name <clustername>
 ```
 Deployment:
 1. Update deployment/respons_agent_manifest.yml
@@ -103,4 +103,3 @@ Deployment:
 ```console
 kubectl create -f https://raw.githubusercontent.com/DISHDevEx/respons-ml/main/deployment/respons_agent_manifest.yml
 ```
-

@@ -2,6 +2,7 @@
 Module to contain action-handler helpers for updating GitHub repositories programatically.
 """
 
+import github
 from github import Github
 import os
 import yaml
@@ -61,8 +62,7 @@ class ActionHandler():
         set_requested_actions(requested_actions:dict):
         
         establish_github_connection():
-            Login to the GitHub API using the supplied credentials, and establish
-            a session as a new attribute.
+            Instantiate access to Github API v3 wih token.
         
         list_repos():
             List repos from current session; 
@@ -133,7 +133,7 @@ class ActionHandler():
         self.branch_name = branch_name
         self.requested_actions = requested_actions
         
-        self.establish_github_connection()
+        self.session = self.establish_github_connection()
         
         
     def set_token(self, token:str) -> None:
@@ -170,10 +170,9 @@ class ActionHandler():
     def set_requested_actions(self, requested_actions:dict) -> None:
         self.requested_actions = requested_actions
     
-    def establish_github_connection(self) -> None:
+    def establish_github_connection(self) -> github.MainClass.Github:
         """
-        Login to the GitHub API using the supplied credentials, and establish
-        a session as a new attribute.
+        Instantiate access to Github API v3 wih token.
         
         Parameters
         ---------
@@ -183,7 +182,7 @@ class ActionHandler():
         -------
             None
         """
-        self.session = Github(self.repo_token)
+        return Github(self.repo_token)
     
     def list_repos(self) -> [str]:
         """

@@ -41,14 +41,24 @@ Copy the following commands line-by-line, updating values between <> characters 
 ```Python
 import action_handler
 import os
+
 requested_actions = {
 'target_pod' : 'amf',
 'requests' : {'memory' : <3>, 'cpu' : <1>},
 'limits' : {'memory' : <1>, 'cpu' : <3>}
 }
-hndl = action_handler.ActionHandler(os.environ['TOKEN'], <'DISHDevEx/openverso-charts/charts/respons/test.txt'>, <'matt/gh_api_test'>, requested_actions)
+
+token = os.environ['TOKEN']
+filepath = <'DISHDevEx/openverso-charts/charts/respons/tomer_test_PR.txt'>
+repo_branch = <'matt/gh_api_test'>
+
+hndl = action_handler.ActionHandler(repo_branch, filepath, repo_branch, requested_actions)
 hndl.establish_github_connection()
 hndl.fetch_update_push()
+```
+
+You should see the following output:
+```Python
 Attempting fetch of contents from test/test.txt:
 Fetch successful.
 Updating YAML values:
@@ -56,3 +66,5 @@ Update complete.
 Attempting push to test/test.txt:
 Push complete.
 ```
+
+Now, if you check your file in the remote repo, you should see a new commit and updated values.

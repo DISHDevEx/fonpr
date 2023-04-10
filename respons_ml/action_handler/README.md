@@ -52,8 +52,7 @@ token = os.environ['TOKEN']
 filepath = <'DISHDevEx/openverso-charts/charts/respons/tomer_test_PR.txt'>
 repo_branch = <'matt/gh_api_test'>
 
-hndl = action_handler.ActionHandler(repo_branch, filepath, repo_branch, requested_actions)
-hndl.establish_github_connection()
+hndl = action_handler.ActionHandler(token, filepath, repo_branch, requested_actions)
 hndl.fetch_update_push()
 ```
 

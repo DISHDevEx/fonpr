@@ -31,11 +31,11 @@ class ActionHandler():
         requested_actions : dict
             dictionary containing value updates for the YAML file
             e.g.:
-            requested_actions = {
-                'target_pod' : 'amf',
-                'requests' : {'memory' : 1, 'cpu' : 1},
-                'limits' : {'memory' : 1,'cpu' : 1},
-            }
+                requested_actions = {
+                    'target_pod' : 'amf',
+                    'requests' : {'memory' : 1, 'cpu' : 1},
+                    'limits' : {'memory' : 1,'cpu' : 1},
+                }
     Methods
     -------
         set_token(token:str):
@@ -108,6 +108,14 @@ class ActionHandler():
                 (e.g. 'DISHDevEx/response-ml/charts/respons/5gSA_no_ues_values.yaml')
             branch_name : str
                 target branch to pull from and push to (e.g. 'matt/gh_api_test')
+            requested_actions : dict
+                dictionary containing value updates for the YAML file
+                (e.g.:
+                    requested_actions = {
+                        'target_pod' : 'amf',
+                        'requests' : {'memory' : 1, 'cpu' : 1},
+                        'limits' : {'memory' : 1,'cpu' : 1},
+                    })
         """
         
         self.repo_token = repo_token
@@ -164,6 +172,14 @@ class ActionHandler():
         """
         Login to the GitHub API using the supplied credentials, and establish
         a session as a new attribute.
+        
+        Paramters
+        ---------
+            None
+        
+        Returns
+        -------
+            None
         """
         self.session = Github(self.repo_token)
     
@@ -171,9 +187,19 @@ class ActionHandler():
         """
         List repos from current session; 
         establish_github_connection must be called prior to use.
+        
+        Paramters
+        ---------
+            None
+        
+        Returns
+        -------
+            repos : list of strings
+                List of all repo names associated with the token account.
         """
         try:
-            return [repo.name for repo in self.session.get_user().get_repos()]
+            repos = [repo.name for repo in self.session.get_user().get_repos()]
+            return repos
         except NameError as excp:
             print(f"{excp}: GitHub connection not yet established.")
         except Exception as excp:
@@ -186,6 +212,15 @@ class ActionHandler():
         attribute for future push operations.
         
         establish_github_connection must be called prior to use.
+        
+        Paramters
+        ---------
+            None
+        
+        Returns
+        -------
+            contents : dict
+                Dictionary representation of existing target YAML file contents.
         """
         try:
             print(f'Attempting fetch of contents from {self.value_file_dir}/{self.value_file_name}:')
@@ -199,7 +234,8 @@ class ActionHandler():
             # Collect and retain file hash for push operation
             self.response_sha = response.sha
             print('Fetch successful.')
-            return yaml.safe_load(response.decoded_content)
+            contents = yaml.safe_load(response.decoded_content)
+            return contents
             
         except Exception as excp:
             print('Failed to fetch file with the following exception:')
@@ -208,6 +244,16 @@ class ActionHandler():
     def get_updated_value_file(self, current_values:dict) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions, and return in YAML file format.
+        
+        Paramters
+        ---------
+            current_values : dict
+                The dictionary representation of the target file fetched from GitHub
+        
+        Returns
+        -------
+            updated_yaml : YAML Object
+                Target file containing updated values, output in YAML format.
         """
         try:
             # TODO: Automate key-value population based on requested_actions dict
@@ -218,7 +264,8 @@ class ActionHandler():
                 'limits' : self.requested_actions['limits'],
             }
             print('Update complete.')
-            return yaml.dump(new_values)
+            updated_yaml = yaml.dump(new_values)
+            return updated_yaml
             
         except Exception as excp:
             print('Failed to update target values with the following exception:')
@@ -230,6 +277,18 @@ class ActionHandler():
         back out to GitHub,
         
         get_value_file_contents must be called prior to use.
+        
+        Paramters
+        ---------
+            updated_yaml : YAML Object
+                Target file containing updated values, output in YAML format.
+                
+            message : str
+                Commit message to be included with the push event.
+        
+        Returns
+        -------
+            None
         """                
         try:
             print(f'Attempting push to {self.value_file_dir}/{self.value_file_name}:')
@@ -248,6 +307,14 @@ class ActionHandler():
     def fetch_update_push(self) -> None:
         """
         Execute complete file update process with a single command.
+        
+        Paramters
+        ---------
+            None
+        
+        Returns
+        -------
+            None
         """
         current_values = self.get_value_file_contents()
         updated_file = self.get_updated_value_file(current_values)
@@ -256,6 +323,16 @@ class ActionHandler():
 def get_token(token_key='token') -> str:
     """
     Fetch and return token string for GitHub API access from AWS Secrets Manager.
+    
+    Paramters
+    ---------
+        token_key : str
+            Key name for target secret
+    
+    Returns
+    -------
+        token : str
+            Secret token string
     """
 
     secret_name = "RESPONS/DISHDevEx/openverso-charts/rw"
@@ -280,4 +357,5 @@ def get_token(token_key='token') -> str:
     # Decrypts secret using the associated KMS key.
     secret = get_secret_value_response['SecretString']
     
-    return json.loads(secret)[token_key]
+    token = json.loads(secret)[token_key]
+    return token

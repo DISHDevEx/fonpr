@@ -133,6 +133,8 @@ class ActionHandler():
         self.branch_name = branch_name
         self.requested_actions = requested_actions
         
+        self.establish_github_connection()
+        
         
     def set_token(self, token:str) -> None:
         # TODO: This method needs to be updated with prod credential handling
@@ -173,7 +175,7 @@ class ActionHandler():
         Login to the GitHub API using the supplied credentials, and establish
         a session as a new attribute.
         
-        Paramters
+        Parameters
         ---------
             None
         
@@ -188,7 +190,7 @@ class ActionHandler():
         List repos from current session; 
         establish_github_connection must be called prior to use.
         
-        Paramters
+        Parameters
         ---------
             None
         
@@ -213,7 +215,7 @@ class ActionHandler():
         
         establish_github_connection must be called prior to use.
         
-        Paramters
+        Parameters
         ---------
             None
         
@@ -245,7 +247,7 @@ class ActionHandler():
         """
         Update dictionary values with requested actions, and return in YAML file format.
         
-        Paramters
+        Parameters
         ---------
             current_values : dict
                 The dictionary representation of the target file fetched from GitHub
@@ -278,7 +280,7 @@ class ActionHandler():
         
         get_value_file_contents must be called prior to use.
         
-        Paramters
+        Parameters
         ---------
             updated_yaml : YAML Object
                 Target file containing updated values, output in YAML format.
@@ -308,7 +310,7 @@ class ActionHandler():
         """
         Execute complete file update process with a single command.
         
-        Paramters
+        Parameters
         ---------
             None
         
@@ -324,7 +326,7 @@ def get_token(token_key='token') -> str:
     """
     Fetch and return token string for GitHub API access from AWS Secrets Manager.
     
-    Paramters
+    Parameters
     ---------
         token_key : str
             Key name for target secret

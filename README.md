@@ -72,7 +72,7 @@ To push docker image to dockerhub under the response-ml
 docker push teamrespons/respons_agent:tagname
 ```
 
-## __Agent Deployment__ 
+## __5. Agent Deployment__ 
 Pre-Requisites:
 1. Set up your machine with the following CLI tools:
 

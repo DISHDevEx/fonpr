@@ -17,13 +17,13 @@ Log in to GitHub and create a new token:
 Account page → Settings → Developer settings → Personal access tokens → Fine-grained tokens
 
 Select "Generate new token": 
-1. give it a name, 
+1. give it a name (e.g. '<repo_name>_access_token'), 
 2. choose expiration, 
 3. select DISHDevEx as Resource owner, 
-4. write reason for needing access,
+4. write reason for needing access (e.g. 'automation development work'; this is for repo owner approval, fit appropriately to your needs),
 5. select 'Only select repositories',
 6. select 'DISHDevEx/openverso-charts' from the drop down,
-7. in Repository permissions, select 'Read and write' for Contents permissions,
+7. in 'Repository permissions', select 'Read and write' for 'Contents' permissions,
 8. Select 'Generate token and request access'
 
 Copy the token string and save it as an environment variable in your local environment under the name TOKEN
@@ -33,7 +33,7 @@ e.g.:
 export TOKEN='<token_string>'
 echo $TOKEN
 ```
-Navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'.
+After receiving approval from the repo owner (Org admin), navigate to the respons_ml folder and enter the Python interactive shell by running the command 'python'.
 
 Copy the following commands line-by-line, updating values between <> characters (remove the angle brackets prior to running) as needed.
 

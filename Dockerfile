@@ -59,4 +59,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 #using python3 run our agent
-CMD [ "python3", "respons_ml/agent.py"]
+CMD [ "python3", "fonpr/agent.py"]

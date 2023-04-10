@@ -25,7 +25,7 @@ General usage:
 ## __2. Advisor__
 An Advisor is responsible for connecting with a data source, ingesting data, and preprocessing / filtering that data prior to handing it off to the Agent.
 
-The current agent implementation uses the Prometheus based advisor to send queries to a Prometheus server.
+The Prometheus based advisor to send queries to a Prometheus server.
 
 To target the server, the ip address and port number can be found as follows:
 

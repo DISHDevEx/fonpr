@@ -16,8 +16,6 @@ class ActionHandler():
     Helper for fetching a current value.yaml file, updating that file with
     actions requested by an agent, and pushing those updates back to the repo.
     
-    ...
-    
     Attributes
     ----------
         repo_token : str
@@ -63,17 +61,32 @@ class ActionHandler():
         set_requested_actions(requested_actions:dict):
         
         establish_github_connection():
+            Login to the GitHub API using the supplied credentials, and establish
+            a session as a new attribute.
         
         list_repos():
-        
+            List repos from current session; 
+            establish_github_connection must be called prior to use.
+            
         get_value_file_contents():
+            Connect to target repository, set repo object as attribute, 
+            and fetch the specified file as a dictionary. Retain file hash as 
+            attribute for future push operations.
+        
+            establish_github_connection must be called prior to use.
         
         get_updated_value_file(current_values:dict):
+            Update dictionary values with requested actions, 
+            and return in YAML file format.
         
         push_to_repository(updated_file:yaml.YAMLObject, message='auto-update'):
+            Using connection to target repository, push the supplied updated file
+            back out to GitHub,
+            
+            get_value_file_contents must be called prior to use.
         
-        fetch_update_push()
-        
+        fetch_update_push():
+            Execute complete file update process with a single command.
     """
     
     def __init__(self, 
@@ -233,11 +246,17 @@ class ActionHandler():
             print(f'{excp}')
             
     def fetch_update_push(self) -> None:
+        """
+        Execute complete file update process with a single command.
+        """
         current_values = self.get_value_file_contents()
         updated_file = self.get_updated_value_file(current_values)
         self.push_to_repository(updated_file)
         
-def get_token(token_key='token'):
+def get_token(token_key='token') -> str:
+    """
+    Fetch and return token string for GitHub API access from AWS Secrets Manager.
+    """
 
     secret_name = "RESPONS/DISHDevEx/openverso-charts/rw"
     region_name = "us-east-1"

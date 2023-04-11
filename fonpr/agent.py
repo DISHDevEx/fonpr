@@ -21,7 +21,7 @@ def print_lim_reqs():
     
     #Init promclient, and pass it the queries (list). 
     prom_client_advisor = PromClient()
-    prom_client_advisor.set_queries(prom_cpu_mem_queries)
+    prom_client_advisor.set_queries_by_function(prom_cpu_mem_queries)
     (
         max_cpu_data,
         avg_cpu_data,

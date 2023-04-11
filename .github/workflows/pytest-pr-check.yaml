@@ -18,6 +18,9 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17'
       ##here we are going to configure aws credentials
       ## use the github workflows action: aws-actions
       - name: configure aws credentials
@@ -25,14 +28,17 @@ jobs:
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
           role-session-name: ${{ secrets.ROLE_SESSION_NAME }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
       # install dependancies for pytests
       - name: Install dependencies
-        ## upgrade pip, install pytest, and all requirements. 
+        ## upgrade pip, install pytest, install s3fs, and all requirements. 
+        ##install github devex sdk
         run: |
           python -m pip install --upgrade pip
           pip install  pytest
+          pip install s3fs
           pip install -r requirements.txt
+          pip install git+https://github.com/DISHDevEx/dish-devex-sdk.git
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       ## run the pytest module
       - name: Test with pytest
@@ -44,4 +50,5 @@ jobs:
         ##define some code here to also run during pytest
         run: |
            python --version
-           pytest --slow 
+           java --version
+           pytest --slow

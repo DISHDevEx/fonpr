@@ -1,40 +1,74 @@
-# FONPR: agent creation and machine learning integration
+# FONPR: Automated 5G Network Control and Continuous Improvement
 
-> This readme is devoted to aid deployment of agents that respond in real time to eks cluster settings:
+> This readme is intended to provide background on RESPONS 5G network control agents and their deployment.
+
+> Contents:
 > 1. Agent <br/>
 > 2. Advisor <br/>
-> 3. Docker<br/>
-> 4. Agent Deployment <br/>
+> 3. Action Handler <br/>
+> 4. Docker<br/>
+> 5. Agent Deployment <br/>
 
-## __Agent__
-1. Agent lives in the agent.py file. 
-2. The agent uses the advisor to set up a connection with the data source, and ingest data.
-3. Then the agent performs logic and writes updated limits/requests to openverso charts in github. 
+## __1. Agent__
+An Agent is responsible for implementing a policy, i.e. mapping observed system state to desired control actions. The policy can be informed by subject matter experts, or learned independently by a reinforcement learning (RL) algorithm.
 
-## __Advisor__ 
-1. There are 3 types of advisors at the agents desposal: prometheus, socket, spark. 
-2. The current agent implementation uses the Prometheus based advisor to send queries to the Prometheus server.
+General usage:
+* Agent lives as a script in the agent.py file.
+* The Agent script is run automatically on deployment in the network cluster as a containerized application, and executes its logic at regular intervals.
+* The Agent utilizes an Advisor function to set up a connection with the data source, and ingest data.
+* The Agent executes policy logic and updates cluster (Helm) configuration files in github via the Action Handler. 
+
+## __2. Advisor__
+An Advisor is responsible for connecting with a data source, ingesting data, and preprocessing / filtering that data prior to handing it off to the Agent.
+
+The Prometheus based advisor to send queries to a Prometheus server.
+
+To target the server, the ip address and port number can be found as follows:
 
     ip:port found at
     -  AWS → management console → EKS → clusters → resources tab → service and networking tab → endpoints → filter for Prometheus → Prometheus server endpoint
 
-3. Agent implementation finds the limit and request for all pods and writes them to github. 
 
-## __Docker__ 
-1. To build docker image
+## __3. Action Handler__
+An Action Handler is responsible for taking the requested cluster configuration updates (actions) and update the controlling configuration file accordingly.
+
+The current architecture leverages GitHub for revision control and housing of the cluster configuration files. When a config file is updated, it triggers redeployment of the network cluster via Flux.
+
+General usage:
+* The ActionHandler class takes in a GitHub token, the target file path within the repository, branch name, and a dictionary of agent-requested value updates.
+* The current version of the value file is fetched from GitHub, updated with the new values, and then pushed back to the repository, triggering a new cluster deployment.
+
+## __4. Docker__
+The Agent and its helper functions are containerized using Docker.
+
+To view existing docker images locally:
+To pull docker image from registry
 ```console
-docker build -t teamrespons/respons_agent:tagname . 
+docker pull -t <imagename>:<version> . 
+
+# e.g.
+docker pull -t teamrespons/respons_agent:v0.0 .
 ```
-2. To run docker image locally as a container
+To run docker image locally as a container
 ```console
-docker run imageid
-```
-3. To push docker image to dockerhub under the response-ml
-```console
-docker push teamrespons/respons_agent:tagname
+docker run <imageid>
 ```
 
-## __Agent Deployment__ 
+To create new images and contribute them:
+To build docker image from an updated Dockerfile
+```console
+docker build -t teamrespons/respons_agent:<tagname> . 
+```
+To run docker image locally as a container
+```console
+docker run <imageid>
+```
+To push docker image to dockerhub under the response-ml
+```console
+docker push teamrespons/respons_agent:<tagname>
+```
+
+## __5. Agent Deployment__ 
 Pre-Requisites:
 1. Set up your machine with the following CLI tools:
 
@@ -44,15 +78,20 @@ Pre-Requisites:
 
     Helm
     
-2. Set up your local AWS CLI Environment Variables
+2. Set up your local AWS CLI Environment Variables for an account that has access to the EKS cluster:
+```console
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
+export AWS_SESSION_TOKEN=""
+```
 
 3. Update local kubectl config file:
 
 ```console
-aws eks --region {region} update-kubeconfig --name {clustername}
+aws eks --region <region> update-kubeconfig --name <clustername>
 ```
 Deployment:
-1. Update charts/respons_agent_manifest.yml
+1. Update deployment/respons_agent_manifest.yml
 
     a. Update in the yaml file to specify which image you want deployed into the cluster.
      - "file image: teamrespons/respons_agent:version"
@@ -60,4 +99,3 @@ Deployment:
 ```console
 kubectl create -f https://raw.githubusercontent.com/DISHDevEx/respons-ml/main/deployment/respons_agent_manifest.yml
 ```
-

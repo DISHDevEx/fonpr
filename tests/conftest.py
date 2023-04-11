@@ -5,8 +5,6 @@ It also defines the configurations for pytest.
 """
 
 import pytest
-import pathlib
-import json
 
 
 @pytest.fixture(scope="module")

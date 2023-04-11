@@ -45,4 +45,4 @@ jobs:
         ##define some code here to also run during pytest
         run: |
            python --version
-           pytest --slow
+           pytest --slow 

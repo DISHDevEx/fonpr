@@ -2,7 +2,7 @@
 Module to contain all tests pertaining to agent advisors. 
 """
 
-from respons_ml import PromClient
+from fonpr import PromClient
 from unittest.mock import Mock, patch
 from nose.tools import assert_is_not_none
 
@@ -16,7 +16,7 @@ def test_prometheus_advisor(prom_memory_query,sample_response):
     ##https://stackoverflow.com/questions/71111067/how-does-mock-testing-rest-apis-test-the-api-when-the-actual-api-is-not-called
     """
     ## patch the run_queries function with the expected output. 
-    with patch('respons_ml.advisors.prometheus_client_advisor.PromClient.run_queries') as mock_get:
+    with patch('fonpr.advisors.prometheus_client_advisor.PromClient.run_queries') as mock_get:
         mock_get.return_value = sample_response
         
         prom_client_advisor = PromClient()

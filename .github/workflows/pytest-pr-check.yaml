@@ -51,4 +51,4 @@ jobs:
         run: |
            python --version
            java --version
-           pytest --slow
+           pytest --slow 

@@ -58,13 +58,37 @@ class PromClient:
         self.prom_endpoint = new_prom_endpoint
         self.prom = PrometheusConnect(url=self.prom_endpoint)
 
-    def set_queries(self, query_building_function):
+    def set_queries_by_function(self, query_building_function):
         """
         Set queries
         Input: queries
         Output: none
         """
         self.queries = query_building_function()
+        
+    def set_query_by_str(self, str_query):
+        """
+        Set queries
+        Input: queries
+        Output: none
+        """
+        self.queries = [str_query]
+        
+    def set_query_by_list(self, list_of_queries):
+        """
+        Set queries
+        Input: queries
+        Output: none
+        """
+        self.queries = list_of_queries
+        
+    def add_query_from_string(self, str_query):
+        """
+        Set queries
+        Input: queries
+        Output: none
+        """
+        self.queries = self.queries.append(str_query)
 
     def get_queries(self):
         """

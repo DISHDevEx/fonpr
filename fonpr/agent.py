@@ -50,6 +50,35 @@ def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
             Dictionary containing limits and requests for each pod
     """
     
+    dict_lim_req = collect_lim_reqs()
+            
+    #Transcribe the dictionary to dataframe. 
+    df_lim_req = pd.DataFrame.from_dict(
+        dict_lim_req,
+        orient="index",
+        columns=[
+            "lim_cpu_cores",
+            "req_cpu_cores",
+            "lim_memory_bytes",
+            "req_memory_bytes",
+        ],
+    )
+
+    logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
+    print(df_lim_req.head(100))
+    
+def collect_lim_reqs() -> dict:
+    """
+    Create a prometheus client, connect to server, make queries, and print limits and requests for all pods.
+    V0 logic for the respons agent. 
+    For V0 the agent will use the max/avg of CPU and Memory as the limits/requests. 
+
+    Returns
+    -------
+        dict_lim_request : dict
+            Dictionary containing limits and requests for each pod
+    """
+    
     #Init promclient, and pass it the queries (list). 
     prom_client_advisor = PromClient(prom_endpoint)
     prom_client_advisor.set_queries(prom_cpu_mem_queries)

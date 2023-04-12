@@ -7,6 +7,7 @@ from collections import defaultdict
 import pandas as pd
 from advisors import PromClient
 from utilities import prom_cpu_mem_queries
+from action_handler import ActionHandler, get_token
 
 
 def print_lim_reqs():
@@ -19,8 +20,42 @@ def print_lim_reqs():
     -------
         None. (logging and printing data for v0)
     """
+<<<<<<< HEAD
 
     # Init promclient, and pass it the queries (list).
+=======
+    
+    dict_lim_req = collect_lim_reqs()
+            
+    #Transcribe the dictionary to dataframe. 
+    df_lim_req = pd.DataFrame.from_dict(
+        dict_lim_req,
+        orient="index",
+        columns=[
+            "lim_cpu_cores",
+            "req_cpu_cores",
+            "lim_memory_bytes",
+            "req_memory_bytes",
+        ],
+    )
+
+    logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
+    print(df_lim_req.head(100))
+    
+def collect_lim_reqs() -> dict:
+    """
+    Create a prometheus client, connect to server, make queries, and print limits and requests for all pods.
+    V0 logic for the respons agent. 
+    For V0 the agent will use the max/avg of CPU and Memory as the limits/requests. 
+
+    Returns
+    -------
+        dict_lim_request : dict
+            Dictionary containing limits and requests for each pod
+    """
+    
+    #Init promclient, and pass it the queries (list). 
+>>>>>>> 44882df (Updated agent.py by breaking out the retrieval of Prometheus requests from the original print_lim_requests function, and updated the init file to include the new function.)
     prom_client_advisor = PromClient()
     prom_client_advisor.set_queries_by_function(prom_cpu_mem_queries)
     (
@@ -57,6 +92,7 @@ def print_lim_reqs():
             )
         except KeyError:
             print("empty records found, ignoring")
+<<<<<<< HEAD
 
     # Transcribe the dictionary to dataframe.
     df_lim_req = pd.DataFrame.from_dict(
@@ -73,6 +109,11 @@ def print_lim_reqs():
     logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
     print(df_lim_req.head(100))
 
+=======
+            
+    return dict_lim_req
+    
+>>>>>>> 44882df (Updated agent.py by breaking out the retrieval of Prometheus requests from the original print_lim_requests function, and updated the init file to include the new function.)
 
 if __name__ == "__main__":
     """

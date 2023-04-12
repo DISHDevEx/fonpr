@@ -88,10 +88,20 @@ class ActionHandler:
         fetch_update_push():
             Execute complete file update process with a single command.
     """
+<<<<<<< HEAD
 
     def __init__(
         self, repo_token="", value_file_path="", branch_name="", requested_actions={}
     ):
+=======
+    
+    def __init__(self, 
+        repo_token='', 
+        value_file_url='', 
+        dir_name='',
+        requested_actions={}
+        ):
+>>>>>>> d05c923 (Updated init for action handler to use github url instead of having to construct the API path by hand.)
         """
         Contstructor for the action-handler helper.
 
@@ -100,11 +110,11 @@ class ActionHandler:
             repo_token : str
                 session token that contains the appropriate GitHub credentials
                 prod handling of credentials is yet to be implemented
-            value_file_path : str
-                path to target value.yaml file
-                (e.g. 'DISHDevEx/response-ml/charts/respons/5gSA_no_ues_values.yaml')
-            branch_name : str
-                target branch to pull from and push to (e.g. 'matt/gh_api_test')
+            value_file_url : str
+                url to target value.yaml file
+                (e.g. 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/5gSA_no_ues_values.yaml')
+            dir_name : str
+                root directory within the repo (e.g. 'charts')
             requested_actions : dict
                 dictionary containing value updates for the YAML file
                 (e.g.:
@@ -116,18 +126,25 @@ class ActionHandler:
         """
 
         self.repo_token = repo_token
-
-        if value_file_path != "":
-            split_path = value_file_path.split("/")
-            self.repo_name = "/".join(split_path[0:2])
-            self.value_file_dir = "/".join(split_path[2:-1])
-            self.value_file_name = split_path[-1]
+        
+        if value_file_url != '':
+            try:
+                # parse url to structure repo path for GitHub API
+                split_path = value_file_url.split('/')
+                blob_index = split_path.index('blob')
+                dir_index = split_path.index(dir_name)
+                
+                self.repo_name = '/'.join(split_path[3:blob_index])
+                self.value_file_dir = '/'.join(split_path[dir_index:-1])
+                self.value_file_name = split_path[-1]
+                self.branch_name = '/'.join(split_path[blob_index+1:dir_index])
+            except Exception as excp:
+                print(f'Failed to build object instance with the following exception: {excp}')
         else:
-            self.repo_name = ""
-            self.value_file_dir = ""
-            self.value_file_name = ""
-
-        self.branch_name = branch_name
+            self.repo_name = ''
+            self.value_file_dir = ''
+            self.value_file_name = ''
+            
         self.requested_actions = requested_actions
 
         self.session = self.establish_github_connection()

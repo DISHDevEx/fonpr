@@ -20,10 +20,6 @@ def print_lim_reqs():
     -------
         None. (logging and printing data for v0)
     """
-<<<<<<< HEAD
-
-    # Init promclient, and pass it the queries (list).
-=======
     
     dict_lim_req = collect_lim_reqs()
             
@@ -55,7 +51,6 @@ def collect_lim_reqs() -> dict:
     """
     
     #Init promclient, and pass it the queries (list). 
->>>>>>> 44882df (Updated agent.py by breaking out the retrieval of Prometheus requests from the original print_lim_requests function, and updated the init file to include the new function.)
     prom_client_advisor = PromClient()
     prom_client_advisor.set_queries_by_function(prom_cpu_mem_queries)
     (
@@ -92,28 +87,9 @@ def collect_lim_reqs() -> dict:
             )
         except KeyError:
             print("empty records found, ignoring")
-<<<<<<< HEAD
-
-    # Transcribe the dictionary to dataframe.
-    df_lim_req = pd.DataFrame.from_dict(
-        dict_lim_req,
-        orient="index",
-        columns=[
-            "lim_cpu_cores",
-            "req_cpu_cores",
-            "lim_memory_bytes",
-            "req_memory_bytes",
-        ],
-    )
-
-    logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
-    print(df_lim_req.head(100))
-
-=======
             
     return dict_lim_req
     
->>>>>>> 44882df (Updated agent.py by breaking out the retrieval of Prometheus requests from the original print_lim_requests function, and updated the init file to include the new function.)
 
 if __name__ == "__main__":
     """

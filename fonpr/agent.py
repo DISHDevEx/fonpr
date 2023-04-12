@@ -107,3 +107,42 @@ if __name__ == "__main__":
         )
         print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
         time.sleep(time_interval)
+        
+def execute_agent_cycle() -> None:
+    """
+    Executes data ingestion via an advisor, executes logic to output a dictionary
+    of requested actions based on the advisor outputs, and updates the controlling 
+    document in its remote repo using the action handler.
+    """
+    
+    # Retrieve logs and metrics from the cluster using an advisor
+    lim_reqs = collect_lim_reqs()
+    
+    # Process advisor output down to specific value update requests
+    targets = [s for s in lim_reqs.keys() if 'amf' in s]
+    target_output = lim_reqs[targets[0]]
+    print(f'{target_output=}')
+    
+    requested_actions = {
+        'target_pod' : 'amf',
+        'requests' : {'memory' : target_output[3], 'cpu' : target_output[1]},
+        'limits' : {'memory' : target_output[2], 'cpu' : target_output[0]}
+    }
+    
+    # Update remote repository with requested values
+    gh_url = 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.txt'
+    dir_name = 'charts'
+    
+    hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
+    hndl.fetch_update_push()
+    print('Agent cycle complete!')
+
+if __name__ == "__main__":
+    """
+    Test cycle: running execute_agent_cycle repeatedly to demonstrate base
+    functionality in the kubernetes environment.
+    """
+    
+    for _ in range(10):
+        execute_agent_cycle()
+        time.sleep(30)

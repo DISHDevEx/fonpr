@@ -2,9 +2,9 @@
 Module to contain all tests pertaining to agent advisors. 
 """
 
-from fonpr import PromClient
-from unittest.mock import Mock, patch
 from nose.tools import assert_is_not_none
+from unittest.mock import patch
+from fonpr import PromClient
 
 
 

@@ -1,5 +1,5 @@
 """
-Module to contain respons agent. it is also the module that runs as a container in eks. 
+Module to contain respons agent. it is also the module that runs as a container in eks.
 """
 import time
 import logging
@@ -51,8 +51,9 @@ def collect_lim_reqs() -> dict:
     """
     
     #Init promclient, and pass it the queries (list). 
-    prom_client_advisor = PromClient()
-    prom_client_advisor.set_queries_by_function(prom_cpu_mem_queries)
+    prom_client_advisor = PromClient("http://10.0.101.236:9090")
+    prom_client_advisor.set_queries(prom_cpu_mem_queries)
+    
     (
         max_cpu_data,
         avg_cpu_data,
@@ -121,7 +122,7 @@ def execute_agent_cycle() -> None:
     # Process advisor output down to specific value update requests
     targets = [s for s in lim_reqs.keys() if 'amf' in s]
     target_output = lim_reqs[targets[0]]
-    print(f'{target_output=}')
+    # print(f'{target_output=}')
     
     requested_actions = {
         'target_pod' : 'amf',

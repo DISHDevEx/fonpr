@@ -43,4 +43,4 @@ jobs:
            PYTEST_FLAG:  "True"
         ##define some code here to also run during pytest
         run: |
-           pytest 
+           pytest tests

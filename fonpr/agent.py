@@ -121,17 +121,36 @@ def execute_agent_cycle() -> None:
     
     # Process advisor output down to specific value update requests
     targets = [s for s in lim_reqs.keys() if 'amf' in s]
-    target_output = lim_reqs[targets[0]]
+    target_output = list(map(float, lim_reqs[targets[0]]))
     # print(f'{target_output=}')
+    
+    min_milicores_cpu = 100
+    
+    req_mem = f'{int(target_output[3] / 1_000_000)}Mi'
+    
+    if (milicores := int(target_output[0] * 1000) > min_milicores_cpu):
+        req_cpu = f'{milicores}m'
+    else:
+        req_cpu = f'{min_milicores_cpu}m'
+    
+    # Including 5% 'headroom' for the limit so it doesn't squash over time.
+    lim_mem = f'{int((target_output[2] / 1_000_000) * 1.05)}Mi'
+    
+    if (milicores := int(target_output[0] * 1000) > min_milicores_cpu):
+        lim_cpu = f'{int(milicores * 1.05)}m'
+    else:
+        lim_cpu = f'{min_milicores_cpu}m'
     
     requested_actions = {
         'target_pod' : 'amf',
-        'requests' : {'memory' : target_output[3], 'cpu' : target_output[1]},
-        'limits' : {'memory' : target_output[2], 'cpu' : target_output[0]}
+        'requests' : {'memory' : req_mem, 'cpu' : req_cpu},
+        'limits' : {'memory' : lim_mem, 'cpu' : lim_cpu}
     }
     
+    # print(requested_actions) 
+    
     # Update remote repository with requested values
-    gh_url = 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.txt'
+    gh_url = 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml'
     dir_name = 'charts'
     
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)

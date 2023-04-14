@@ -10,32 +10,6 @@ from utilities import prom_cpu_mem_queries
 from action_handler import ActionHandler, get_token
 
 
-def print_lim_reqs():
-    """
-    Prints the output of collect_lim_reqs to logs and stdout as a dataframe. 
-
-    Returns
-    -------
-        dict_lim_request : dict
-            Dictionary containing limits and requests for each pod
-    """
-    
-    dict_lim_req = collect_lim_reqs()
-            
-    #Transcribe the dictionary to dataframe. 
-    df_lim_req = pd.DataFrame.from_dict(
-        dict_lim_req,
-        orient="index",
-        columns=[
-            "lim_cpu_cores",
-            "req_cpu_cores",
-            "lim_memory_bytes",
-            "req_memory_bytes",
-        ],
-    )
-
-    logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
-    print(df_lim_req.head(100))
     
 def collect_lim_reqs() -> dict:
     """
@@ -90,26 +64,7 @@ def collect_lim_reqs() -> dict:
             
     return dict_lim_req
 
-def loop_queries() -> None:
-    """
-    Call the print_lim_reqs() function for a predefined set of iterations, with a waiting period. 
-    10000 iterations, and wait period of 5 seconds.
-    
-    Returns
-    -------
-        None.
-    """
 
-    num_iterations = 10000
-    time_interval = 5
-
-    for iterate in range(num_iterations):
-        print_lim_reqs()
-        logging.info(
-            "iteration: ", iterate, "! next update in ", time_interval, " seconds"
-        )
-        print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
-        time.sleep(time_interval)
         
 def execute_agent_cycle(prom_endpoint='Default') -> None:
     """

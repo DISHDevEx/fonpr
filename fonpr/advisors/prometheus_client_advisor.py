@@ -19,7 +19,7 @@ class PromClient:
             "ip:port" for the prometheus server endpoint.
     """
 
-    def __init__(self, prom_endpoint="http://10.0.101.214:9090"):
+    def __init__(self, prom_endpoint="http://10.0.101.236:9090"):
         """
         Initalize the instance based on prometheus server endpoint.
 

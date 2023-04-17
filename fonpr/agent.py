@@ -11,7 +11,7 @@ from action_handler import ActionHandler, get_token
 
 
     
-def collect_lim_reqs() -> dict:
+def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
     """
     Create a prometheus client, connect to server, make queries, and print limits and requests for all pods.
     V0 logic for the respons agent. 
@@ -294,5 +294,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     while True:
-        execute_agent_cycle()
+        execute_agent_cycle(args.prom_client)
         time.sleep(args.interval * 60)

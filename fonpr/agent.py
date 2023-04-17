@@ -138,7 +138,8 @@ if __name__ == "__main__":
             type=int,
             default=15,
             help='Time in minutes between executions of the policy logic.')
-    parser.add_argument('prom_client',
+    parser.add_argument(
+            'prom_client',
             metavar="C",
             type=str,
             default='',

@@ -22,7 +22,7 @@ def test_prometheus_advisor(prom_memory_query,sample_response):
         
         prom_client_advisor = PromClient()
         
-        prom_client_advisor.set_query_by_str(prom_memory_query)
+        prom_client_advisor.set_query_by_list([prom_memory_query])
         
         results = prom_client_advisor.run_queries()
         

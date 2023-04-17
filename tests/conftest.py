@@ -8,7 +8,7 @@ import pytest
 @pytest.fixture(scope="module")
 def prom_memory_query():
     """
-    String written in promql to retrieve memory on a per pod basis.
+    Return a string written in promql to retrieve memory for each pod.
     """
     max_memory_query = "sum by (pod)  (max_over_time(container_memory_usage_bytes[3h]))"
     return max_memory_query

@@ -61,7 +61,7 @@ class PromClient:
 
         Parameters
         ---------
-            prom_endpoint: string
+            new_prom_endpoint: string
                 (formatted typically as http://ip:port)
                 Ip address or host name from where the data originates.
         """
@@ -121,7 +121,7 @@ class PromClient:
         # Aggregate all data.
         if len(self.queries) < 1:
             return None
-        else:
-            for query in self.queries:
-                self.query_results.append(self.prom.custom_query(query=query))
-            return self.query_results
+        
+        for query in self.queries:
+            self.query_results.append(self.prom.custom_query(query=query))
+        return self.query_results

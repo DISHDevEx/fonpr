@@ -109,7 +109,7 @@ if __name__ == "__main__":
         print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
         time.sleep(time_interval)
         
-def execute_agent_cycle(prom_client='') -> None:
+def execute_agent_cycle(prom_endpoint='') -> None:
     """
     Executes data ingestion via an advisor, executes logic to output a dictionary
     of requested actions based on the advisor outputs, and updates the controlling 
@@ -117,8 +117,8 @@ def execute_agent_cycle(prom_client='') -> None:
     """
     
     # Retrieve logs and metrics from the cluster using an advisor
-    if prom_client != '':
-        lim_reqs = collect_lim_reqs(prom_client)
+    if prom_endpoint != '':
+        lim_reqs = collect_lim_reqs(prom_endpoint)
     else:
         lim_reqs = collect_lim_reqs()
     
@@ -178,8 +178,8 @@ if __name__ == "__main__":
             default=15,
             help='Time in minutes between executions of the policy logic.')
     parser.add_argument(
-            'prom_client',
-            metavar="C",
+            'prom_endpoint',
+            metavar="E",
             type=str,
             default='',
             help='Override default Prometheus server IP address / port.')
@@ -187,5 +187,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     while True:
-        execute_agent_cycle(args.prom_client)
+        execute_agent_cycle(args.prom_endpoint)
         time.sleep(args.interval * 60)

@@ -123,7 +123,7 @@ def execute_agent_cycle(prom_endpoint='') -> None:
         lim_reqs = collect_lim_reqs()
     
     # Process advisor output down to specific value update requests
-    targets = [s for s in lim_reqs.keys() if 'amf' in s]
+    targets = [pod_name for pod_name in lim_reqs.keys() if 'amf' in pod_name]
     target_output = list(map(float, lim_reqs[targets[0]]))
     # print(f'{target_output=}')
     

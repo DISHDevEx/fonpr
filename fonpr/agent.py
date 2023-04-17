@@ -172,16 +172,18 @@ if __name__ == "__main__":
                         description="Executes policy implementation for closed loop 5G network control.")
     
     parser.add_argument(
-            'interval',
-            metavar="I",
+            '--interval',
+            metavar="-I",
             type=int,
             default=15,
+            required=False,
             help='Time in minutes between executions of the policy logic.')
     parser.add_argument(
-            'prom_endpoint',
-            metavar="E",
+            '--prom_endpoint',
+            metavar="-E",
             type=str,
             default='',
+            required=False,
             help='Override default Prometheus server IP address / port.')
     
     args = parser.parse_args()

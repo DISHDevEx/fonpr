@@ -42,6 +42,6 @@ Navigate to the `fonpr` directory and start up a Python shell there
 
 `cd fonpr && python`
 
-Next run the agent from the command line using `python agent.py 2` to pull, update, and push, the target value.yaml file every two minutes (https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml)
+Next run the agent from the command line using `python agent.py --interval 2` to pull, update, and push, the target value.yaml file every two minutes (https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml)
 
 Note: if there is not load on the network, the values suggested by the policy may not change, and no update will be seen on GitHub. If desired, the target yaml file can be manually altered so that the automated update can be seen at the next trigger.

@@ -168,14 +168,10 @@ if __name__ == "__main__":
                         prog="FONPR_Agent",
                         description="Executes policy implementation for closed loop 5G network control.")
     
-    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time in minutes between executions of the policy logic.')
+    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time between executions of the policy logic.')
     
     args = parser.parse_args()
     
     while True:
         execute_agent_cycle()
-<<<<<<< HEAD
-        time.sleep(30)
-=======
         time.sleep(args.interval * 60)
->>>>>>> 25a44a3 (Updated sleep cycle for default 15 minute intervals and custom interval at runtime.)

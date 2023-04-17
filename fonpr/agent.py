@@ -162,7 +162,20 @@ if __name__ == "__main__":
     Test cycle: running execute_agent_cycle repeatedly to demonstrate base
     functionality in the kubernetes environment.
     """
+    import argparse
     
-    for _ in range(10):
+    parser = argparse.ArgumentParser(
+                        prog="FONPR_Agent",
+                        description="Executes policy implementation for closed loop 5G network control.")
+    
+    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time between executions of the policy logic.')
+    
+    args = parser.parse_args()
+    
+    while True:
         execute_agent_cycle()
+<<<<<<< HEAD
         time.sleep(30)
+=======
+        time.sleep(args.interval * 60)
+>>>>>>> 25a44a3 (Updated sleep cycle for default 15 minute intervals and custom interval at runtime.)

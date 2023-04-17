@@ -168,7 +168,7 @@ if __name__ == "__main__":
                         prog="FONPR_Agent",
                         description="Executes policy implementation for closed loop 5G network control.")
     
-    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time between executions of the policy logic.')
+    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time in minutes between executions of the policy logic.')
     
     args = parser.parse_args()
     

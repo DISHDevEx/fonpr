@@ -109,7 +109,7 @@ if __name__ == "__main__":
         print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
         time.sleep(time_interval)
         
-def execute_agent_cycle(prom_endpoint='') -> None:
+def execute_agent_cycle(prom_endpoint='Default') -> None:
     """
     Executes data ingestion via an advisor, executes logic to output a dictionary
     of requested actions based on the advisor outputs, and updates the controlling 
@@ -117,7 +117,7 @@ def execute_agent_cycle(prom_endpoint='') -> None:
     """
     
     # Retrieve logs and metrics from the cluster using an advisor
-    if prom_endpoint != '':
+    if prom_endpoint != 'Default':
         lim_reqs = collect_lim_reqs(prom_endpoint)
     else:
         lim_reqs = collect_lim_reqs()
@@ -158,7 +158,7 @@ def execute_agent_cycle(prom_endpoint='') -> None:
     
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
     hndl.fetch_update_push()
-    print('Agent cycle complete!')
+    logging.info('Agent cycle complete!')
 
 if __name__ == "__main__":
     """
@@ -166,6 +166,10 @@ if __name__ == "__main__":
     functionality in the kubernetes environment.
     """
     import argparse
+    import logging
+    
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Launching FONPR Agent')
     
     parser = argparse.ArgumentParser(
                         prog="FONPR_Agent",
@@ -182,12 +186,16 @@ if __name__ == "__main__":
             '--prom_endpoint',
             metavar="-E",
             type=str,
-            default='',
+            default='Default',
             required=False,
             help='Override default Prometheus server IP address / port.')
     
     args = parser.parse_args()
     
+    logging.info(f'Update interval set to {args.interval}.')
+    logging.info(f'Prometheus server endpoint: {args.prom_endpoint}')
+    
     while True:
+        logging.info('Executing update cycle.')
         execute_agent_cycle(args.prom_endpoint)
         time.sleep(args.interval * 60)

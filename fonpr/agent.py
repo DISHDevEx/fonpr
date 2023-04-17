@@ -123,15 +123,20 @@ if __name__ == "__main__":
     functionality in the kubernetes environment.
     """
     import argparse
+<<<<<<< HEAD
     import logging
     
     logging.basicConfig(level=logging.INFO)
     logging.info('Launching FONPR Agent')
     
+=======
+    
+>>>>>>> 25a44a3 (Updated sleep cycle for default 15 minute intervals and custom interval at runtime.)
     parser = argparse.ArgumentParser(
                         prog="FONPR_Agent",
                         description="Executes policy implementation for closed loop 5G network control.")
     
+<<<<<<< HEAD
     parser.add_argument(
             '--interval',
             metavar="-I",
@@ -156,3 +161,12 @@ if __name__ == "__main__":
         logging.info('Executing update cycle.')
         execute_agent_cycle(args.prom_endpoint)
         time.sleep(args.interval * 60)
+=======
+    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time between executions of the policy logic.')
+    
+    args = parser.parse_args()
+    
+    while True:
+        execute_agent_cycle()
+        time.sleep(args.interval * 60)
+>>>>>>> 25a44a3 (Updated sleep cycle for default 15 minute intervals and custom interval at runtime.)

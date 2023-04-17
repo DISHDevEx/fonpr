@@ -10,7 +10,7 @@ class PromClient:
         The SparkAdvisor is meant to send prebuilt queries to the Prometheus server.
         
         The Prometheus server will send back results to the queries, 
-            which PromClient will expose to respons agent. 
+        which PromClient will expose to respons agent. 
     
 
     Attributes:

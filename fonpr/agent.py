@@ -139,8 +139,8 @@ if __name__ == "__main__":
             default=15,
             help='Time in minutes between executions of the policy logic.')
     parser.add_argument(
-            'prom_client',
-            metavar="C",
+            'prom_endpoint',
+            metavar="E",
             type=str,
             default='',
             help='Override default Prometheus server IP address / port.')
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     while True:
-        execute_agent_cycle(args.prom_client)
+        execute_agent_cycle(args.prom_endpoint)
         time.sleep(args.interval * 60)

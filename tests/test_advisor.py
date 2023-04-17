@@ -2,10 +2,9 @@
 Test all functions related to agent advisors.  
 """
 
-from nose.tools import assert_is_not_none
 from unittest.mock import patch
+from nose.tools import assert_is_not_none
 from fonpr import PromClient
-from prometheus_api_client import PrometheusConnect
 
 
 def test_prometheus_advisor(prom_memory_query, sample_response):

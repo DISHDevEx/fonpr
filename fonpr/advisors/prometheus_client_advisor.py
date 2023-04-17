@@ -118,10 +118,10 @@ class PromClient:
             query_results: List of results
                 Results from prometheus server each result is a dictionary.
         """
-        # Aggregate all data:
+        # Aggregate all data.
         if len(self.queries) < 1:
             return None
         else:
             for query in self.queries:
-                self.query_results.append(self.prom.custom_query(query=query))
+                self.query_results.append(self.prom.custom_query(query = query))
             return self.query_results

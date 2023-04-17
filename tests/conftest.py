@@ -19,8 +19,10 @@ def sample_response():
     """
     Return a sample of nested dictionaries in the same format that the Prometheus server returns.
     """
-    sample_response = [{
-        "metric": {"pod": "open5gs-smf-684588d586-gbqss"},
-        "value": [1681230632.08, "87298048"],
-    }]
+    sample_response = [
+        {
+            "metric": {"pod": "open5gs-smf-684588d586-gbqss"},
+            "value": [1681230632.08, "87298048"],
+        }
+    ]
     return sample_response

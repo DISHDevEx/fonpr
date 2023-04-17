@@ -38,7 +38,7 @@ def print_lim_reqs():
     logging.info("\t" + df_lim_req.to_string().replace("\n", "\n\t"))
     print(df_lim_req.head(100))
     
-def collect_lim_reqs() -> dict:
+def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
     """
     Create a prometheus client, connect to server, make queries, and print limits and requests for all pods.
     V0 logic for the respons agent. 
@@ -51,7 +51,7 @@ def collect_lim_reqs() -> dict:
     """
     
     #Init promclient, and pass it the queries (list). 
-    prom_client_advisor = PromClient("http://10.0.101.236:9090")
+    prom_client_advisor = PromClient(prom_endpoint)
     prom_client_advisor.set_queries(prom_cpu_mem_queries)
     
     (
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         print("iteration: ", iterate, "! next update in ", time_interval, " seconds")
         time.sleep(time_interval)
         
-def execute_agent_cycle() -> None:
+def execute_agent_cycle(prom_client='') -> None:
     """
     Executes data ingestion via an advisor, executes logic to output a dictionary
     of requested actions based on the advisor outputs, and updates the controlling 
@@ -117,7 +117,10 @@ def execute_agent_cycle() -> None:
     """
     
     # Retrieve logs and metrics from the cluster using an advisor
-    lim_reqs = collect_lim_reqs()
+    if prom_client != '':
+        lim_reqs = collect_lim_reqs(prom_client)
+    else:
+        lim_reqs = collect_lim_reqs()
     
     # Process advisor output down to specific value update requests
     targets = [s for s in lim_reqs.keys() if 'amf' in s]
@@ -168,10 +171,11 @@ if __name__ == "__main__":
                         prog="FONPR_Agent",
                         description="Executes policy implementation for closed loop 5G network control.")
     
-    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time between executions of the policy logic.')
+    parser.add_argument('interval', metavar="I", type=int, default=15, help='Time in minutes between executions of the policy logic.')
+    parser.add_argument('prom_client', metavar="C", type=str, default='', help='Override default Prometheus server IP address / port.')
     
     args = parser.parse_args()
     
     while True:
-        execute_agent_cycle()
+        execute_agent_cycle(args.prom_client)
         time.sleep(args.interval * 60)

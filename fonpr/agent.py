@@ -143,12 +143,16 @@ if __name__ == "__main__":
             '--prom_endpoint',
             metavar="-E",
             type=str,
-            default='',
+            default='Default',
             required=False,
             help='Override default Prometheus server IP address / port.')
     
     args = parser.parse_args()
     
+    logging.info(f'Update interval set to {args.interval}.')
+    logging.info(f'Prometheus server endpoint: {args.prom_endpoint}')
+    
     while True:
+        logging.info('Executing update cycle.')
         execute_agent_cycle(args.prom_endpoint)
         time.sleep(args.interval * 60)

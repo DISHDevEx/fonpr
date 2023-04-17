@@ -134,6 +134,7 @@ class ActionHandler:
                 self.branch_name = '/'.join(split_path[blob_index+1:dir_index])
             except Exception as excp:
                 logging.error(f'Failed to build object instance with the following exception: {excp}')
+                raise excp
         else:
             self.repo_name = ''
             self.value_file_dir = ''
@@ -210,8 +211,10 @@ class ActionHandler:
             return repos
         except NameError as excp:
             logging.error(f"{excp}: GitHub connection not yet established.")
+            raise excp
         except Exception as excp:
             logging.error(f"The following exception occurred while trying to fetch repo names: {excp}")
+            raise excp
             
     def get_value_file_contents(self) -> dict:
         """
@@ -246,6 +249,7 @@ class ActionHandler:
 
         except Exception as excp:
             logging.error(f'Failed to fetch file with the following exception: {excp}')
+            raise excp
             
     def get_updated_value_file(self, current_values:dict) -> yaml.YAMLObject:
         """
@@ -275,6 +279,7 @@ class ActionHandler:
 
         except Exception as excp:
             logging.error(f'Failed to update target values with the following exception: {excp}')
+            raise excp
             
     def push_to_repository(self, updated_file:yaml.YAMLObject, message='auto-update') -> None:
         """
@@ -307,6 +312,7 @@ class ActionHandler:
             logging.info('Push complete.')
         except Exception as excp:
             logging.error(f'Failed to push to repo with the following exception: {excp}')
+            raise excp
             
     def fetch_update_push(self) -> None:
         """

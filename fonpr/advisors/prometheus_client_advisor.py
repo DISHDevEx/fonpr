@@ -123,5 +123,5 @@ class PromClient:
             return None
         else:
             for query in self.queries:
-                self.query_results.append(self.prom.custom_query(query = query))
+                self.query_results.append(self.prom.custom_query(query=query))
             return self.query_results

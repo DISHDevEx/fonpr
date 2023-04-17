@@ -14,27 +14,22 @@ class PromClient:
     
 
     Attributes:
-        prom_endpoint: str
-            "ip:port" for the prometheus server endpoint
+        prom_endpoint: String.
+            "ip:port" for the prometheus server endpoint.
     """
     def __init__(self, prom_endpoint="http://10.0.101.214:9090"):
         """
-        Initalizes the instance based on prometheus server endpoint.
+        Initalize the instance based on prometheus server endpoint.
            
 
         Parameters
-        ----------
-            host: string
+        ---------
+            prom_endpoint: string (formatted typically as http://ip:port).
                 Ip address or host name from where the data originates. 
-            port: int
-                The port from which the host will be exposing data. 
-        """
-        
-        """
-        Constructor to the advisor.
-        Inputs:
-            prom_endpoint: STR (formatted typically as http://ip:port)
-        outputs: None
+                
+        Returns
+        ---------
+            None
         """
         self.prom_endpoint = prom_endpoint
         self.prom = PrometheusConnect(url=prom_endpoint)
@@ -43,66 +38,81 @@ class PromClient:
 
     def get_endpoint(self):
         """
-        Return prometheus endpoint
-        Input: None
-        Output: prometheus endpoint
+        Return prometheus endpoint.
+        
+        Parameters
+        ----------
+            None
+            
+        Returns
+        ---------
+            prom_endpoint: String (formatted typically as http://ip:port).
+                Ip address or host name from where the data originates. 
+            
         """
         return self.prom_endpoint
 
     def set_endpoint(self, new_prom_endpoint):
         """
-        Set prometheus endpoint
-        Input: prometheus endpoint
-        Output: none
+        Set prometheus endpoint.
+        
+        Parameters
+        ---------
+            prom_endpoint: string (formatted typically as http://ip:port).
+                Ip address or host name from where the data originates. 
         """
         self.prom_endpoint = new_prom_endpoint
         self.prom = PrometheusConnect(url=self.prom_endpoint)
 
     def set_queries_by_function(self, query_building_function):
         """
-        Set queries
-        Input: queries
-        Output: none
+        Set queries from a function.  
+        
+        Parameters
+        ---------
+            query_building_function: function that returns a list of strings.
+                Function that returns a list of queries, where each query is a string. 
         """
         self.queries = query_building_function()
         
-    def set_query_by_str(self, str_query):
-        """
-        Set queries
-        Input: queries
-        Output: none
-        """
-        self.queries = [str_query]
-        
     def set_query_by_list(self, list_of_queries):
         """
-        Set queries
-        Input: queries
-        Output: none
+        Set queries from a list.
+        
+        Parameters
+        ---------
+            list_of_queries: List of strings.
+                List of queries, where each query is a string. 
         """
         self.queries = list_of_queries
         
-    def add_query_from_string(self, str_query):
-        """
-        Set queries
-        Input: queries
-        Output: none
-        """
-        self.queries = self.queries.append(str_query)
-
     def get_queries(self):
         """
-        Return queries
-        Input: None
-        Output: queries
+        Return queries that the class has instantiated.
+        
+        Parameters
+        ---------
+            None
+            
+        Returns
+        ---------
+            queries: List of strings.
+                List of queries, where each query is a string. 
         """
         return self.queries
 
     def run_queries(self):
         """
-        Send queries to prometheus server, and aggregate all results in a list
-        Input: None
-        Output: List of query results
+        Send queries to prometheus server, and aggregate all results in a list.
+        
+        Parameters
+        ---------
+            None
+            
+        Returns
+        ---------
+            query_results: results from prometheus server. 
+                List of results, each result is a dictionary. 
         """
         # Aggregate all data:
         if(len(self.queries)<1):

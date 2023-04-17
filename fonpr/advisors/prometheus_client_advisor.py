@@ -14,7 +14,7 @@ class PromClient:
     
 
     Attributes:
-        prom_endpoint: String.
+        prom_endpoint: String
             "ip:port" for the prometheus server endpoint.
     """
     def __init__(self, prom_endpoint="http://10.0.101.214:9090"):
@@ -24,7 +24,7 @@ class PromClient:
 
         Parameters
         ---------
-            prom_endpoint: string (formatted typically as http://ip:port).
+            prom_endpoint: string (formatted typically as http://ip:port)
                 Ip address or host name from where the data originates. 
                 
         Returns
@@ -46,7 +46,8 @@ class PromClient:
             
         Returns
         ---------
-            prom_endpoint: String (formatted typically as http://ip:port).
+            prom_endpoint: String 
+                (formatted typically as http://ip:port)
                 Ip address or host name from where the data originates. 
             
         """
@@ -58,7 +59,8 @@ class PromClient:
         
         Parameters
         ---------
-            prom_endpoint: string (formatted typically as http://ip:port).
+            prom_endpoint: string 
+                (formatted typically as http://ip:port)
                 Ip address or host name from where the data originates. 
         """
         self.prom_endpoint = new_prom_endpoint
@@ -70,7 +72,7 @@ class PromClient:
         
         Parameters
         ---------
-            query_building_function: function that returns a list of strings.
+            query_building_function: function that returns a list of strings
                 Function that returns a list of queries, where each query is a string. 
         """
         self.queries = query_building_function()
@@ -81,7 +83,7 @@ class PromClient:
         
         Parameters
         ---------
-            list_of_queries: List of strings.
+            list_of_queries: List of strings
                 List of queries, where each query is a string. 
         """
         self.queries = list_of_queries
@@ -96,7 +98,7 @@ class PromClient:
             
         Returns
         ---------
-            queries: List of strings.
+            queries: List of strings
                 List of queries, where each query is a string. 
         """
         return self.queries
@@ -111,8 +113,8 @@ class PromClient:
             
         Returns
         ---------
-            query_results: results from prometheus server. 
-                List of results, each result is a dictionary. 
+            query_results: List of results
+                Results from prometheus server each result is a dictionary. 
         """
         # Aggregate all data:
         if(len(self.queries)<1):

@@ -7,6 +7,4 @@ from .utilities import prom_cpu_mem_queries
 
 from .advisors import PromClient
 
-from .agent import collect_lim_reqs
-
 from .action_handler import ActionHandler, get_token

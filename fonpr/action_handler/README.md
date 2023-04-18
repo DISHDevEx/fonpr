@@ -51,10 +51,10 @@ requested_actions = {
 }
 
 token = os.environ['TOKEN']
-filepath = <'DISHDevEx/openverso-charts/charts/respons/tomer_test_PR.txt'>
-repo_branch = <'matt/gh_api_test'>
+gh_url = <'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml'>
+dir_name = <'charts'>
 
-hndl = action_handler.ActionHandler(token, filepath, repo_branch, requested_actions)
+hndl = action_handler.ActionHandler(token, gh_url, dir_name, requested_actions)
 hndl.fetch_update_push()
 ```
 

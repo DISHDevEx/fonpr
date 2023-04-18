@@ -8,6 +8,7 @@
 > 3. Action Handler <br/>
 > 4. Docker<br/>
 > 5. Agent Deployment <br/>
+> 6. Test Runbook <br/>
 
 ## __1. Agent__
 An Agent is responsible for implementing a policy, i.e. mapping observed system state to desired control actions. The policy can be informed by subject matter experts, or learned independently by a reinforcement learning (RL) algorithm.
@@ -99,3 +100,66 @@ Deployment:
 ```console
 kubectl create -f https://raw.githubusercontent.com/DISHDevEx/respons-ml/main/deployment/respons_agent_manifest.yml
 ```
+
+## __6. Test Runbook__ 
+
+When testing functionality, for a PR or otherwise, the following steps can be taken to ensure integrity of the build:
+
+Prerequisites:
+* Repo has been cloned locally and the branch in question is checked out.
+* Logged in to dockerhub
+* Kubectl configured for your target cluster and context set for your desired namespace
+
+1. Within the root directory of the repo build the docker image from source.
+
+```bash
+docker build -t teamrespons/respons_agent:<your_test_image> .
+```
+
+2. Push the freshly built test image back up to DockerHub.
+
+```bash
+docker push teamrespons/respons_agent:<your_test_image>
+```
+
+3. Create a K8s pod config file and point to it for deployment into the cluster.
+
+test-deployment.yaml
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: <your_pod_name>
+spec:
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  containers:
+  - name: <your_container_name>
+    image: teamrespons/respons_agent:<your_test_image>
+    command: ["python3"]
+    args: ["fonpr/agent.py", "--interval", "2"]
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/spark
+  hostNetwork: true
+  dnsPolicy: Default
+```
+deploy into cluster
+```bash
+kubectl apply -f /path/to/test-deployment.yaml
+```
+
+4. Confirm that the pod has been successfully deployed.
+
+```bash
+kubectl get pods
+```
+
+5. Confirm that the pod is functioning as expected.
+
+```bash
+kubectl logs <your_pod_name>
+```
+
+6. Confirm that the target file is updating in GitHub.

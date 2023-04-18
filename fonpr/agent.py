@@ -25,7 +25,7 @@ def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
     
     #Init promclient, and pass it the queries (list). 
     prom_client_advisor = PromClient(prom_endpoint)
-    prom_client_advisor.set_queries(prom_cpu_mem_queries)
+    prom_client_advisor.set_queries_by_function(prom_cpu_mem_queries)
     
     (
         max_cpu_data,
@@ -66,11 +66,20 @@ def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
 
 
         
-def execute_agent_cycle(prom_endpoint='Default') -> None:
+def execute_agent_cycle(prom_endpoint, gh_url, dir_name) -> None:
     """
     Executes data ingestion via an advisor, executes logic to output a dictionary
     of requested actions based on the advisor outputs, and updates the controlling 
     document in its remote repo using the action handler.
+    
+    Parameters
+    ----------
+        prom_endpoint : str
+            IP and port for the Prometheus server (e.g. 'http://10.0.101.236:9090')
+        gh_url : str
+            URL pointing to the target value.yaml file in GitHub (e.g. 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml')
+        dir_name : str
+            Name of first directory in path to the yaml file (empty string if the file is at the root of the repo)
     """
     
     # Retrieve logs and metrics from the cluster using an advisor
@@ -110,9 +119,6 @@ def execute_agent_cycle(prom_endpoint='Default') -> None:
     # print(requested_actions) 
     
     # Update remote repository with requested values
-    gh_url = 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml'
-    dir_name = 'charts'
-    
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
     hndl.fetch_update_push()
     logging.info('Agent cycle complete!')
@@ -134,18 +140,28 @@ if __name__ == "__main__":
     
     parser.add_argument(
             '--interval',
-            metavar="-I",
             type=int,
             default=15,
             required=False,
             help='Time in minutes between executions of the policy logic.')
     parser.add_argument(
             '--prom_endpoint',
-            metavar="-E",
             type=str,
             default='Default',
             required=False,
             help='Override default Prometheus server IP address / port.')
+    parser.add_argument(
+            '--gh_url',
+            type=str,
+            default='https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml',
+            required=False,
+            help='Specify path to target value.yaml file on GitHub.')
+    parser.add_argument(
+            '--dir_name',
+            type=str,
+            default='charts',
+            required=False,
+            help='Specify root directory of value.yaml path in repo.')
     
     args = parser.parse_args()
     
@@ -154,5 +170,5 @@ if __name__ == "__main__":
     
     while True:
         logging.info('Executing update cycle.')
-        execute_agent_cycle(args.prom_endpoint)
+        execute_agent_cycle(args.prom_endpoint, args.gh_url, args.dir_name)
         time.sleep(args.interval * 60)

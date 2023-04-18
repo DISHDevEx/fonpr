@@ -79,7 +79,7 @@ class PromClient:
         """
         self.queries = query_building_function()
 
-    def set_query_by_list(self, list_of_queries):
+    def set_queries_by_list(self, list_of_queries):
         """
         Set queries from a list.
 

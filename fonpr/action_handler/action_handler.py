@@ -270,6 +270,8 @@ class ActionHandler:
             logging.info('Updating YAML values:')
             new_values = copy.deepcopy(current_values)
             new_values[self.requested_actions["target_pod"]]["affinity"]['nodeAffinity']['requiredDuringSchedulingIgnoredDuringExecution']['nodeSelectorTerms']['matchExpressions'] = {
+                'key': 'upfInstanceSize',
+                'operator': 'In',
                 "values": self.requested_actions["values"]
             }
             logging.info('Update complete.')

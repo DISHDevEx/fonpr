@@ -8,10 +8,12 @@ import pandas as pd
 from advisors import PromClient
 from utilities import prom_cpu_mem_queries
 from action_handler import ActionHandler, get_token
+import argparse
+import logging
 
 
     
-def collect_lim_reqs(prom_endpoint='http://10.0.101.236:9090') -> dict:
+def collect_lim_reqs(prom_endpoint='http://10.0.102.84:8080') -> dict:
     """
     Create a prometheus client, connect to server, make queries, and print limits and requests for all pods.
     V0 logic for the respons agent. 
@@ -128,8 +130,7 @@ if __name__ == "__main__":
     Test cycle: running execute_agent_cycle repeatedly to demonstrate base
     functionality in the kubernetes environment.
     """
-    import argparse
-    import logging
+
     
     logging.basicConfig(level=logging.INFO)
     logging.info('Launching FONPR Agent')

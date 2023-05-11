@@ -269,9 +269,8 @@ class ActionHandler:
             # TODO: Automate key-value population based on requested_actions dict
             logging.info('Updating YAML values:')
             new_values = copy.deepcopy(current_values)
-            new_values[self.requested_actions["target_pod"]]["resources"] = {
-                "requests": self.requested_actions["requests"],
-                "limits": self.requested_actions["limits"],
+            new_values[self.requested_actions["target_pod"]]["affinity"]['nodeAffinity']['requiredDuringSchedulingIgnoredDuringExecution']['nodeSelectorTerms']['matchExpressions'] = {
+                "values": self.requested_actions["values"]
             }
             logging.info('Update complete.')
             updated_yaml = yaml.dump(new_values)

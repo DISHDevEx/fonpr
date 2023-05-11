@@ -89,13 +89,10 @@ class ActionHandler:
         fetch_update_push():
             Execute complete file update process with a single command.
     """
-    
-    def __init__(self, 
-        repo_token='', 
-        value_file_url='', 
-        dir_name='',
-        requested_actions={}
-        ):
+
+    def __init__(
+        self, repo_token="", value_file_url="", dir_name="", requested_actions={}
+    ):
         """
         Contstructor for the action-handler helper.
 
@@ -120,26 +117,28 @@ class ActionHandler:
         """
 
         self.repo_token = repo_token
-        
-        if value_file_url != '':
+
+        if value_file_url != "":
             try:
                 # parse url to structure repo path for GitHub API
-                split_path = value_file_url.split('/')
-                blob_index = split_path.index('blob')
-                dir_index = split_path.index(dir_name)
-                
-                self.repo_name = '/'.join(split_path[3:blob_index])
-                self.value_file_dir = '/'.join(split_path[dir_index:-1])
+                split_path = value_file_url.split("/")
+                blob_index = split_path.index("blob")
+                dir_index = split_path.index(dir_name, blob_index)
+
+                self.repo_name = "/".join(split_path[3:blob_index])
+                self.value_file_dir = "/".join(split_path[dir_index:-1])
                 self.value_file_name = split_path[-1]
-                self.branch_name = '/'.join(split_path[blob_index+1:dir_index])
+                self.branch_name = "/".join(split_path[blob_index + 1 : dir_index])
             except Exception as excp:
-                logging.error(f'Failed to build object instance with the following exception: {excp}')
+                logging.error(
+                    f"Failed to build object instance with the following exception: {excp}"
+                )
                 raise excp
         else:
-            self.repo_name = ''
-            self.value_file_dir = ''
-            self.value_file_name = ''
-            
+            self.repo_name = ""
+            self.value_file_dir = ""
+            self.value_file_name = ""
+
         self.requested_actions = requested_actions
 
         self.session = self.establish_github_connection()
@@ -213,9 +212,11 @@ class ActionHandler:
             logging.error(f"{excp}: GitHub connection not yet established.")
             raise excp
         except Exception as excp:
-            logging.error(f"The following exception occurred while trying to fetch repo names: {excp}")
+            logging.error(
+                f"The following exception occurred while trying to fetch repo names: {excp}"
+            )
             raise excp
-            
+
     def get_value_file_contents(self) -> dict:
         """
         Connect to target repository, set repo object as attribute,
@@ -234,7 +235,9 @@ class ActionHandler:
                 Dictionary representation of existing target YAML file contents.
         """
         try:
-            logging.info(f'Attempting fetch of contents from {self.value_file_dir}/{self.value_file_name}:')
+            logging.info(
+                f"Attempting fetch of contents from {self.value_file_dir}/{self.value_file_name}:"
+            )
             # Fetch contents
             self.repo = self.session.get_repo(self.repo_name)
             response = self.repo.get_contents(
@@ -243,15 +246,15 @@ class ActionHandler:
 
             # Collect and retain file hash for push operation
             self.response_sha = response.sha
-            logging.info('Fetch successful.')
+            logging.info("Fetch successful.")
             contents = yaml.safe_load(response.decoded_content)
             return contents
 
         except Exception as excp:
-            logging.error(f'Failed to fetch file with the following exception: {excp}')
+            logging.error(f"Failed to fetch file with the following exception: {excp}")
             raise excp
-            
-    def get_updated_value_file(self, current_values:dict) -> yaml.YAMLObject:
+
+    def get_updated_value_file(self, current_values: dict) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions, and return in YAML file format.
 
@@ -267,22 +270,30 @@ class ActionHandler:
         """
         try:
             # TODO: Automate key-value population based on requested_actions dict
-            logging.info('Updating YAML values:')
+            logging.info("Updating YAML values:")
             new_values = copy.deepcopy(current_values)
-            new_values[self.requested_actions["target_pod"]]["affinity"]['nodeAffinity']['requiredDuringSchedulingIgnoredDuringExecution']['nodeSelectorTerms']['matchExpressions'] = {
-                'key': 'upfInstanceSize',
-                'operator': 'In',
-                "values": self.requested_actions["values"]
-            }
-            logging.info('Update complete.')
+            new_values[self.requested_actions["target_pod"]]["affinity"][
+                "nodeAffinity"
+            ]["requiredDuringSchedulingIgnoredDuringExecution"]["nodeSelectorTerms"][0][
+                "matchExpressions"
+            ][
+                "values"
+            ] = [
+                self.requested_actions["values"]
+            ]
+            logging.info("Update complete.")
             updated_yaml = yaml.dump(new_values)
             return updated_yaml
 
         except Exception as excp:
-            logging.error(f'Failed to update target values with the following exception: {excp}')
+            logging.error(
+                f"Failed to update target values with the following exception: {excp}"
+            )
             raise excp
-            
-    def push_to_repository(self, updated_file:yaml.YAMLObject, message='auto-update') -> None:
+
+    def push_to_repository(
+        self, updated_file: yaml.YAMLObject, message="auto-update"
+    ) -> None:
         """
         Using connection to target repository, push the supplied updated file
         back out to GitHub,
@@ -302,7 +313,9 @@ class ActionHandler:
             None
         """
         try:
-            logging.info(f'Attempting push to {self.value_file_dir}/{self.value_file_name}:')
+            logging.info(
+                f"Attempting push to {self.value_file_dir}/{self.value_file_name}:"
+            )
             self.repo.update_file(
                 path=f"{self.value_file_dir}/{self.value_file_name}",
                 message=message,
@@ -310,11 +323,13 @@ class ActionHandler:
                 sha=self.response_sha,
                 branch=self.branch_name,
             )
-            logging.info('Push complete.')
+            logging.info("Push complete.")
         except Exception as excp:
-            logging.error(f'Failed to push to repo with the following exception: {excp}')
+            logging.error(
+                f"Failed to push to repo with the following exception: {excp}"
+            )
             raise excp
-            
+
     def fetch_update_push(self) -> None:
         """
         Execute complete file update process with a single command.

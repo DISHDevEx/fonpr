@@ -14,6 +14,22 @@ from vizier.service import pyvizier as vz
 
 
 def reward_function(throughput,infra_cost):
+    """
+    Calculates the reward for the agent to recieve based off of throughput and infrastructure cost. 
+    
+    Parameters
+    ----------
+        throughput : float
+            The average network transmitted for the last hour from UPF pod. 
+        infra_cost : float
+            The cost of running the ec2 sizing for the UPF pod.
+            
+    Returns
+    -------
+        avg_upf_network: float
+            The average network transmitted for the last hour from UPF pod. 
+    """
+    
     #All cost is calculated on an hourly basis
     # Throughput must be in bytes.
     # The cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
@@ -22,6 +38,15 @@ def reward_function(throughput,infra_cost):
     return reward
 
 def get_throughput():
+    """
+    Calculates the average network bytes transmitted from the UPF pod for the last hour. 
+    
+    Returns
+    -------
+        avg_upf_network: float
+            The average network transmitted for the last hour from UPF pod. 
+    """
+    
     #Set the prometheus client endpoint for the prometheus server in Respons-Nuances.
     prom_client_advisor = PromClient('http://10.0.104.52:9090')
     prom_client_advisor.set_queries_by_function(prom_network_upf_query)
@@ -30,6 +55,19 @@ def get_throughput():
     return avg_upf_network
 
 def get_infra_cost(size="Large"):
+    """
+    Calculates the hourly cost of the infrastructure based off the categorical value of size. 
+    
+    Parameters
+    ----------
+        size : str
+            Specify the nodegroup sizing for upf.
+    Returns
+    -------
+        cost: int
+            The cost of running the ec2 sizing for the UPF pod.
+    """
+    
     if(size == "Small"):
         return ec2_cost_calculator("t3.medium")
     if(size == "Large"):
@@ -37,14 +75,12 @@ def get_infra_cost(size="Large"):
 
 def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/vinny/test-updating-yml/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml', dir_name='napp') -> None:
     """
-    Executes data ingestion via an advisor, executes logic to output a dictionary
-    of requested actions based on the advisor outputs, and updates the controlling 
-    document in its remote repo using the action handler.
+    Updates the controlling document in its remote repo using the action handler.
     
     Parameters
     ----------
         size : str
-            specify the nodegroup sizing for upf
+            Specify the nodegroup sizing for upf.
         gh_url : str
             URL pointing to the target value.yaml file in GitHub (e.g. 'https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml')
         dir_name : str
@@ -66,8 +102,7 @@ def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/vi
 
 if __name__ == "__main__":
     """
-    Test cycle: running execute_agent_cycle repeatedly to demonstrate base
-    functionality in the kubernetes environment.
+    BBO agent logic: recieve throughput, cost to make a reward. Based off reward specify sizing of the upf pod. 
     """
 
     ##instantiate some logging
@@ -109,7 +144,7 @@ if __name__ == "__main__":
             reward = reward_function(observed_throughput,observed_cost)
             logging.info(f"Observed reward {reward}")
             
-        
+            #Complete the interaction. 
             suggestion.complete(vz.Measurement({'reward': reward}))
             
             

@@ -116,7 +116,7 @@ if __name__ == "__main__":
     study = clients.Study.from_study_config(study_config, owner='vinayak', study_id='upfSizing')
     
     ##Run BBO
-    for i in range(1):
+    for i in range(15):
         
         logging.info('Executing update cycle.')
         
@@ -128,8 +128,8 @@ if __name__ == "__main__":
             logging.info(f"Agent changing upf size to: {params['size']}")
             
             
-            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly)
-            time.sleep(1)
+            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly-- for test purposes we will go for half an hour)
+            time.sleep(300)
             
             #Get the observations for the system to build out reward function.
             #Build observed throughput.

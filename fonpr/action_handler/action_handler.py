@@ -76,7 +76,7 @@ class ActionHandler:
 
             establish_github_connection must be called prior to use.
 
-        get_updated_value_file(current_values:dict):
+        update_value_file(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
 
@@ -117,7 +117,9 @@ class ActionHandler:
         """
 
         self.repo_token = repo_token
-
+        self.response_sha  = ''
+        self.repo = ''
+        
         if value_file_url != "":
             try:
                 # parse url to structure repo path for GitHub API
@@ -138,10 +140,14 @@ class ActionHandler:
             self.repo_name = ""
             self.value_file_dir = ""
             self.value_file_name = ""
+            self.branch_name = ""
 
         self.requested_actions = requested_actions
 
         self.session = self.establish_github_connection()
+        
+
+        
 
     def set_token(self, token: str) -> None:
         # TODO: This method needs to be updated with prod credential handling
@@ -254,7 +260,7 @@ class ActionHandler:
             logging.error(f"Failed to fetch file with the following exception: {excp}")
             raise excp
 
-    def get_updated_value_file(self, current_values: dict) -> yaml.YAMLObject:
+    def update_value_file(self, current_values: dict) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions, and return in YAML file format.
 
@@ -343,7 +349,7 @@ class ActionHandler:
             None
         """
         current_values = self.get_value_file_contents()
-        updated_file = self.get_updated_value_file(current_values)
+        updated_file = self.update_value_file(current_values)
         self.push_to_repository(updated_file)
 
 
@@ -362,7 +368,7 @@ def get_token(token_key="token") -> str:
             Secret token string
     """
 
-    secret_name = "RESPONS/DISHDevEx/openverso-charts/rw"
+    secret_name = "RESPONS/DISHDevEx/napp/rw"
     region_name = "us-east-1"
 
     # Create a Secrets Manager client

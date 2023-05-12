@@ -14,17 +14,19 @@ from vizier.service import pyvizier as vz
 
 
 def reward_function(throughput,infra_cost):
-    ## throughput must be in bytes 
-    ## the cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications)
-
+    #All cost is calculated on an hourly basis
+    # Throughput must be in bytes.
+    # The cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
     cost_conversion_coefficient = 3.33/1000000000
     reward = (throughput)*(cost_conversion_coefficient) - infra_cost
     return reward
 
 def get_throughput():
+    #Set the prometheus client endpoint for the prometheus server in Respons-Nuances.
     prom_client_advisor = PromClient('http://10.0.104.52:9090')
     prom_client_advisor.set_queries_by_function(prom_network_upf_query)
     avg_upf_network = prom_client_advisor.run_queries()
+    avg_upf_network = float(avg_upf_network[0][0]['value'][1])
     return avg_upf_network
 
 def get_infra_cost(size="Large"):
@@ -32,8 +34,6 @@ def get_infra_cost(size="Large"):
         return ec2_cost_calculator("t3.medium")
     if(size == "Large"):
         return ec2_cost_calculator("m4.large")
-    
-
 
 def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/vinny/test-updating-yml/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml', dir_name='napp') -> None:
     """
@@ -57,7 +57,7 @@ def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/vi
         'values' : size
     }
     
-    # Update remote repository with requested values
+    # Update remote repository with requested values.
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
     hndl.fetch_update_push()
     logging.info('Agent update complete!')
@@ -69,40 +69,48 @@ if __name__ == "__main__":
     Test cycle: running execute_agent_cycle repeatedly to demonstrate base
     functionality in the kubernetes environment.
     """
-    observed_throughput = get_throughput()
-    print(observed_throughput)
 
-    # ##instantiate some logging
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info('Launching FONPR Agent')
+    ##instantiate some logging
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Launching FONPR BBO Agent')
     
-    # #setup google vizier for BBO 
-    # study_config = vz.StudyConfig(algorithm='GAUSSIAN_PROCESS_BANDIT')
-    # study_config.search_space.root.add_categorical_param('size', ['Small', 'Large'])
-    # study_config.metric_information.append(vz.MetricInformation('reward', goal=vz.ObjectiveMetricGoal.MAXIMIZE))
-    # study = clients.Study.from_study_config(study_config, owner='vinayak', study_id='example1')
+    #Setup google vizier for BBO 
+    study_config = vz.StudyConfig(algorithm='GAUSSIAN_PROCESS_BANDIT')
+    study_config.search_space.root.add_categorical_param('size', ['Small', 'Large'])
+    study_config.metric_information.append(vz.MetricInformation('reward', goal=vz.ObjectiveMetricGoal.MAXIMIZE))
+    study = clients.Study.from_study_config(study_config, owner='vinayak', study_id='upfSizing')
     
-    # ##Run BBO
-    # for i in range(1):
+    ##Run BBO
+    for i in range(1):
         
-    #     logging.info('Executing update cycle.')
+        logging.info('Executing update cycle.')
         
-    #     suggestions = study.suggest(count=1)
-
-    #     for suggestion in suggestions:
-    #         params = suggestion.parameters
-    #         # update_yml(size = params['size'] )
+        suggestions = study.suggest(count=1)
+        for suggestion in suggestions:
+            params = suggestion.parameters
+            update_yml(size = params['size'] )
             
-    #         ##sleep for 60 seconds, to see the impact of changing sizing
-    #         time.sleep(1)
+            logging.info(f"Agent changing upf size to: {params['size']}")
             
-    #         #get the observations for the system to build out reward function
-    #         #feed reward to BBO algorithm, and complete the trial
-    #         observed_throughput = get_throughput()
-    #         observed_cost = get_infra_cost(params['size'] )
-    #         reward = reward_function(observed_throughput,observed_cost)
-    #         print(observed_throughput,observed_cost)
-    #         suggestion.complete(vz.Measurement({'reward': reward}))
+            
+            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly)
+            time.sleep(1)
+            
+            #Get the observations for the system to build out reward function.
+            #Build observed throughput.
+            observed_throughput = get_throughput()
+            logging.info(f"Observed throughput {observed_throughput}")
+            
+            #Build cost.
+            observed_cost = get_infra_cost(params['size'] )
+            logging.info(f"Observed cost {observed_cost}")
+            
+            #Build reward.
+            reward = reward_function(observed_throughput,observed_cost)
+            logging.info(f"Observed reward {reward}")
+            
+        
+            suggestion.complete(vz.Measurement({'reward': reward}))
             
             
             

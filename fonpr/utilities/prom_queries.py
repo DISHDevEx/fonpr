@@ -49,6 +49,6 @@ def prom_cpu_mem_queries():
     
 def prom_network_upf_query():
     
-    avg_upf_network_query = "sum by (pod) (avg_over_time(rate(container_network_transmit_bytes_total {pod = 'open5gs-upf-5db5bbfd4c-7zgtv'}[1m])[1h:]))"
+    avg_upf_network_query = "sum by (pod) (avg_over_time(rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1m])[1h:]))"
     
     return[avg_upf_network_query]

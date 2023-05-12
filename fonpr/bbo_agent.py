@@ -73,7 +73,7 @@ def get_infra_cost(size="Large"):
     if(size == "Large"):
         return ec2_cost_calculator("m4.large")
 
-def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/vinny/test-updating-yml/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml', dir_name='napp') -> None:
+def update_yml(size ='Large', gh_url ='https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml', dir_name='napp') -> None:
     """
     Updates the controlling document in its remote repo using the action handler.
     
@@ -129,7 +129,7 @@ if __name__ == "__main__":
             
             
             ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly-- for test purposes we will go for half an hour)
-            time.sleep(300)
+            time.sleep(30)
             
             #Get the observations for the system to build out reward function.
             #Build observed throughput.

@@ -105,7 +105,7 @@ if __name__ == "__main__":
     BBO agent logic: recieve throughput, cost to make a reward. Based off reward specify sizing of the upf pod. 
     """
 
-    ##instantiate some logging
+    #Instantiate some logging
     logging.basicConfig(level=logging.INFO)
     logging.info('Launching FONPR BBO Agent')
     
@@ -128,8 +128,8 @@ if __name__ == "__main__":
             logging.info(f"Agent changing upf size to: {params['size']}")
             
             
-            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly-- for test purposes we will go for half an hour)
-            time.sleep(30)
+            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly)
+            time.sleep(600)
             
             #Get the observations for the system to build out reward function.
             #Build observed throughput.

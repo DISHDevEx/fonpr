@@ -8,5 +8,3 @@ from .utilities import prom_cpu_mem_queries
 from .advisors import PromClient
 
 from .action_handler import ActionHandler, get_token
-
-from .agents import FONPR_Env

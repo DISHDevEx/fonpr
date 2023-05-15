@@ -282,7 +282,7 @@ class ActionHandler:
                 "nodeAffinity"
             ]["requiredDuringSchedulingIgnoredDuringExecution"]["nodeSelectorTerms"][0][
                 "matchExpressions"
-            ][
+            ][0][
                 "values"
             ] = [
                 self.requested_actions["values"]

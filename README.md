@@ -1,5 +1,12 @@
 # FONPR: Automated 5G Network Control and Continuous Improvement
 
+## Quick Deployment 
+BBO agent deployment
+```console
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/fonpr-small-problem-build/deployment/bbo_agent_manifest.yml
+```
+
+## First Open Network Pattern Reactors guide: 
 > This readme is intended to provide background on First Open Network Pattern Reactors and their deployment.
 
 > Contents:

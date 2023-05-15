@@ -113,7 +113,7 @@ if __name__ == "__main__":
     study_config = vz.StudyConfig(algorithm='GAUSSIAN_PROCESS_BANDIT')
     study_config.search_space.root.add_categorical_param('size', ['Small', 'Large'])
     study_config.metric_information.append(vz.MetricInformation('reward', goal=vz.ObjectiveMetricGoal.MAXIMIZE))
-    study = clients.Study.from_study_config(study_config, owner='vinayak', study_id='upfSizing')
+    study = clients.Study.from_study_config(study_config, owner='vinayak', study_id='onlysmallchange')
     
     ##Run BBO
     for i in range(15):

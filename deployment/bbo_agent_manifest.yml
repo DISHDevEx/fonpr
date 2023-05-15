@@ -3,23 +3,23 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: respons-agent
-  name: respons-agent
+    app: respons-agent-bbo
+  name: respons-agent-bbo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: respons-agent
+      app: respons-agent-bbo
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: respons-agent
+        app: respons-agent-bbo
     spec:
       containers:
-      - image: teamrespons/respons_agent:latest
-        name: respons-agent
+      - image: teamrespons/respons_agent:bbo-agent
+        name: respons-agent-bbo
         imagePullPolicy: Always
         resources: {}
         ports:

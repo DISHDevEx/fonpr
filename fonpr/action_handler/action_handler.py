@@ -75,7 +75,10 @@ class ActionHandler:
             attribute for future push operations.
 
             establish_github_connection must be called prior to use.
-
+            
+        update_nested_dict(self, old_dict:dict, updates:dict):
+            Return a new recursively modified dictionary according to desired updates.
+            
         get_updated_value_file(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
@@ -250,7 +253,36 @@ class ActionHandler:
         except Exception as excp:
             logging.error(f'Failed to fetch file with the following exception: {excp}')
             raise excp
-            
+    
+    def update_nested_dict(self, old_dict:dict, updates:dict) -> dict:
+        """
+        Return a new recursively modified dictionary according to desired updates.
+
+        Parameters
+        ---------
+            old_dict : dict
+                The target dictionary to be updated.
+            updates : dict
+                The specification of new key-value pairs.
+
+        Returns
+        -------
+            new_dict : dict
+                The updated dictionary.
+        """
+        new_dict = {}
+        for key, value in old_dict.items():
+            if isinstance(value, dict) and key in updates and isinstance(updates[key], dict):
+                new_dict[key] = self.update_nested_dict(value, updates[key])
+            else:
+                new_dict[key] = updates.get(key, value)
+                
+        for key, value in updates.items():
+            if key not in old_dict:
+                new_dict[key] = value
+                
+        return new_dict
+    
     def get_updated_value_file(self, current_values:dict) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions, and return in YAML file format.
@@ -268,11 +300,7 @@ class ActionHandler:
         try:
             # TODO: Automate key-value population based on requested_actions dict
             logging.info('Updating YAML values:')
-            new_values = copy.deepcopy(current_values)
-            new_values[self.requested_actions["target_pod"]]["resources"] = {
-                "requests": self.requested_actions["requests"],
-                "limits": self.requested_actions["limits"],
-            }
+            new_values = self.update_nested_dict(current_values, self.requested_actions)
             logging.info('Update complete.')
             updated_yaml = yaml.dump(new_values)
             return updated_yaml

@@ -98,9 +98,9 @@ Deployment:
      - "file image: teamrespons/respons_agent:version"
 2. V0 agent deployment
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/respons-ml/main/deployment/respons_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/respons_agent_manifest.yml
 ```
 3. BBO agent deployment
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/respons-ml/main/deployment/respons_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/fonpr-small-problem-build/deployment/bbo_agent_manifest.yml
 ```

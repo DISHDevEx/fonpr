@@ -33,7 +33,7 @@ def reward_function(throughput, infra_cost):
     # All cost is calculated on an hourly basis
     # Throughput must be in bits.
     # The cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
-    cost_conversion_coefficient = 3.33 / 1000000000
+    cost_conversion_coefficient = 3.33 / (10**9)
     reward = (throughput) * (cost_conversion_coefficient) - infra_cost
     return reward
 

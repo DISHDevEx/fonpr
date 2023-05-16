@@ -31,7 +31,7 @@ def reward_function(throughput, infra_cost):
     """
 
     # All cost is calculated on an hourly basis
-    # Throughput must be in bytes.
+    # Throughput must be in bits.
     # The cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
     cost_conversion_coefficient = 3.33 / 1000000000
     reward = (throughput) * (cost_conversion_coefficient) - infra_cost
@@ -40,7 +40,7 @@ def reward_function(throughput, infra_cost):
 
 def get_throughput():
     """
-    Calculates the average network bytes transmitted from the UPF pod for the last hour.
+    Calculates the average network bits transmitted from the UPF pod for the last hour.
 
     Returns
     -------
@@ -133,8 +133,8 @@ if __name__ == "__main__":
 
             logging.info(f"Agent changing upf size to: {params['size']}")
 
-            ##Sleep for 600 seconds, to see the impact of changing sizing. (Update hourly)
-            time.sleep(600)
+            ##Sleep for 3600 seconds, to see the impact of changing sizing. (Update hourly)
+            time.sleep(3600)
 
             # Get the observations for the system to build out reward function.
             # Build observed throughput.

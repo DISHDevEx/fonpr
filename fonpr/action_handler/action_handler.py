@@ -117,9 +117,9 @@ class ActionHandler:
         """
 
         self.repo_token = repo_token
-        self.response_sha  = ''
-        self.repo = ''
-        
+        self.response_sha = ""
+        self.repo = ""
+
         if value_file_url != "":
             try:
                 # parse url to structure repo path for GitHub API
@@ -145,9 +145,6 @@ class ActionHandler:
         self.requested_actions = requested_actions
 
         self.session = self.establish_github_connection()
-        
-
-        
 
     def set_token(self, token: str) -> None:
         # TODO: This method needs to be updated with prod credential handling
@@ -282,7 +279,9 @@ class ActionHandler:
                 "nodeAffinity"
             ]["requiredDuringSchedulingIgnoredDuringExecution"]["nodeSelectorTerms"][0][
                 "matchExpressions"
-            ][0][
+            ][
+                0
+            ][
                 "values"
             ] = [
                 self.requested_actions["values"]

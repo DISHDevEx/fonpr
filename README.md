@@ -104,7 +104,7 @@ Deployment:
 
     a. Update in the yaml file to specify which image you want deployed into the cluster.
      - "file image: teamrespons/respons_agent:version"
-2. V0 agent deployment
+2. Baseline Latest agent deployment
 ```console
 kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/respons_agent_manifest.yml
 ```

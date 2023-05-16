@@ -105,7 +105,7 @@ def update_yml(
 
 if __name__ == "__main__":
     """
-    BBO agent logic: recieve throughput, cost to make a reward. Based off reward specify sizing of the upf pod.
+    BBO agent logic: receive throughput, cost to make a reward. Based off reward specify sizing of the upf pod.
     """
 
     # Instantiate some logging

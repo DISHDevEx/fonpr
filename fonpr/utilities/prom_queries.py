@@ -132,4 +132,8 @@ def prom_network_upf_interfaces_query():
 
 
 def prom_query_rl_upf_experiment1():
-    ...
+    # Get the combined user plane network traffic over all upf pods
+    "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'eth.*'}) by (time)"
+    
+    # Get the last 15 minutes of combined user plane network traffic over all upf pods
+    "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'eth.*'}) by (time)[15m:]"

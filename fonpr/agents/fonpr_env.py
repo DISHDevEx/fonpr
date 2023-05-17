@@ -41,6 +41,20 @@ class FONPR_Env(gym.Env):
         prom_client_advisor.set_queries_by_function(prom_query_rl_upf_experiment1())
         prom_response = prom_client_advisor.run_queries()
         
+        # prom_response returns a list of responses that must be processed into obs_space shape and values
+        # Process container transmit data
+        # TODO: normalize based on earliest timestamp value
+        # TODO: interpolate to address any null values
+        # TODO: reshape to get vector of obs_space specified length
+        # TODO: interpolate again in case reshape creates nulls
+        
+        # Process pod info
+        # TODO: for all pods found over timeframe, isolate host_ip and timestamps
+        # TODO: for all pods found over timeframe, map host_ip to instance-type
+        # TODO: for each state variable ('Large instance On', 'Small instance On'), use instance-type and timesteps to map boolean
+        # TODO: reshape to get vector of obs_space specified length
+        # TODO: interpolate in case reshape creates nulls
+        
         return prom_response
 
     def _get_info(self):

@@ -46,7 +46,6 @@ def prom_cpu_mem_queries():
 
     return [max_cpu_query, avg_cpu_query, max_memory_query, avg_memory_query]
 
-
 def prom_network_upf_query():
     """
     Function to store and return queries that find network metrics in prometheus.This query is specific to only the upf function
@@ -80,7 +79,7 @@ def prom_network_upf_query():
     avg_upf_network_query = "sum by (pod) (rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h]))"
 
     return [avg_upf_network_query]
-
+ 
 
 def prom_network_upf_interfaces_query():
     """
@@ -130,3 +129,7 @@ def prom_network_upf_interfaces_query():
         avg_upf_interfaces_network_rx_query,
         node_sizing_query,
     ]
+
+
+def prom_query_rl_upf_experiment1():
+    ...

@@ -134,13 +134,20 @@ def prom_network_upf_interfaces_query():
 def prom_query_rl_upf_experiment1():
     # Get the combined user plane network traffic over all upf pods
     "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'eth.*'}) by (time)"
+    # 'values' key outputs a single scalar value of the sum of all transmitted user plane traffic across all open5gs-upf pods on record
     
     # Get the last 15 minutes of combined user plane network traffic over all upf pods
     "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'eth.*'}) by (time)[15m:]"
+    # 'values' key outputs a list of scalar values of the sum of all transmitted user plane traffic across all open5gs-upf pods on record spanning back 15 minutes (window)
+    # Will normalize to first timestamp in order to see traffic transmitted over the timeframe of the specified window.
     
     # Get current pod info for all pods with open5gs-upf in its name, which contains metric 'host_ip'
     "kube_pod_info{pod=~'open5gs-upf.*'}"
     
     # Get pod info for all pods with open5gs-upf in its name over the past 15 minutes
     "kube_pod_info{pod=~'open5gs-upf.*'}[15m:]"
-    
+    # 'metrics' key contains the 'host_ip' label
+    # 'values' key outputs a list of timestamps where this pod (on its host node) was living
+    # Kubectl at a minimum has the label 'node.kubernetes.io/instance-type' with the 'describe node' command
+    # If instance-type cannot be retrieved from prometheus, we will need to build a mapping function from host_ip to instance-type
+    # Must then preprocess to map state variable columns to bool depending on instance type for each timestamp

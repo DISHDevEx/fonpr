@@ -137,3 +137,10 @@ def prom_query_rl_upf_experiment1():
     
     # Get the last 15 minutes of combined user plane network traffic over all upf pods
     "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'eth.*'}) by (time)[15m:]"
+    
+    # Get current pod info for all pods with open5gs-upf in its name, which contains metric 'host_ip'
+    "kube_pod_info{pod=~'open5gs-upf.*'}"
+    
+    # Get pod info for all pods with open5gs-upf in its name over the past 15 minutes
+    "kube_pod_info{pod=~'open5gs-upf.*'}[15m:]"
+    

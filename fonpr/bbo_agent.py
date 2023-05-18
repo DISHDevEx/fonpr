@@ -31,8 +31,8 @@ def reward_function(throughput, infra_cost):
     """
 
     # All cost is calculated on an hourly basis
-    # Throughput must be in bits.
-    # The cost conversion coefficient converts 1 gigabit to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
+    # Throughput must be in bytes.
+    # The cost conversion coefficient converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
     cost_conversion_coefficient = 3.33 / (10**9)
     reward = (throughput) * (cost_conversion_coefficient) - infra_cost
     return reward
@@ -40,7 +40,7 @@ def reward_function(throughput, infra_cost):
 
 def get_throughput():
     """
-    Calculates the average network bits transmitted from the UPF pod for the last hour.
+    Calculates the average network bytes transmitted from the UPF pod for the last hour.
 
     Returns
     -------
@@ -67,7 +67,7 @@ def get_infra_cost(size="Large"):
     Returns
     -------
         cost: int
-            The cost of running the ec2 sizing for the UPF pod.
+            The hourly cost of running the ec2 sizing for the UPF pod.
     """
 
     if size == "Small":

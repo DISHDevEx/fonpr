@@ -99,7 +99,7 @@ def update_yml(
 
     # Update remote repository with requested values.
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
-    hndl.fetch_update_push()
+    hndl.fetch_update_push_upf_sizing()
     logging.info("Agent update complete!")
 
 

@@ -120,7 +120,7 @@ def execute_agent_cycle(prom_endpoint, gh_url, dir_name) -> None:
 
     # Update remote repository with requested values
     hndl = ActionHandler(get_token(), gh_url, dir_name, requested_actions)
-    hndl.fetch_update_push()
+    hndl.fetch_update_push_lim_req()
     logging.info("Agent cycle complete!")
 
 
@@ -141,28 +141,28 @@ if __name__ == "__main__":
     parser.add_argument(
         "--interval",
         type=int,
-        default=15,
+        default=.1,
         required=False,
         help="Time in minutes between executions of the policy logic.",
     )
     parser.add_argument(
         "--prom_endpoint",
         type=str,
-        default="Default",
+        default="http://10.0.104.52:9090",
         required=False,
         help="Override default Prometheus server IP address / port.",
     )
     parser.add_argument(
         "--gh_url",
         type=str,
-        default="https://github.com/DISHDevEx/openverso-charts/blob/matt/gh_api_test/charts/respons/test.yaml",
+        default="https://github.com/DISHDevEx/napp/blob/vinny/2.6.2/napp/open5gs_values/test.yaml",
         required=False,
         help="Specify path to target value.yaml file on GitHub.",
     )
     parser.add_argument(
         "--dir_name",
         type=str,
-        default="charts",
+        default="napp",
         required=False,
         help="Specify root directory of value.yaml path in repo.",
     )

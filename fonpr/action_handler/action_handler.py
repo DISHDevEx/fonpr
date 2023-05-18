@@ -76,7 +76,11 @@ class ActionHandler:
 
             establish_github_connection must be called prior to use.
 
-        generate_updated_value_file(current_values:dict):
+        generate__updated_value_file_lim_req(current_values:dict):
+            Update dictionary values with requested actions,
+            and return in YAML file format.
+            
+        generate__updated_value_file_upf_sizing(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
 
@@ -86,8 +90,11 @@ class ActionHandler:
 
             get_value_file_contents must be called prior to use.
 
-        fetch_update_push():
-            Execute complete file update process with a single command.
+        fetch_update_push_lim_req():
+            Execute complete file update process for limits and requests with a single command.
+            
+        fetch_update_push_upf_sizing():
+            Execute complete file update process for upf sizing with a single command.
     """
 
     def __init__(
@@ -256,10 +263,40 @@ class ActionHandler:
         except Exception as excp:
             logging.error(f"Failed to fetch file with the following exception: {excp}")
             raise excp
-
-    def generate_updated_value_file(self, current_values: dict) -> yaml.YAMLObject:
+            
+    def generate__updated_value_file_lim_req(self, current_values:dict) -> yaml.YAMLObject:
         """
-        Update dictionary values with requested actions, and return in YAML file format.
+        Update dictionary values with requested actions for limits and requests, and return in YAML file format.
+
+        Parameters
+        ---------
+            current_values : dict
+                The dictionary representation of the target file fetched from GitHub
+
+        Returns
+        -------
+            updated_yaml : YAML Object
+                Target file containing updated values, output in YAML format.
+        """
+        try:
+            # TODO: Automate key-value population based on requested_actions dict
+            logging.info('Updating YAML values:')
+            new_values = copy.deepcopy(current_values)
+            new_values[self.requested_actions["target_pod"]]["resources"] = {
+                "requests": self.requested_actions["requests"],
+                "limits": self.requested_actions["limits"],
+            }
+            logging.info('Update complete.')
+            updated_yaml = yaml.dump(new_values)
+            return updated_yaml
+
+        except Exception as excp:
+            logging.error(f'Failed to update target values with the following exception: {excp}')
+            raise excp
+            
+    def generate_updated_value_file_upf_sizing(self, current_values: dict) -> yaml.YAMLObject:
+        """
+        Update dictionary values with requested actions for upf sizing, and return in YAML file format.
 
         Parameters
         ---------
@@ -335,7 +372,7 @@ class ActionHandler:
             )
             raise excp
 
-    def fetch_update_push(self) -> None:
+    def fetch_update_push_upf_sizing(self) -> None:
         """
         Execute complete file update process with a single command.
 
@@ -348,9 +385,24 @@ class ActionHandler:
             None
         """
         current_values = self.get_value_file_contents()
-        updated_file = self.generate_updated_value_file(current_values)
+        updated_file = self.generate_updated_value_file_upf_sizing(current_values)
         self.push_to_repository(updated_file)
 
+    def fetch_update_push_lim_req(self) -> None:
+        """
+        Execute complete file update process with a single command.
+
+        Parameters
+        ---------
+            None
+
+        Returns
+        -------
+            None
+        """
+        current_values = self.get_value_file_contents()
+        updated_file = self.generate__updated_value_file_lim_req(current_values)
+        self.push_to_repository(updated_file)    
 
 def get_token(token_key="token") -> str:
     """

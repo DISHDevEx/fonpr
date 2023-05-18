@@ -15,7 +15,7 @@ from vizier.service import pyvizier as vz
 
 def reward_function(throughput, infra_cost):
     """
-    Calculates the reward for the agent to recieve based off of throughput and infrastructure cost.
+    Calculates the reward for the agent to receive based off of throughput and infrastructure cost.
 
     Parameters
     ----------

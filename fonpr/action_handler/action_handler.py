@@ -76,7 +76,7 @@ class ActionHandler:
 
             establish_github_connection must be called prior to use.
 
-        update_value_file(current_values:dict):
+        generate_updated_value_file(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
 
@@ -257,7 +257,7 @@ class ActionHandler:
             logging.error(f"Failed to fetch file with the following exception: {excp}")
             raise excp
 
-    def update_value_file(self, current_values: dict) -> yaml.YAMLObject:
+    def generate_updated_value_file(self, current_values: dict) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions, and return in YAML file format.
 
@@ -348,7 +348,7 @@ class ActionHandler:
             None
         """
         current_values = self.get_value_file_contents()
-        updated_file = self.update_value_file(current_values)
+        updated_file = self.generate_updated_value_file(current_values)
         self.push_to_repository(updated_file)
 
 

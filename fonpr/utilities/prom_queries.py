@@ -63,7 +63,7 @@ def prom_network_upf_query():
             (1) The feature container_network_transmit_bytes_total is a counter; it monotonically increases.
                (See https://prometheus.io/docs/concepts/metric_types/#counter).
 
-            (2) That feature comes in units of bytes. 
+            (2) That feature comes in units of bytes.
 
             (3) The Prometheus function rate takes in a time series and a width of a scrape window and returns a per second average.
 
@@ -75,7 +75,7 @@ def prom_network_upf_query():
 
                (iii)The query rate(m[d])[tw] does not return any results if there are less than two times from the time series m within the time window tw.
                      Thus, the width of the time window should be at least twice the scrape interval d.
-            (4) Sum by pod implies that we will sum over all containers per pod. This will return metrics on a per pod basis. 
+            (4) Sum by pod implies that we will sum over all containers per pod. This will return metrics on a per pod basis.
     """
     avg_upf_network_query = "sum by (pod) (rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h]))"
 

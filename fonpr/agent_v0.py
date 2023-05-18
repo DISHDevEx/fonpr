@@ -141,7 +141,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--interval",
         type=int,
-        default=.1,
+        default=0.1,
         required=False,
         help="Time in minutes between executions of the policy logic.",
     )

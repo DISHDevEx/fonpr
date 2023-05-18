@@ -79,7 +79,7 @@ class ActionHandler:
         generate__updated_value_file_lim_req(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
-            
+
         generate__updated_value_file_upf_sizing(current_values:dict):
             Update dictionary values with requested actions,
             and return in YAML file format.
@@ -92,7 +92,7 @@ class ActionHandler:
 
         fetch_update_push_lim_req():
             Execute complete file update process for limits and requests with a single command.
-            
+
         fetch_update_push_upf_sizing():
             Execute complete file update process for upf sizing with a single command.
     """
@@ -263,8 +263,10 @@ class ActionHandler:
         except Exception as excp:
             logging.error(f"Failed to fetch file with the following exception: {excp}")
             raise excp
-            
-    def generate__updated_value_file_lim_req(self, current_values:dict) -> yaml.YAMLObject:
+
+    def generate__updated_value_file_lim_req(
+        self, current_values: dict
+    ) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions for limits and requests, and return in YAML file format.
 
@@ -280,21 +282,25 @@ class ActionHandler:
         """
         try:
             # TODO: Automate key-value population based on requested_actions dict
-            logging.info('Updating YAML values:')
+            logging.info("Updating YAML values:")
             new_values = copy.deepcopy(current_values)
             new_values[self.requested_actions["target_pod"]]["resources"] = {
                 "requests": self.requested_actions["requests"],
                 "limits": self.requested_actions["limits"],
             }
-            logging.info('Update complete.')
+            logging.info("Update complete.")
             updated_yaml = yaml.dump(new_values)
             return updated_yaml
 
         except Exception as excp:
-            logging.error(f'Failed to update target values with the following exception: {excp}')
+            logging.error(
+                f"Failed to update target values with the following exception: {excp}"
+            )
             raise excp
-            
-    def generate_updated_value_file_upf_sizing(self, current_values: dict) -> yaml.YAMLObject:
+
+    def generate_updated_value_file_upf_sizing(
+        self, current_values: dict
+    ) -> yaml.YAMLObject:
         """
         Update dictionary values with requested actions for upf sizing, and return in YAML file format.
 
@@ -402,7 +408,8 @@ class ActionHandler:
         """
         current_values = self.get_value_file_contents()
         updated_file = self.generate__updated_value_file_lim_req(current_values)
-        self.push_to_repository(updated_file)    
+        self.push_to_repository(updated_file)
+
 
 def get_token(token_key="token") -> str:
     """

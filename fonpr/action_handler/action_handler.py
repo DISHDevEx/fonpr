@@ -97,8 +97,11 @@ class ActionHandler:
             Execute complete file update process for upf sizing with a single command.
     """
 
-    def __init__(
-        self, repo_token="", value_file_url="", dir_name="", requested_actions={}
+    def __init__(self, 
+        repo_token="", 
+        value_file_url="", 
+        dir_name="", 
+        requested_actions={}
     ):
         """
         Contstructor for the action-handler helper.

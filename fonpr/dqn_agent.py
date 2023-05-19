@@ -171,34 +171,59 @@ def create_dqn(time_step_spec, action_spec):
     return agent
     
 
-def take_action_get_next_timestep(action):
+def take_action_get_next_timestep(action_step):
     
+    if(action_step.action ==0):
+        update_yml(size="Small")
     
+    if(action_step.action ==1):
+        update_yml(size="Large")
+        
+    time.sleep(1)
+    
+    throughput = get_throughput()
+    infra_cost = get_infra_cost()
+    reward = reward_function(throughput,infra_cost)
 
-
+    discount  = tf.convert_to_tensor(np.array(1,np.float32))
+    observation = tf.convert_to_tensor(np.array([throughput],np.float32))
+    reward = tf.convert_to_tensor(np.array(reward,np.float32))
+    step_type = tf.convert_to_tensor(np.array(1,np.float32))
     
-def driver(max_steps = 10, max_episodes=10, policy, observer):
+    next_time_step = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
+    return next_time_step
+ 
+ 
+ 
+    
+def driver(max_steps=10,policy=-1, observer=-1):
     
     throughput = get_throughput()
     infra_cost = get_infra_cost()
     reward = reward_function(throughput,infra_cost)
     
-    discount  = np.array(1,np.float32)
-    observation = np.array([throughput],np.float32)
-    reward = np.array(reward,np.float32)
-    step_type = np.array(0,np.float32)
+    discount  = tf.convert_to_tensor(np.array(1,np.float32))
+    observation = tf.convert_to_tensor(np.array([throughput],np.float32))
+    reward = tf.convert_to_tensor(np.array(reward,np.float32))
+    step_type = tf.convert_to_tensor(np.array(0,np.float32))
     
     current_timestep = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
     
-    for episode in range(max_episodes):
-        for step in range(max_steps):
+
+    for step in range(max_steps):
+        
+        if(step == 0):
+            policy_state = policy.get_initial_state(1)
             
-            if(step == 0):
-                policy_state = policy.get_initial_state(1)
-                
-            action_step = policy.action(current_timestep,policy_state)
-            next_time_step = take_action_get_next_timestep(action_step)
-            
+        action_step = policy.action(current_timestep,policy_state)
+        next_time_step = take_action_get_next_timestep(action_step)
+        action_step_with_previous_state = action_step._replace(state=policy_state)
+        traj = trajectory.from_transition(current_timestep, action_step_with_previous_state, next_time_step)
+        observer(traj)
+        current_timestep = next_time_step
+        policy_state = action_step.state
+    
+    return current_timestep, policy_state
             
 
     
@@ -235,7 +260,7 @@ if __name__ == "__main__":
     reward = tf_agents.specs.TensorSpec((),np.float32,name='reward')
     step_type = tf_agents.specs.TensorSpec((),np.float32,name='step_type')
     time_step_spec = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
-    action_spec = action_spec = tf_agents.specs.BoundedArraySpec((), np.int64, name='action', minimum=0, maximum=2)
+    action_spec = tf_agents.specs.BoundedArraySpec((), np.int64, name='action', minimum=0, maximum=2)
     
     agent = create_dqn(time_step_spec,action_spec)
     agent.initialize()
@@ -273,12 +298,38 @@ if __name__ == "__main__":
     replay_buffer.py_client,
     table_name,
     sequence_length=2)
-    ############ RUN DRIVER #######################
+    ############ RUN DRIVERS #######################
 
-    print("COLLECT POLICY",collect_policy)
-
-    # ##Run DQN
-    # for i in range(15):
-    #     logging.info("Executing update cycle.")
-
+    ##RANDOM POLICY 
+    ##run random policy to fill up replay buffer
+    driver(max_steps=10,policy = py_tf_eager_policy.PyTFEagerPolicy(
+      random_policy, use_tf_function=True),observer=rb_observer)
+      
+      
+    dataset = replay_buffer.as_dataset(
+    num_parallel_calls=3,
+    sample_batch_size=batch_size,
+    num_steps=2).prefetch(3)
+    
+    iterator = iter(dataset)
+    
+    ##DQN
+    ##training the agent
+    agent.train = common.function(agent.train)
+    agent.train_step_counter.assign(0)
+    
+    ##run 10 episodes
+    for episode in range(10):
+        #create a driver to collect experience
+        ts = driver(max_steps=10, policy = py_tf_eager_policy.PyTFEagerPolicy(
+          agent.collect_policy, use_tf_function=True),observer=rb_observer)
+          
+        experience, unused_info = next(iterator)
         
+        train_loss = agent.train(experience).loss
+        
+        step = agent.train_step_counter.numpy()
+    
+        print(step)
+    
+    

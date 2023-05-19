@@ -1,6 +1,7 @@
 """
-Module to contain respons agent. it is also the module that runs as a container in eks.
+Module to contain respons agent. It is also the module that runs as a container in eks.
 """
+from __future__ import absolute_import, division, print_function
 import time
 import logging
 from collections import defaultdict
@@ -11,16 +12,8 @@ import argparse
 import logging
 from vizier.service import clients
 from vizier.service import pyvizier as vz
-from __future__ import absolute_import, division, print_function
 
-import base64
-import imageio
-import IPython
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
-import PIL.Image
-import pyvirtualdisplay
 import reverb
 
 import tensorflow as tf
@@ -40,6 +33,10 @@ from tf_agents.trajectories import trajectory
 from tf_agents.specs import tensor_spec
 from tf_agents.utils import common
 import tf_agents.specs
+from tf_agents.policies import py_policy
+from tf_agents.trajectories import time_step as ts
+from tf_agents.trajectories import trajectory
+from tf_agents.typing import types
 
 
 def reward_function(throughput, infra_cost):
@@ -172,13 +169,30 @@ def create_dqn(time_step_spec, action_spec):
         train_step_counter=train_step_counter)
     return agent
     
+    
+def driver(max_steps = 10, max_episodes=10, policy, observer):\
+    
+    throughput = get_throughput()
+    get_infra_cost
+    
+    discount  = np.array([1],np.float32)
+    observation = np.array([-4,  3, -2, -5],np.float32)
+    reward = np.array([1],np.float32)
+    step_type = np.array([1],np.float32)
+    
+    current_timestep = 
+    
+    for episode in range(max_episodes):
+        for step in range(max_steps):
+            policy_state = policy.get_initial_state(1)
+            
 
     
 
 
 if __name__ == "__main__":
     """
-    BBO agent logic: receive throughput, cost to make a reward. Based off reward specify sizing of the upf pod.
+    DQN agent logic: receive throughput, cost to make a reward. Based off reward specify sizing of the upf pod.
     """
 
     # Instantiate some logging
@@ -203,7 +217,7 @@ if __name__ == "__main__":
     
     ##############CREATE AGENT#################
     discount = tf_agents.specs.BoundedTensorSpec((),np.float32,name='discount',minimum=0,maximum = 1)
-    observation = tf_agents.specs.BoundedTensorSpec((3,),np.float32,name='observation',minimum=[0,0,0],maximum = [1000000000,1000000000,1000000000])
+    observation = tf_agents.specs.BoundedTensorSpec((1,),np.float32,name='observation',minimum=[0],maximum = [1000000000])
     reward = tf_agents.specs.TensorSpec((),np.float32,name='reward')
     step_type = tf_agents.specs.TensorSpec((),np.float32,name='step_type')
     time_step_spec = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
@@ -246,7 +260,7 @@ if __name__ == "__main__":
     table_name,
     sequence_length=2)
 
-    
+    print("COLLECT POLICY",collect_policy)
 
     # ##Run DQN
     # for i in range(15):

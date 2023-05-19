@@ -173,8 +173,9 @@ def create_dqn(time_step_spec, action_spec):
 
 def take_action_get_next_timestep(action):
     
+    
 
-   
+
     
 def driver(max_steps = 10, max_episodes=10, policy, observer):
     
@@ -196,7 +197,7 @@ def driver(max_steps = 10, max_episodes=10, policy, observer):
                 policy_state = policy.get_initial_state(1)
                 
             action_step = policy.action(current_timestep,policy_state)
-            next_time_step = 
+            next_time_step = take_action_get_next_timestep(action_step)
             
             
 

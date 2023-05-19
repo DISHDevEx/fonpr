@@ -37,6 +37,7 @@ from tf_agents.policies import py_policy
 from tf_agents.trajectories import time_step as ts
 from tf_agents.trajectories import trajectory
 from tf_agents.typing import types
+import tf_agents
 
 
 def reward_function(throughput, infra_cost):
@@ -169,22 +170,34 @@ def create_dqn(time_step_spec, action_spec):
         train_step_counter=train_step_counter)
     return agent
     
+
+def take_action_get_next_timestep(action):
     
-def driver(max_steps = 10, max_episodes=10, policy, observer):\
+
+   
+    
+def driver(max_steps = 10, max_episodes=10, policy, observer):
     
     throughput = get_throughput()
-    get_infra_cost
+    infra_cost = get_infra_cost()
+    reward = reward_function(throughput,infra_cost)
     
-    discount  = np.array([1],np.float32)
-    observation = np.array([-4,  3, -2, -5],np.float32)
-    reward = np.array([1],np.float32)
-    step_type = np.array([1],np.float32)
+    discount  = np.array(1,np.float32)
+    observation = np.array([throughput],np.float32)
+    reward = np.array(reward,np.float32)
+    step_type = np.array(0,np.float32)
     
-    current_timestep = 
+    current_timestep = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
     
     for episode in range(max_episodes):
         for step in range(max_steps):
-            policy_state = policy.get_initial_state(1)
+            
+            if(step == 0):
+                policy_state = policy.get_initial_state(1)
+                
+            action_step = policy.action(current_timestep,policy_state)
+            next_time_step = 
+            
             
 
     
@@ -221,7 +234,7 @@ if __name__ == "__main__":
     reward = tf_agents.specs.TensorSpec((),np.float32,name='reward')
     step_type = tf_agents.specs.TensorSpec((),np.float32,name='step_type')
     time_step_spec = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
-    action_spec = action_spec = tf_agents.specs.BoundedArraySpec((), np.int64, name='action', minimum=0, maximum=1)
+    action_spec = action_spec = tf_agents.specs.BoundedArraySpec((), np.int64, name='action', minimum=0, maximum=2)
     
     agent = create_dqn(time_step_spec,action_spec)
     agent.initialize()
@@ -259,6 +272,7 @@ if __name__ == "__main__":
     replay_buffer.py_client,
     table_name,
     sequence_length=2)
+    ############ RUN DRIVER #######################
 
     print("COLLECT POLICY",collect_policy)
 

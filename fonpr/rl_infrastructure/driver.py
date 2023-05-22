@@ -10,7 +10,7 @@ from tf_agents.trajectories import trajectory
 
 class Driver:
     
-    def __init__(self,prom_endpoint = "http://10.0.104.52:9090",wait_period = 1 ):
+    def __init__(self,prom_endpoint = "http://10.0.104.52:9090",wait_period = 2 ):
         self.prom_endpoint = prom_endpoint
         self.wait_period = wait_period
     

@@ -14,7 +14,6 @@ class ReplayBuffer:
         self.agent = agent
         self.replay_buffer_max_length=replay_buffer_max_length
         self.table_name = table_name
-        
         self.replay_buffer_signature, self.table, self.reverb_server,self.replay_buffer,self.rb_observer = self.create_replay_buffer()
         
         
@@ -48,4 +47,20 @@ class ReplayBuffer:
         self.table_name,
         sequence_length=2)
         
-        return replay_buffer_signature, table, reverb_server, rb_observer
+        return replay_buffer_signature, table, reverb_server, replay_buffer, rb_observer
+        
+    def get_replay_buffer_as_dataset(self,num_parallel_calls=3,batch_size=64,num_steps=2):
+        
+        dataset = self.replay_buffer.as_dataset(
+        num_parallel_calls=num_parallel_calls,
+        sample_batch_size=batch_size,
+        num_steps=num_steps).prefetch(3)
+        
+        return dataset
+        
+    def get_replay_buffer_as_iterator(self,num_parallel_calls=3,batch_size=64,num_steps=2):
+        
+        dataset = self.get_replay_buffer_as_dataset(num_parallel_calls,batch_size,num_steps)
+        iterator = iter(dataset)
+        return iterator
+        

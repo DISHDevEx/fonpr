@@ -29,10 +29,13 @@ class FONPR_Env(gym.Env):
         
         # States we are observing consist of "Large instance On", "Small instance On", "Throughput"
         # TODO: incorporate instance presence tracking for observation and reward function
+        low=np.tile(np.array([0]).astype("float32"), (self.samples,1))
+        high=np.tile(np.array([np.finfo(np.float32).max - 1]).astype("float32"), (self.samples,1))
+        
         self.obs_space = spaces.Box(
-            low=np.tile(np.array([0, 0, 0]).astype("float32"), (self.samples,1)), 
-            high=np.tile(np.array([1, 1, np.finfo(np.float32).max - 1]).astype("float32"), (self.samples,1)), 
-            shape=(self.samples, 3)
+            low=low, 
+            high=high, 
+            shape=(self.samples, low.shape[1])
             )
 
         # We have 3 actions, corresponding to "NOOP", Transition to Large", "Transition to Small"
@@ -44,10 +47,10 @@ class FONPR_Env(gym.Env):
     def _get_obs(self):
         # Request query from Prometheus
         prom_client_advisor = PromClient("http://10.0.104.52:9090")
-        prom_client_advisor.set_queries_by_function(prom_query_rl_upf_experiment1())
+        prom_client_advisor.set_queries_by_list(prom_query_rl_upf_experiment1())
         prom_response = prom_client_advisor.run_queries()
         
-        df = pd.DataFrame(prom_response[0]['values']) # Create dataframe on throughput values
+        df = pd.DataFrame(prom_response[0][0]['values']) # Create dataframe on throughput values
         df = df.set_index(0) # Use timestamps for index
         df.index = pd.to_datetime(df.index, unit='s')
         
@@ -70,7 +73,7 @@ class FONPR_Env(gym.Env):
         # TODO: reshape to get vector of obs_space specified length
         # TODO: interpolate in case reshape creates nulls
         
-        return prom_response
+        return through_vals
 
     def _get_info(self):
         # Provide information on state, action, and reward?
@@ -93,11 +96,13 @@ class FONPR_Env(gym.Env):
             logging.info('No action taken for this cycle.')
             pass
         elif action == 1: # Transition to Large instance
-            hndl = ActionHandler(get_token(), gh_url, dir_name, {"target_pod": "upf", "values": "Large"})
-            hndl.fetch_update_push()
+            # hndl = ActionHandler(get_token(), gh_url, dir_name, {"target_pod": "upf", "values": "Large"})
+            # hndl.fetch_update_push()
+            pass # for testing interaction without affecting cluster
         elif action == 2: # Transition to Small instance
-            hndl = ActionHandler(get_token(), gh_url, dir_name, {"target_pod": "upf", "values": "Small"})
-            hndl.fetch_update_push()
+            # hndl = ActionHandler(get_token(), gh_url, dir_name, {"target_pod": "upf", "values": "Small"})
+            # hndl.fetch_update_push()
+            pass # for testing interaction without affecting cluster
             
         sleep(self.obs_period * 60) # Sleep for observation period before retrieving next observation
         

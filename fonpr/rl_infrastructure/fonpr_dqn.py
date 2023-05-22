@@ -26,7 +26,7 @@ from tf_agents.typing import types
 import tf_agents
 
 
-class FonprDqn():
+class FonprDqn:
     """FONPR DQN will utilize tensorflow agents to construct a deep Q network. 
 
 

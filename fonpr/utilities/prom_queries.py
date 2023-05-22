@@ -68,7 +68,7 @@ def prom_network_upf_query():
             (3) The Prometheus function rate takes in a time series and a width of a scrape window and returns a per second average.
 
                (i)The time rate of change of the time series m over the scrape interval of width d is rate(m[d]).
-                  It is a time series. Its units are bytes.
+                  It is a time series. Its units are bytes/second.
 
                (ii)The restriction of this rate time series to the time window tw is rate(m[d])[tw].
                      (e.g. The time series from four hours ago to 3 hours ago is rate(m[d])[4h:3h]. )

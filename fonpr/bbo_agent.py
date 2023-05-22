@@ -40,7 +40,7 @@ def reward_function(throughput, infra_cost):
     """
 
     # All cost is calculated on an hourly basis
-    # Throughput must be in bytes.
+    # Throughput must be in bytes/second.
     # The cost conversion coefficient converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
     
     

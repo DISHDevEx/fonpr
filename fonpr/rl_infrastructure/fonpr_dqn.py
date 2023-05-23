@@ -25,14 +25,16 @@ import tf_agents
 
 
 class FonprDqn:
-    """FONPR DQN will utilize tensorflow agents to construct a deep Q network. 
+    """FONPR DQN will utilize tensorflow agents to construct a deep Q network.
 
 
     Attributes:
-        ##fill in 
+        ##fill in
     """
 
-    def __init__(self,time_step_spec,action_spec,learning_rate = 1e-3,fc_layer_params = (100, 50)):
+    def __init__(
+        self, time_step_spec, action_spec, learning_rate=1e-3, fc_layer_params=(100, 50)
+    ):
         """
         Parameters
         ---------
@@ -45,20 +47,22 @@ class FonprDqn:
         self.fc_layer_params = fc_layer_params
         self.learning_rate = learning_rate
         self.agent = self.create_dqn()
-        
+
     def create_dqn(self):
         action_tensor_spec = tensor_spec.from_spec(self.action_spec)
         num_actions = action_tensor_spec.maximum - action_tensor_spec.minimum + 1
-        
+
         # Define a helper function to create Dense layers configured with the right
         # activation and kernel initializer.
         def dense_layer(num_units):
-          return tf.keras.layers.Dense(
-              num_units,
-              activation=tf.keras.activations.relu,
-              kernel_initializer=tf.keras.initializers.VarianceScaling(
-                  scale=2.0, mode='fan_in', distribution='truncated_normal'))
-        
+            return tf.keras.layers.Dense(
+                num_units,
+                activation=tf.keras.activations.relu,
+                kernel_initializer=tf.keras.initializers.VarianceScaling(
+                    scale=2.0, mode="fan_in", distribution="truncated_normal"
+                ),
+            )
+
         # QNetwork consists of a sequence of Dense layers followed by a dense layer
         # with `num_actions` units to generate one q_value per available action as
         # its output.
@@ -67,23 +71,25 @@ class FonprDqn:
             num_actions,
             activation=None,
             kernel_initializer=tf.keras.initializers.RandomUniform(
-                minval=-0.03, maxval=0.03),
-            bias_initializer=tf.keras.initializers.Constant(-0.2))
+                minval=-0.03, maxval=0.03
+            ),
+            bias_initializer=tf.keras.initializers.Constant(-0.2),
+        )
         q_net = sequential.Sequential(dense_layers + [q_values_layer])
-        
+
         optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
-        
+
         train_step_counter = tf.Variable(0)
-        
+
         agent = dqn_agent.DqnAgent(
             self.time_step_spec,
             self.action_spec,
             q_network=q_net,
             optimizer=optimizer,
             td_errors_loss_fn=common.element_wise_squared_loss,
-            train_step_counter=train_step_counter)
+            train_step_counter=train_step_counter,
+        )
         return agent
-        
+
     def get_agent(self):
         return self.agent
-    

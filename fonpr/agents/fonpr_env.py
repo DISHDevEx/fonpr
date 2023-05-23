@@ -6,7 +6,7 @@ import gymnasium as gym
 import pandas as pd
 import numpy as np
 import logging
-from gymnasium import spaces
+from gymnasium import spaces, Env
 from time import sleep
 
 from advisors import PromClient
@@ -14,7 +14,7 @@ from utilities import prom_query_rl_upf_experiment1, ec2_cost_calculator
 from action_handler import ActionHandler, get_token
 
 
-class FONPR_Env(gym.Env):
+class FONPR_Env(Env):
     metadata = {"render_modes": []}
 
     def __init__(self, render_mode=None, window=15, sample_rate=4, obs_period=5):
@@ -29,16 +29,19 @@ class FONPR_Env(gym.Env):
         
         # States we are observing consist of "Large instance On", "Small instance On", "Throughput"
         # TODO: incorporate instance presence tracking for observation and reward function
-        self.obs_space = spaces.Box(
-            low=np.tile(np.array([0, 0, 0]).astype("float32"), (self.samples,1)), 
-            high=np.tile(np.array([1, 1, np.finfo(np.float32).max - 1]).astype("float32"), (self.samples,1)), 
-            shape=(self.samples, 3)
+        low=np.tile(np.array([0.]), (self.samples,1))
+        high=np.tile(np.array([np.inf]), (self.samples,1))
+        
+        self.observation_space = spaces.Box(
+            low=low, 
+            high=high, 
+            shape=(self.samples, low.shape[1])
             )
 
         # We have 3 actions, corresponding to "NOOP", Transition to Large", "Transition to Small"
         self.action_space = spaces.Discrete(3)
 
-        assert render_mode is None or render_mode in self.metadata["render_modes"]
+        # assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
         
         self.step_counter = 0
@@ -72,13 +75,13 @@ class FONPR_Env(gym.Env):
         # TODO: reshape to get vector of obs_space specified length
         # TODO: interpolate in case reshape creates nulls
         
-        return prom_response
+        return through_vals.reshape(through_vals.shape[0],1)
 
     def _get_info(self):
         # Provide information on state, action, and reward?
-        return "TBD"
+        return {}
         
-    def reset(self, seed=None, options=None):
+    def reset(self, *, seed=None, options=None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
 

@@ -49,7 +49,7 @@ class ReplayBuffer:
         
         return replay_buffer_signature, table, reverb_server, replay_buffer, rb_observer
         
-    def get_replay_buffer_as_dataset(self,num_parallel_calls=3,batch_size=64,num_steps=2):
+    def get_replay_buffer_as_dataset(self,num_parallel_calls=3,batch_size=10,num_steps=2):
         
         dataset = self.replay_buffer.as_dataset(
         num_parallel_calls=num_parallel_calls,
@@ -58,7 +58,7 @@ class ReplayBuffer:
         
         return dataset
         
-    def get_replay_buffer_as_iterator(self,num_parallel_calls=3,batch_size=64,num_steps=2):
+    def get_replay_buffer_as_iterator(self,num_parallel_calls=1,batch_size=10,num_steps=2):
         
         dataset = self.get_replay_buffer_as_dataset(num_parallel_calls,batch_size,num_steps)
         iterator = iter(dataset)

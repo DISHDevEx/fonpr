@@ -22,7 +22,7 @@ class FONPR_Env(gym.Env):
         self.window = window # How far back in time does the observation look, in minutes
         self.sample_rate = sample_rate # How many observation samples are collected per minute
         self.samples = window * sample_rate
-        self.obs_period = obs_period # How frequently does a new observation occur
+        self.obs_period = obs_period # How frequently does a new observation occur, in minutes
         
         # Temporary use until instance presence can be tracked; allows approximate reward calculation in the absense of real time data.
         self.instance_size = "Large"
@@ -40,6 +40,8 @@ class FONPR_Env(gym.Env):
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
+        
+        self.step_counter = 0
 
     def _get_obs(self):
         # Request query from Prometheus
@@ -112,9 +114,13 @@ class FONPR_Env(gym.Env):
             # -(li_cost / 60 * np.sum(self.obs_space[1]) / len(self.obs_space) * self.window) \
             # -(si_cost / 60 * np.sum(self.obs_space[2]) / len(self.obs_space) * self.window)
         info = self._get_info()
+        
+        terminated = False # No terminal state for our environment; continuous
+        self.step_counter += 1
+        truncated = True if self.step_counter % 6 == 0 else False
 
         # return observation, reward, terminated, truncated, info
-        return observation, reward, 0, 0, info
+        return observation, reward, terminated, truncated, info
 
     def render(self):
         ...

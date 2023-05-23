@@ -44,7 +44,7 @@ if __name__ == "__main__":
     
     logging.info("Hyperperamters Established Successfully")
     
-    ##############CREATE AGENT SPECIFICATIONS#################
+    #################CREATE AGENT SPECIFICATIONS#################
     
     discount = tf_agents.specs.BoundedTensorSpec((),np.float32,name='discount',minimum=0,maximum = 1)
     observation = tf_agents.specs.BoundedTensorSpec((1,),np.float32,name='observation',minimum=[0],maximum = [1000000000])
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     
     logging.info("Agent Specifications Established Successfully")
     
-    ##############CREATE DQN AGENT #################
+    #################CREATE DQN AGENT#################
   
     agent_creator = FonprDqn(time_step_spec,action_spec,learning_rate,fc_layer_params)
     agent = agent_creator.get_agent()
@@ -63,27 +63,27 @@ if __name__ == "__main__":
     
     logging.info("DQN Agent Established Successfully")
     
-    ##################CREATE RANDOM POLICY#########################
+    #################CREATE RANDOM POLICY#################
     
     random_policy = random_tf_policy.RandomTFPolicy(time_step_spec,
                                                 action_spec)
                                                 
     logging.info("Random Agent Established Successfully") 
     
-    ##################CREATE REPLAY BUFFER#########################
+    #################CREATE REPLAY BUFFER#################
     
     replay_buffer = ReplayBuffer(agent=agent,replay_buffer_max_length=replay_buffer_max_length)
     iterator = replay_buffer.get_replay_buffer_as_iterator()
     
     logging.info("Replay Buffer Established Successfully")
     
-    ##################CREATE DRIVER#########################
+    #################CREATE DRIVER#################
     
     driver = Driver()
     
     logging.info("Driver Established Successfully")
     
-    ############# RUN DRIVERS #######################
+    #################RUN DRIVERS#################
 
     logging.info("Running Random Policy")
   
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     agent.train = common.function(agent.train)
     agent.train_step_counter.assign(0)
     
-    ##run Episodes, each with Steps. 
+    #Run Episodes, each with Steps. 
     #Agent trains once per episode after a predefined number of steps. 
     logging.info("Running DQN Actions and training sequence")
     for episode in range(10):

@@ -17,109 +17,136 @@ import reverb
 
 if __name__ == "__main__":
     """
-    DQN main module. Build DQN, Random Policy, Replay Buffer, and Driver. Then allow the random policy and DQN to use Driver to fill up 
-    replay buffer. 
+    DQN main module. Build DQN, Random Policy, Replay Buffer, and Driver. Then allow the random policy and DQN to use Driver to fill up
+    replay buffer. Use replay buffer to train in between episodes. 
     """
-    
+
     # Instantiate some logging
     logging.basicConfig(level=logging.INFO)
     logging.info("Launching FONPR DQN Agent")
-    
-    #################Define Hyperperameters#################
-    
-    #initial_collect_steps indicates the initial steps for the random policy to take in order to fill up the replay buffer
-    initial_collect_steps = 10  # @param {type:"integer"}
-    
-    
-    #num_episodes for the DQN to run  
-    num_episodes= 20000 # @param {type:"integer"}
-    #number_of_interactions the DQN makes per episode
-    number_of_interactions = 1# @param {type:"integer"}
-    #the length of the replay buffer,before a fifo popping mechanism gets implemented
-    replay_buffer_max_length = 100000  # @param {type:"integer"}
-    
-    #batch_siz
-    # batch_size = 10  # @param {type:"integer"}
-    learning_rate = 1e-3  # @param {type:"number"}
-    
-    fc_layer_params = (100,50)
-    
+
+    #################DEFINE HYPERPERAMETERS#################
+
+    ##TRAINING HYPERPERAMETERS
+
+    # random policy steps to take in order to fill up the replay buffer
+    initial_collect_steps = 20
+
+    # num_episodes for the DQN to run
+    num_episodes = 2
+
+    # number_of_interactions the DQN makes per episode
+    number_of_interactions = 10
+
+    # the length of the replay buffer,before a fifo popping mechanism gets implemented
+    replay_buffer_max_length = 100000
+
+    # number of samples to ingest per training episode
+    batch_size = 20
+
+    # number of consecutive samples to bind together into a single sample for training 
+    sequence_length = 2
+
+    # Time in seconds to wait in between interactions to allow action to effect env. 
+    wait_period_between_interactions = 2
+
+    ##DQN ARCHITECTURE
+
+    # Shape of the tuple defines number of layers. Contents define nuerons.
+    fc_layer_params = (100, 50)
+
+    # determines the step size for stochastic gradient descent
+    learning_rate = 1e-3
+
     logging.info("Hyperperamters Established Successfully")
-    
+
     #################CREATE AGENT SPECIFICATIONS#################
-    
-    discount = tf_agents.specs.BoundedTensorSpec((),np.float32,name='discount',minimum=0,maximum = 1)
-    observation = tf_agents.specs.BoundedTensorSpec((1,),np.float32,name='observation',minimum=[0],maximum = [1000000000])
-    reward = tf_agents.specs.TensorSpec((),np.float32,name='reward')
-    step_type = tf_agents.specs.TensorSpec((),np.float32,name='step_type')
-    time_step_spec = tf_agents.trajectories.TimeStep(discount = discount,observation = observation, reward=reward, step_type = step_type )
-    action_spec = tf_agents.specs.BoundedArraySpec((), np.int64, name='action', minimum=0, maximum=2)
-    
+
+    discount = tf_agents.specs.BoundedTensorSpec(
+        (), np.float32, name="discount", minimum=0, maximum=1
+    )
+    observation = tf_agents.specs.BoundedTensorSpec(
+        (1,), np.float32, name="observation", minimum=[0], maximum=[1000000000]
+    )
+    reward = tf_agents.specs.TensorSpec((), np.float32, name="reward")
+    step_type = tf_agents.specs.TensorSpec((), np.float32, name="step_type")
+    time_step_spec = tf_agents.trajectories.TimeStep(
+        discount=discount, observation=observation, reward=reward, step_type=step_type
+    )
+    action_spec = tf_agents.specs.BoundedArraySpec(
+        (), np.int64, name="action", minimum=0, maximum=2
+    )
+
     logging.info("Agent Specifications Established Successfully")
-    
+
     #################CREATE DQN AGENT#################
-  
-    agent_creator = FonprDqn(time_step_spec,action_spec,learning_rate,fc_layer_params)
+
+    agent_creator = FonprDqn(
+        time_step_spec, action_spec, learning_rate, fc_layer_params
+    )
     agent = agent_creator.get_agent()
     agent.initialize()
-    
+
     logging.info("DQN Agent Established Successfully")
-    
+
     #################CREATE RANDOM POLICY#################
-    
-    random_policy = random_tf_policy.RandomTFPolicy(time_step_spec,
-                                                action_spec)
-                                                
-    logging.info("Random Agent Established Successfully") 
-    
+
+    random_policy = random_tf_policy.RandomTFPolicy(time_step_spec, action_spec)
+
+    logging.info("Random Agent Established Successfully")
+
     #################CREATE REPLAY BUFFER#################
-    
-    replay_buffer = ReplayBuffer(agent=agent,replay_buffer_max_length=replay_buffer_max_length)
+
+    replay_buffer = ReplayBuffer(
+        agent=agent,
+        replay_buffer_max_length=replay_buffer_max_length,
+        sequence_length=sequence_length,
+    )
     iterator = replay_buffer.get_replay_buffer_as_iterator()
-    
+
     logging.info("Replay Buffer Established Successfully")
-    
+
     #################CREATE DRIVER#################
-    
-    driver = Driver()
-    
+
+    driver = Driver(wait_period=wait_period_between_interactions)
+
     logging.info("Driver Established Successfully")
-    
+
     #################RUN DRIVERS#################
 
     logging.info("Running Random Policy")
-  
-    ##run random policy to fill up replay buffer
-    driver.drive(max_steps=1,policy = py_tf_eager_policy.PyTFEagerPolicy(
-      random_policy, use_tf_function=True),observer=replay_buffer.rb_observer)
-      
-    logging.info("Random Policy Finished Running")
-    
 
-    #DQN
+    ##run random policy to fill up replay buffer
+    driver.drive(
+        max_steps=initial_collect_steps,
+        policy=py_tf_eager_policy.PyTFEagerPolicy(random_policy, use_tf_function=True),
+        observer=replay_buffer.rb_observer,
+    )
+
+    logging.info("Random Policy Finished Running")
+
+    # DQN
     ##Training the agent
     agent.train = common.function(agent.train)
     agent.train_step_counter.assign(0)
-    
-    #Run Episodes, each with Steps. 
-    #Agent trains once per episode after a predefined number of steps. 
+
+    # Run Episodes, each with Steps.
+    # Agent trains once per episode after a predefined number of steps.
     logging.info("Running DQN Actions and training sequence")
-    for episode in range(10):
-        #create a driver to collect experience
-        ts = driver.drive(max_steps=1, policy = py_tf_eager_policy.PyTFEagerPolicy(
-          agent.collect_policy, use_tf_function=True),observer=replay_buffer.rb_observer)
-          
+    for episode in range(num_episodes):
+        # run driver to collect experience
+        ts = driver.drive(
+            max_steps=number_of_interactions,
+            policy=py_tf_eager_policy.PyTFEagerPolicy(
+                agent.collect_policy, use_tf_function=True
+            ),
+            observer=replay_buffer.rb_observer,
+        )
+
         experience, unused_info = next(iterator)
-        
-        print("length of training set",len(experience))
-        print("length of training set d1",len(experience[0]))
-        print("length of training set d2",len(experience[0][0]))
+
         train_loss = agent.train(experience).loss
-        
+
         step = agent.train_step_counter.numpy()
-    
-        print("Times agent has trained", step)
-        print("Replay buffer size:", replay_buffer.replay_buffer.num_frames())
-        
-    
-    
+
+        print("Times agent has trained: ", step)

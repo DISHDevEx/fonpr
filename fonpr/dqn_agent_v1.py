@@ -27,18 +27,20 @@ if __name__ == "__main__":
     
     #################Define Hyperperameters#################
     
-    num_iterations = 20000 # @param {type:"integer"}
+    #initial_collect_steps indicates the initial steps for the random policy to take in order to fill up the replay buffer
+    initial_collect_steps = 10  # @param {type:"integer"}
     
-    initial_collect_steps = 100  # @param {type:"integer"}
-    collect_steps_per_iteration = 1# @param {type:"integer"}
+    
+    #num_episodes for the DQN to run  
+    num_episodes= 20000 # @param {type:"integer"}
+    #number_of_interactions the DQN makes per episode
+    number_of_interactions = 1# @param {type:"integer"}
+    #the length of the replay buffer,before a fifo popping mechanism gets implemented
     replay_buffer_max_length = 100000  # @param {type:"integer"}
     
-    batch_size = 64  # @param {type:"integer"}
+    #batch_siz
+    # batch_size = 10  # @param {type:"integer"}
     learning_rate = 1e-3  # @param {type:"number"}
-    log_interval = 200  # @param {type:"integer"}
-    
-    num_eval_episodes = 10  # @param {type:"integer"}
-    eval_interval = 1000  # @param {type:"integer"}
     
     fc_layer_params = (100,50)
     
@@ -88,14 +90,14 @@ if __name__ == "__main__":
     logging.info("Running Random Policy")
   
     ##run random policy to fill up replay buffer
-    driver.drive(max_steps=10,policy = py_tf_eager_policy.PyTFEagerPolicy(
+    driver.drive(max_steps=1,policy = py_tf_eager_policy.PyTFEagerPolicy(
       random_policy, use_tf_function=True),observer=replay_buffer.rb_observer)
       
     logging.info("Random Policy Finished Running")
     
 
-    ##DQN
-    ##training the agent
+    #DQN
+    ##Training the agent
     agent.train = common.function(agent.train)
     agent.train_step_counter.assign(0)
     
@@ -104,11 +106,14 @@ if __name__ == "__main__":
     logging.info("Running DQN Actions and training sequence")
     for episode in range(10):
         #create a driver to collect experience
-        ts = driver.drive(max_steps=10, policy = py_tf_eager_policy.PyTFEagerPolicy(
+        ts = driver.drive(max_steps=1, policy = py_tf_eager_policy.PyTFEagerPolicy(
           agent.collect_policy, use_tf_function=True),observer=replay_buffer.rb_observer)
           
         experience, unused_info = next(iterator)
+        
         print("length of training set",len(experience))
+        print("length of training set d1",len(experience[0]))
+        print("length of training set d2",len(experience[0][0]))
         train_loss = agent.train(experience).loss
         
         step = agent.train_step_counter.numpy()

@@ -33,7 +33,7 @@ if __name__ == "__main__":
     initial_collect_steps = 20
 
     # Num_episodes for the DQN to run.
-    num_episodes = 2
+    num_episodes = 200
 
     # Number_of_interactions the DQN makes per episode.
     number_of_interactions = 10
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     )
 
     observation = tf_agents.specs.BoundedTensorSpec(
-        (1,), np.float32, name="observation", minimum=[0], maximum=[1000000000]
+        (1,), np.float32, name="observation", minimum=[0], maximum=[10000000000]
     )
 
     reward = tf_agents.specs.TensorSpec((), np.float32, name="reward")

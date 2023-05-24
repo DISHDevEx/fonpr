@@ -30,10 +30,10 @@ if __name__ == "__main__":
     ##TRAINING HYPERPERAMETERS
 
     # Random policy steps to take in order to fill up the replay buffer.
-    initial_collect_steps = 20
+    initial_collect_steps = 2
 
     # Num_episodes for the DQN to run.
-    num_episodes = 200
+    num_episodes = 2
 
     # Number_of_interactions the DQN makes per episode.
     number_of_interactions = 10

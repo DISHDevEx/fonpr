@@ -26,7 +26,7 @@ class Driver:
         prom_endpoint: String
             "ip:port" for the prometheus server endpoint.
         
-        self.wait_period = Int
+        wait_period = Int
             The time interval driver should wait for in seconds to retrive the observations after making an action.
         
     Methods

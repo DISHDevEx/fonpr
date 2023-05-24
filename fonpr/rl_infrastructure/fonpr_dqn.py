@@ -17,11 +17,34 @@ import tf_agents
 
 
 class FonprDqn:
-    """FONPR DQN will utilize tensorflow agents to construct a deep Q network.
+    """
+    FonprDqn helps to initialize tensorflow Deep-Q-Network agents. 
+    
+    Attributes
+    ----------
+        time_step_spec: tf_agents.trajectories.TimeStep(
+        discount, observation, reward, step_type)
+            Time step specification for agent and NAPP environment. 
+        
+        action_spec = tf_agents.specs.BoundedArraySpec()
+        The number action space for the DQN. 
+            
+        fc_layer_params: Tuple
+            Shape of the tuple defines number of layers. Contents define nuerons.
+        
+        learning_rate: Int
+            Determines the step size for stochastic gradient descent.
+            
+        agent: dqn_agent.DqnAgent()
+            The TensorFlow dqn agent. 
+    Methods
+    -------
+        _create_dqn():
+            Private function autocalled during constructor __init__. 
+            Creates TensorFlow DQN agent using the specifications provided via constructor. 
 
-
-    Attributes:
-        ##fill in
+        get_agent():
+            Returns dqn_agent.DqnAgent() object built via specifications from constructor. 
     """
 
     def __init__(
@@ -38,9 +61,15 @@ class FonprDqn:
         self.action_spec = action_spec
         self.fc_layer_params = fc_layer_params
         self.learning_rate = learning_rate
-        self.agent = self.create_dqn()
+        self.agent = self._create_dqn()
 
-    def create_dqn(self):
+    def _create_dqn(self):
+        """
+        This function is called as part of the constructor. 
+        Returns
+        ---------
+            dqn_agent.DqnAgent() object built via specifications from constructor.
+        """
         action_tensor_spec = tensor_spec.from_spec(self.action_spec)
         num_actions = action_tensor_spec.maximum - action_tensor_spec.minimum + 1
 
@@ -84,4 +113,10 @@ class FonprDqn:
         return agent
 
     def get_agent(self):
+        """
+        Public function to allow user of fonpr_dqn class to retrieve agent that has been constructed. 
+        Returns
+        ---------
+            dqn_agent.DqnAgent() object built via specifications from constructor.
+        """
         return self.agent

@@ -156,4 +156,5 @@ if __name__ == "__main__":
 
         step = agent.train_step_counter.numpy()
 
-        logging.info(f"Times agent has trained: {step}")
+        logging.info(f"Number of episodes complete: {step}")
+        logging.info(f"Agent training loss after {step} episodes: {train_loss} ")

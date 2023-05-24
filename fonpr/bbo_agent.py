@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
             logging.info(f"Agent changing upf size to: {params['size']}")
 
-            ##Sleep for 3600 seconds, to see the impact of changing sizing. (Update hourly)
+            ##Sleep for 3600 seconds, to see the impact of changing sizing. (Update hourly).
             time.sleep(3600)
 
             # Get the observations for the system to build out reward function.

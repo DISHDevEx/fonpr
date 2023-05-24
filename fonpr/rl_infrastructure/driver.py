@@ -14,74 +14,74 @@ import tf_agents
 from tf_agents.trajectories import trajectory
 
 
-
 class Driver:
     """
-    Driver interacts with the NAPP environment using a tf agent policy. 
-    The drivers main responsibilities are to catalogue action, current state, next state, reward. 
-    Driver has all the functions needed to make changes in napp as suggested by agent, and to calculate the observations, rewards. 
+    Driver interacts with the NAPP environment using a tf agent policy.
+    The drivers main responsibilities are to catalogue action, current state, next state, reward.
+    Driver has all the functions needed to make changes in napp as suggested by agent, and to calculate the observations, rewards.
 
     Attributes
     ----------
         prom_endpoint: String
             "ip:port" for the prometheus server endpoint.
-        
+
         wait_period = Int
             The time interval driver should wait for in seconds to retrive the observations after making an action.
-        
+
     Methods
     -------
         reward_function(throughput, infra_cost):
             Calculates and returns the reward(maximizing profit).
-            Uses throughput and infra_cost to calculate reward. 
+            Uses throughput and infra_cost to calculate reward.
 
         get_throughput():
-            Queries the prometheus server (ip:port) to recieve throughput observations. 
-        
+            Queries the prometheus server (ip:port) to recieve throughput observations.
+
         get_infra_cost(size):
-            Uses ec2_cost_calculator to get the hourly pricing of the EC2 size specified. 
-        
+            Uses ec2_cost_calculator to get the hourly pricing of the EC2 size specified.
+
         update_yml(size,gh_url,dir_name):
-            Updates the yml file to modify NAPP upf sizing. 
-        
+            Updates the yml file to modify NAPP upf sizing.
+
         take_action_get_next_timestep(action_step):
-            Takes an action, waits some time, and finds the next state + reward pair. 
-        
+            Takes an action, waits some time, and finds the next state + reward pair.
+
         drive(max_steps, policy, observer):
             Uses the tf agents policy specified to interact with environment. The interactions,
-            or experience, is the placed inside the observer (typically replay buffer for DQN). 
-            
+            or experience, is the placed inside the observer (typically replay buffer for DQN).
+
     """
+
     def __init__(self, prom_endpoint="http://10.0.104.52:9090", wait_period=2):
         self.prom_endpoint = prom_endpoint
         self.wait_period = wait_period
-        #Driver assumes that environment is reset to small infra. 
+        # Driver assumes that environment is reset to small infra.
         self._size = "Small"
 
     def reward_function(self, throughput, infra_cost):
         """
         Calculates the reward for the agent to receive based off of throughput and infrastructure cost.
-    
+
         Parameters
         ----------
-            throughput : float
+            throughput : Float
                 The average network transmitted for the last hour from UPF pod.
             infra_cost : float
                 The cost of running the ec2 sizing for the UPF pod.
-    
+
         Returns
         -------
-            avg_upf_network: float
+            avg_upf_network: Float
                 The average network transmitted for the last hour from UPF pod.
-                
+
         Notes
         -------
         How the math works:
         (1)Throughput is in bytes/second
         (2)Cost conversion coefficient translates dollars to bytes
         (3)Multiplying 1 and 2: Bytes/Second * Dollars/Bytes --> Dollars/Second
-        (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable. 
-        (5) Then finally we can subtract 4 (which is revenue) by the infra cost (Dollars/Hour) to yield profit. 
+        (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable.
+        (5) Then finally we can subtract 4 (which is revenue) by the infra cost (Dollars/Hour) to yield profit.
         """
 
         # All cost is calculated on an hourly basis
@@ -97,10 +97,10 @@ class Driver:
     def get_throughput(self):
         """
         Calculates the average network bytes transmitted from the UPF pod for the last hour.
-    
+
         Returns
         -------
-            avg_upf_network: float
+            avg_upf_network: Float
                 The average network transmitted for the last hour from UPF pod.
         """
 
@@ -114,14 +114,14 @@ class Driver:
     def get_infra_cost(self, size):
         """
         Calculates the hourly cost of the infrastructure based off the categorical value of size.
-    
+
         Parameters
         ----------
-            size : str
+            size : String
                 Specify the nodegroup sizing for upf.
         Returns
         -------
-            cost: int
+            cost: String
                 The hourly cost of running the ec2 sizing for the UPF pod.
         """
 
@@ -138,7 +138,7 @@ class Driver:
     ) -> None:
         """
         Updates the controlling document in its remote repo using the action handler.
-    
+
         Parameters
         ----------
             size : str
@@ -159,30 +159,28 @@ class Driver:
 
     def take_action_get_next_timestep(self, action_step):
         """
-        Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type). 
-        This is the method that allows driver to interact with the environment after time 0. 
-    
+        Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type).
+        This is the method that allows driver to interact with the environment after time 0.
+
         Parameters
         ----------
-            action_step :  PolicyStep(action, state, info) named tuple 
-                This is the action suggested by the policy utilizing the driver. 
+            action_step :  PolicyStep(action, state, info) named tuple
+                This is the action suggested by the policy utilizing the driver.
         Returns
         ---------
             next_time_step: tf_agents.trajectories.TimeStep(discount, observation, reward, step_type)
-                The timestep trajectory that is created from taking an action. 
+                The timestep trajectory that is created from taking an action.
         """
         if action_step.action == 0:
-            self._size  = "Small"
-            
+            self._size = "Small"
 
         if action_step.action == 1:
-            self._size="Large"
-            
-        
+            self._size = "Large"
+
         self.update_yml(size=self._size)
-        
+
         time.sleep(self.wait_period)
-        
+
         throughput = self.get_throughput()
         infra_cost = self.get_infra_cost(self._size)
         reward = self.reward_function(throughput, infra_cost)
@@ -203,20 +201,27 @@ class Driver:
 
     def drive(self, max_steps=10, policy=-1, observer=-1):
         """
-        Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type). 
-        This is the method that allows driver to interact with the environment after time 0. 
-    
+        Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type).
+        This is the method that allows driver to interact with the environment after time 0.
+
         Parameters
         ----------
-            action_step :  PolicyStep(action, state, info) named tuple 
-                This is the action suggested by the policy utilizing the driver. 
+            max_steps :  Int
+                Number of steps to take per episode.
+
+            policy: tf_agents.policies object
+                This is the policy that the sits in the driver seat for this driver.
+
+            observer: reverb_utils.ReverbAddTrajectoryObserver
+                Replay Buffer to fill up.
+
         Returns
         ---------
             current_timestep: tf_agents.trajectories.TimeStep(discount, observation, reward, step_type)
-                This is the last timestep seen by driver. It returns it at the end of all episodes. 
-            
-            policy_state: policy.action.state object. 
-                This is the stat of the policy at the end of all episodes. 
+                This is the last timestep seen by driver. It returns it at the end of all episodes.
+
+            policy_state: policy.action.state object.
+                This is the stat of the policy at the end of all episodes.
         """
         throughput = self.get_throughput()
         infra_cost = self.get_infra_cost(self._size)
@@ -239,7 +244,9 @@ class Driver:
             if step == 0:
                 policy_state = policy.get_initial_state(1)
 
+            # Action_step is a PolicyStep(action, state, info) object.
             action_step = policy.action(current_timestep, policy_state)
+
             next_time_step = self.take_action_get_next_timestep(action_step)
             action_step_with_previous_state = action_step._replace(state=policy_state)
             traj = trajectory.from_transition(

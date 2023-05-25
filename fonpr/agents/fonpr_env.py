@@ -55,21 +55,19 @@ class FONPR_Env(Env):
         df = pd.DataFrame(prom_response[0][0]['values'], columns=['DateTime', 'Throughput']) # Create dataframe on throughput values
         df = df.set_index('DateTime') # Use timestamps for index
         df.index = pd.to_datetime(df.index, unit='s')
+        df = df.astype('float32')
         
-        df['Throughput'] = df['Throughput'].astype(float)
         df['Throughput'] = df['Throughput'] - df.iloc[0,0] # Normalize all throughput to value at first timestamp
         df = df.interpolate() # Linear interpolation for any missing values
         df = df.resample(f'{int(60/self.sample_rate)}s').mean() # Keep input size consistent
         df = df.interpolate() # Linear interp again for any NaNs created by resample
-        
-        through_vals = df['Throughput'].values # Get numpy array for processed throughput values
         
         # Prepend zeroes if less samples present than required
         if len(through_vals) != self.samples:
             through_vals = np.insert(through_vals, 0, np.zeros(self.samples - len(through_vals)))
         
         # Process pod info
-        pods = {}
+        # pods = {} # Can be used for debugging
         for i, pod in enumerate(prom_response[1]):
             
             # isolate host_ip and timestamps
@@ -80,13 +78,23 @@ class FONPR_Env(Env):
             node_name = 'ip-' + host_ip.replace('.', '-') + '.ec2.internal'
             prom_client_advisor.set_queries_by_list(['kube_node_labels{node=\'' + node_name + '\'}'])
             node_labels = prom_client_advisor.run_queries()
-            instance_type = node_labels[0]['metric']['label_node_kubernetes_io_instance_type']
+            instance_type = node_labels[0][0]['metric']['label_node_kubernetes_io_instance_type']
             
-            pods[f'pod{i}'] = {'host_ip': host_ip, 'values': values, 'instance_type': instance_type}
+            # pods[f'pod{i}'] = {'host_ip': host_ip, 'values': values, 'instance_type': instance_type} # Can be used for debugging
             
-        # TODO: for each state variable ('Large instance On', 'Small instance On'), use instance-type and timesteps to map boolean
-        # TODO: reshape to get vector of obs_space specified length
-        # TODO: interpolate in case reshape creates nulls
+            # create on-flags for instance type
+            df_pod = pd.DataFrame(values, columns=['DateTime', instance_type])
+            df_pod = df_pod.set_index('DateTime')
+            df_pod.index = pd.to_datetime(df_pod.index, unit='s')
+            df_pod = df_pod.astype('float32')
+            df = df.join(df_pod)
+            df = df.interpolate()
+        
+        return df
+        
+        
+        
+        through_vals = df['Throughput'].values # Get numpy array for processed throughput values
         
         return through_vals.reshape(through_vals.shape[0],1)
 

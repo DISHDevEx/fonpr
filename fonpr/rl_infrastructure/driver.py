@@ -6,13 +6,13 @@ The driver utilizes the policy of an agent to interact with the environment.
 import time
 import logging
 from advisors import PromClient
-from utilities import prom_network_upf_query, ec2_cost_calculator
+from utilities import prom_network_upf_query, ec2_cost_calculator,prom_network_upf_interfaces_query
 from action_handler import ActionHandler, get_token
 import tensorflow as tf
 import numpy as np
 import tf_agents
 from tf_agents.trajectories import trajectory
-
+from collections import defaultdict
 
 class Driver:
     """
@@ -57,6 +57,8 @@ class Driver:
         self.wait_period = wait_period
         # Driver assumes that environment is reset to small infra.
         self._size = "Small"
+        self._nodes_used = []
+        self._dict_node_sizing = {}
 
     def reward_function(self, throughput, infra_cost):
         """
@@ -93,6 +95,45 @@ class Driver:
             cost_conversion_coefficient
         ) * seconds_to_hours_conversion - infra_cost
         return reward
+        
+    def get_observations(self):
+        prom_client_advisor = PromClient(self.prom_endpoint)
+        prom_client_advisor.set_queries_by_function(prom_network_upf_interfaces_query)
+        avg_upf_network_tx,avg_upf_network_rx, node_sizing = prom_client_advisor.run_queries()
+        
+        dict_interface_network_tx = defaultdict(list)
+        dict_interface_network_rx = defaultdict(list)
+        nodes_used_list = []
+        dict_node_sizing = {}
+        
+        
+
+        for pod in range(len(avg_upf_network_tx)):
+            dict_interface_network_tx[avg_upf_network_tx[pod]["metric"]["interface"]].append(float(avg_upf_network_tx[pod]["value"][1]))
+            if(avg_upf_network_tx[pod]["metric"]["node"] not in nodes_used_list ): nodes_used_list.append(avg_upf_network_tx[pod]["metric"]["node"])
+            
+            dict_interface_network_rx[avg_upf_network_rx[pod]["metric"]["interface"]].append(float(avg_upf_network_rx[pod]["value"][1]))
+            if(avg_upf_network_rx[pod]["metric"]["node"] not in nodes_used_list ): nodes_used_list.append(avg_upf_network_rx[pod]["metric"]["node"])
+        
+        for node in range(len(node_sizing)):
+            if(node_sizing[node]["metric"]['node'] in nodes_used_list):
+                dict_node_sizing[node_sizing[node]["metric"]['node']] = node_sizing[node]["metric"]['label_beta_kubernetes_io_instance_type']
+            
+        
+        
+        dict_interface_network_rx_sum = dict(map(lambda x: (x[0], sum(x[1])), dict_interface_network_rx.items()))
+        
+        dict_interface_network_tx_sum = dict(map(lambda x: (x[0], sum(x[1])), dict_interface_network_tx.items()))
+        
+        #Observations to build: rx per interface, tx per interface, total cost
+        
+        observations = list(dict_interface_network_rx_sum.values())+list(dict_interface_network_tx_sum.values()) 
+        
+        cost = self.get_complex_infra_cost(list(dict_node_sizing.values()))
+        
+        observations = observations.append(cost)
+        
+        return observations 
 
     def get_throughput(self):
         """
@@ -111,6 +152,14 @@ class Driver:
         avg_upf_network = float(avg_upf_network[0][0]["value"][1])
         return avg_upf_network
 
+    def get_complex_infra_cost(self, list_of_sizes):
+        running_cost = 0 
+        
+        for iterate in range(len(list_of_sizes)):
+            running_cost += ec2_cost_calculator(list_of_sizes[iterate])
+        return running_cost
+        
+        
     def get_infra_cost(self, size):
         """
         Calculates the hourly cost of the infrastructure based off the categorical value of size.
@@ -223,8 +272,11 @@ class Driver:
             policy_state: policy.action.state object.
                 This is the stat of the policy at the end of all episodes.
         """
-        throughput = self.get_throughput()
-        infra_cost = self.get_infra_cost(self._size)
+
+        
+        observations = self.get_observations()
+        throughput = sum(observations[:-1])
+        infra_cost = observations[-1]
         reward = self.reward_function(throughput, infra_cost)
 
         discount = tf.convert_to_tensor(np.array(1, np.float32))

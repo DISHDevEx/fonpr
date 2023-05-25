@@ -28,10 +28,9 @@ class FONPR_Env(Env):
         # Temporary use until instance presence can be tracked; allows approximate reward calculation in the absense of real time data.
         self.instance_size = "Large"
         
-        # States we are observing consist of "Large instance On", "Small instance On", "Throughput"
-        # TODO: incorporate instance presence tracking for observation and reward function
-        low=np.tile(np.array([0.]), (self.samples,1))
-        high=np.tile(np.array([np.inf]), (self.samples,1))
+        # States we are observing consist of "Throughput", "Large instance On", "Small instance On"
+        low=np.tile(np.array([0., 0., 0.]), (self.samples,1))
+        high=np.tile(np.array([np.inf, 1., 1.]), (self.samples,1))
         
         self.observation_space = spaces.Box(
             low=low, 

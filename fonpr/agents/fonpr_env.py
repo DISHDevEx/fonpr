@@ -6,6 +6,7 @@ import gymnasium as gym
 import pandas as pd
 import numpy as np
 import logging
+import datetime
 from gymnasium import spaces, Env
 from time import sleep
 
@@ -52,7 +53,9 @@ class FONPR_Env(Env):
         prom_client_advisor.set_queries_by_function(prom_query_rl_upf_experiment1())
         prom_response = prom_client_advisor.run_queries()
         
-        df = pd.DataFrame(prom_response[0][0]['values'], columns=['DateTime', 'Throughput']) # Create dataframe on throughput values
+        df = pd.DataFrame(columns=['DateTime', 'Throughput', 'm4.large', 't3.medium'])
+        data_df = pd.DataFrame(prom_response[0][0]['values'])
+        df[['DateTime', 'Throughput']] = data_df
         df = df.set_index('DateTime') # Use timestamps for index
         df.index = pd.to_datetime(df.index, unit='s')
         df = df.astype('float32')
@@ -61,10 +64,6 @@ class FONPR_Env(Env):
         df = df.interpolate() # Linear interpolation for any missing values
         df = df.resample(f'{int(60/self.sample_rate)}s').mean() # Keep input size consistent
         df = df.interpolate() # Linear interp again for any NaNs created by resample
-        
-        # Prepend zeroes if less samples present than required
-        if len(through_vals) != self.samples:
-            through_vals = np.insert(through_vals, 0, np.zeros(self.samples - len(through_vals)))
         
         # Process pod info
         # pods = {} # Can be used for debugging
@@ -87,16 +86,19 @@ class FONPR_Env(Env):
             df_pod = df_pod.set_index('DateTime')
             df_pod.index = pd.to_datetime(df_pod.index, unit='s')
             df_pod = df_pod.astype('float32')
-            df = df.join(df_pod)
+            print(df.head(), '\n', df_pod.head())
+            df.update(df_pod)
+            print(df.head())
             df = df.interpolate()
         
-        return df
+        # Ensure input shape is met
+        while len(df) != self.samples:
+            df.loc[df.index[0]-datetime.timedelta(seconds=60/self.sample_rate)] = df.loc[df.index[0]] # create new timestamp index and copy first row values
+            df = df.sort_index()
         
+        df = df.fillna(0) # If instance types have NaNs after interp, assumed off
         
-        
-        through_vals = df['Throughput'].values # Get numpy array for processed throughput values
-        
-        return through_vals.reshape(through_vals.shape[0],1)
+        return df.values
 
     def _get_info(self):
         # Provide information on state, action, and reward?

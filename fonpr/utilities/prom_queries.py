@@ -80,3 +80,38 @@ def prom_network_upf_query():
     avg_upf_network_query = "sum by (pod) (rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h]))"
 
     return [avg_upf_network_query]
+
+
+def prom_network_upf_interfaces_query():
+    """
+    Function to store and return queries that find network metrics in prometheus.This query is specific to only the upf function
+
+    Returns
+    -------
+        queries: list[str]
+
+
+    Notes
+    -------
+        How network query works:
+
+            (1) The feature container_network_transmit_bytes_total is a counter; it monotonically increases.
+               (See https://prometheus.io/docs/concepts/metric_types/#counter).
+
+            (2) That feature comes in units of bytes.
+
+            (3) The Prometheus function rate takes in a time series and a width of a scrape window and returns a per second average.
+
+               (i)The time rate of change of the time series m over the scrape interval of width d is rate(m[d]).
+                  It is a time series. Its units are bytes/second.
+
+               (ii)The restriction of this rate time series to the time window tw is rate(m[d])[tw].
+                     (e.g. The time series from four hours ago to 3 hours ago is rate(m[d])[4h:3h]. )
+
+               (iii)The query rate(m[d])[tw] does not return any results if there are less than two times from the time series m within the time window tw.
+                     Thus, the width of the time window should be at least twice the scrape interval d.
+            (4) Sum by pod implies that we will sum over all containers per pod. This will return metrics on a per pod basis.
+    """
+    avg_upf_interfaces_network_query = "(rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h])) or kube_node_labels{label_eks_amazonaws_com_nodegroup=~'upf.*'}"
+
+    return [avg_upf_interfaces_network_query]

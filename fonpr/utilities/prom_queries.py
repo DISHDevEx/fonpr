@@ -112,6 +112,8 @@ def prom_network_upf_interfaces_query():
                      Thus, the width of the time window should be at least twice the scrape interval d.
             (4) Sum by pod implies that we will sum over all containers per pod. This will return metrics on a per pod basis.
     """
-    avg_upf_interfaces_network_query = "(rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h])) or kube_node_labels{label_eks_amazonaws_com_nodegroup=~'upf.*'}"
+    avg_upf_interfaces_network_tx_query = "rate(container_network_transmit_bytes_total {pod=~'open5gs-upf.*'}[1h])"
+    avg_upf_interfaces_network_rx_query = "rate(container_network_receive_bytes_total {pod=~'open5gs-upf.*'}[1h])"
+    node_sizing_query = "kube_node_labels{label_eks_amazonaws_com_nodegroup=~'upf.*'}"
 
-    return [avg_upf_interfaces_network_query]
+    return [avg_upf_interfaces_network_tx_query,avg_upf_interfaces_network_rx_query,node_sizing_query]

@@ -65,21 +65,26 @@ if __name__ == "__main__":
     discount = tf_agents.specs.BoundedTensorSpec(
         (), np.float32, name="discount", minimum=0, maximum=1
     )
-
+    
+    #Observation: [Rx_eth0[1hr:],Rx_ogstun[1hr:],Tx_eth0[1hr:],Tx_ogstun[1hr:],cost]
     observation = tf_agents.specs.BoundedTensorSpec(
-        (1,), np.float32, name="observation", minimum=[0], maximum=[10000000000]
+        (5,),
+        np.float64,
+        name="observation",
+        minimum=[0, 0, 0, 0, 0],
+        maximum=[10000000000, 10000000000, 10000000000, 10000000000, 35],
     )
 
     reward = tf_agents.specs.TensorSpec((), np.float32, name="reward")
 
-    step_type = tf_agents.specs.TensorSpec((), np.float32, name="step_type")
+    step_type = tf_agents.specs.TensorSpec((), np.int64, name="step_type")
 
     time_step_spec = tf_agents.trajectories.TimeStep(
         discount=discount, observation=observation, reward=reward, step_type=step_type
     )
 
     action_spec = tf_agents.specs.BoundedArraySpec(
-        (), np.int64, name="action", minimum=0, maximum=2
+        (), dtype=np.int64, name="action", minimum=0, maximum=1
     )
 
     logging.info("Agent Specifications Established Successfully")

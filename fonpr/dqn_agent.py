@@ -65,8 +65,8 @@ if __name__ == "__main__":
     discount = tf_agents.specs.BoundedTensorSpec(
         (), np.float32, name="discount", minimum=0, maximum=1
     )
-    
-    #Observation: [Rx_eth0[1hr:],Rx_ogstun[1hr:],Tx_eth0[1hr:],Tx_ogstun[1hr:],cost]
+
+    # Observation: [Rx_eth0[1hr:],Rx_ogstun[1hr:],Tx_eth0[1hr:],Tx_ogstun[1hr:],cost]
     observation = tf_agents.specs.BoundedTensorSpec(
         (5,),
         np.float64,

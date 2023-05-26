@@ -59,7 +59,6 @@ class Driver:
     def __init__(self, prom_endpoint="http://10.0.104.52:9090", wait_period=2):
         self.prom_endpoint = prom_endpoint
         self.wait_period = wait_period
-       
 
     def reward_function(self, throughput, infra_cost):
         """
@@ -99,7 +98,7 @@ class Driver:
 
     def get_observations(self):
         """
-        Calculates the average rx and tx for eth0 and ogstun interfaces summed across all pods. Also calculates the hourly cost for all nodes running upf's. 
+        Calculates the average rx and tx for eth0 and ogstun interfaces summed across all pods. Also calculates the hourly cost for all nodes running upf's.
 
         Returns
         -------
@@ -224,8 +223,6 @@ class Driver:
 
         if action_step.action == 1:
             self.update_yml(size="Large")
-
-        
 
         time.sleep(self.wait_period)
 

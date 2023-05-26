@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: respons-agent-dqn
+  name: respons-agent-dqn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: respons-agent-dqn
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: respons-agent-dqn
+    spec:
+      containers:
+      - image: teamrespons/respons_agent:dqn-agent
+        name: respons-agent-dqn
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 8888 
+status: {}

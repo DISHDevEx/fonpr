@@ -8,9 +8,11 @@ from ray.rllib.algorithms import sac
 
 if __name__ == "__main__":
     
+    env_config={'render_mode':None, 'window':15, 'sample_rate':4, 'obs_period':1}
+    
     config = (
         sac.SACConfig()
-        .environment(env = FONPR_Env, env_config={'obs_period':1})
+        .environment(env=FONPR_Env, env_config=env_config)
         .rollouts(num_rollout_workers=0)
         .framework('tf2')
         .reporting(min_sample_timesteps_per_iteration=30)

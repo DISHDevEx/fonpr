@@ -15,4 +15,4 @@ from .action_handler import ActionHandler, get_token
 from .rl_infrastructure import FonprDqn
 from .rl_infrastructure import ReplayBuffer
 from .rl_infrastructure import Driver
-from .agents import FONPR_Env
+from .interfaces import FONPR_Env

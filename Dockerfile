@@ -10,14 +10,14 @@ USER $NB_UID
 WORKDIR /app
 
 ## Copy requirements over into working dir
-COPY requirements.txt .
+COPY requirements_dqn.txt .
 
 # Install pip and install requireiments
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r requirements_dqn.txt
 
 # copy all files into working dir
 COPY . .
 
 #using python3 run our agent
-CMD [ "python3", "fonpr/bbo_agent.py"]
+CMD [ "python3", "fonpr/dqn_agent.py"]

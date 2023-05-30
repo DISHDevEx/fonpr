@@ -67,17 +67,21 @@ docker run <imageid>
 ```
 
 To create new images and contribute them:
-1. Update Dockerfile to run the correct agent
 
-2. To build docker image from an updated Dockerfile
+1. Build docker image from an updated Dockerfile
+
 ```console
-docker build -t teamrespons/respons_agent:<tagname> . 
+docker build -t teamrespons/respons_agent:<tagname> -f <dockerfile name> .  
+
+# e.g. 
+docker build -t teamrespons/respons_agent:v0-agent -f Dockerfile_V0 .
 ```
-3. To run docker image locally as a container
+
+2. To run docker image locally as a container
 ```console
 docker run <imageid>
 ```
-4. To push docker image to dockerhub under the response-ml
+3. To push docker image to dockerhub under the response-ml
 ```console
 docker push teamrespons/respons_agent:<tagname>
 ```

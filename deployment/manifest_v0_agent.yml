@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: v0-agent
+  name: v0-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: v0-agent
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: v0-agent
+    spec:
+      containers:
+      - image: teamrespons/respons_agent:v0-agent
+        name: v0-agent
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 8888 
+status: {}

@@ -28,9 +28,6 @@ class FONPR_Env(Env):
         self.samples = self.window * self.sample_rate
         self.obs_period = env_config['obs_period'] # How frequently does a new observation occur, in minutes
         
-        # Temporary use until instance presence can be tracked; allows approximate reward calculation in the absense of real time data.
-        self.instance_size = "Large"
-        
         # States we are observing consist of "Throughput", "Large instance On", "Small instance On"
         low=np.tile(np.array([0., 0., 0.]), (self.samples,1))
         high=np.tile(np.array([np.inf, 1., 1.]), (self.samples,1))
@@ -116,7 +113,7 @@ class FONPR_Env(Env):
         return observation, info
 
     def step(self, action) -> Tuple[np.array, float, bool, bool, dict]:
-        gh_url="https://github.com/DISHDevEx/napp/blob/matt/test_update/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
+        gh_url="https://github.com/DISHDevEx/napp/blob/agent-sac/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
         dir_name="napp"
         
         if action == 0: # No-Op; do nothing

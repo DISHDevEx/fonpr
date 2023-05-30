@@ -17,6 +17,8 @@ spec:
       labels:
         app: respons-agent-sac
     spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: control-plane
       containers:
       - image: teamrespons/respons_agent:sac-agent
         name: respons-agent-sac

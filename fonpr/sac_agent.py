@@ -1,5 +1,5 @@
 """
-Script for running a Soft Actor Critic based agent in using the FONPR_Env Interface.
+Script for running a Soft Actor Critic based agent using the FONPR_Env Interface.
 """
 
 from interfaces import FONPR_Env

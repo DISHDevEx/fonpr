@@ -1,8 +1,7 @@
 """
 Module to contain the driver for tensorflow agents to interact with napp. 
 The driver utilizes the policy of an agent to interact with the environment.
-"""
-
+""" 
 import time
 import logging
 from advisors import PromClient
@@ -16,7 +15,8 @@ import numpy as np
 import tf_agents
 from tf_agents.trajectories import trajectory
 from collections import defaultdict
-
+from typing import List, Tuple
+TimeStep = tf_agents.trajectories.TimeStep
 
 class Driver:
     """
@@ -26,25 +26,25 @@ class Driver:
 
     Attributes
     ----------
-        prom_endpoint: String
+        prom_endpoint: str
             "ip:port" for the prometheus server endpoint.
 
-        wait_period = Int
-            The time interval driver should wait for in seconds to retrive the observations after making an action.
+        wait_period = int
+            The time interval driver should wait for in seconds to retrive the observations after taking an action.
 
     Methods
     -------
-        reward_function(throughput, infra_cost):
+        reward_function(throughput, infra_cost) -> float:
             Calculates and returns the reward(maximizing profit).
             Uses throughput and infra_cost to calculate reward.
 
-        get_observations():
-            Queries the prometheus server (ip:port) to recieve observations.
+        get_observations() -> List[float]:
+            Queries the prometheus server (ip:port) to receive observations.
 
-        get_infra_cost(size):
+        get_infra_cost(size) -> float:
             Uses ec2_cost_calculator to get the hourly pricing of the EC2 sizes specified (as a list).
 
-        update_yml(size,gh_url,dir_name):
+        update_yml(size,gh_url,dir_name)-> None:
             Updates the yml file to modify NAPP upf sizing.
 
         take_action_get_next_timestep(action_step):
@@ -60,7 +60,7 @@ class Driver:
         self.prom_endpoint = prom_endpoint
         self.wait_period = wait_period
 
-    def reward_function(self, throughput, infra_cost):
+    def reward_function(self, throughput, infra_cost)-> float:
         """
         Calculates the reward for the agent to receive based off of throughput and infrastructure cost.
 
@@ -80,25 +80,27 @@ class Driver:
         -------
         How the math works:
         (1)Throughput is in bytes/second
-        (2)Cost conversion coefficient translates dollars to bytes
+        (2)Cost conversion  translates dollars to bytes
         (3)Multiplying 1 and 2: Bytes/Second * Dollars/Bytes --> Dollars/Second
         (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable.
         (5) Then finally we can subtract 4 (which is revenue) by the infra cost (Dollars/Hour) to yield profit.
         """
 
         # All cost is calculated on an hourly basis
-        # Throughput must be in bytes.
-        # The cost conversion coefficient converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
-        cost_conversion_coefficient = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
-        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per hour
-        reward = (throughput) * (
-            cost_conversion_coefficient
-        ) * seconds_to_hours_conversion - infra_cost
+        # Throughput must be in bytes per second. 
+        # The cost conversion converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
+        cost_conversion = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
+        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per 
+        
+        revenue = throughput * cost_conversion * seconds_to_hours_conversion
+        
+        reward = revenue - infra_cost
+        
         return reward
 
-    def get_observations(self):
+    def get_observations(self)-> List[float]:
         """
-        Calculates the average rx and tx for eth0 and ogstun interfaces summed across all pods. Also calculates the hourly cost for all nodes running upf's.
+        Calculates the average rx and tx for eth0 and ogstun interfaces summed across all pod_idxs. Also calculates the hourly cost for all nodes running UPF's.
 
         Returns
         -------
@@ -119,18 +121,18 @@ class Driver:
         nodes_used_list = []
         dict_node_sizing = {}
 
-        for pod in range(len(avg_upf_network_tx)):
+        for pod_idx in range(len(avg_upf_network_tx)):
             dict_interface_network_tx[
-                avg_upf_network_tx[pod]["metric"]["interface"]
-            ].append(float(avg_upf_network_tx[pod]["value"][1]))
-            if avg_upf_network_tx[pod]["metric"]["node"] not in nodes_used_list:
-                nodes_used_list.append(avg_upf_network_tx[pod]["metric"]["node"])
+                avg_upf_network_tx[pod_idx]["metric"]["interface"]
+            ].append(float(avg_upf_network_tx[pod_idx]["value"][1]))
+            if avg_upf_network_tx[pod_idx]["metric"]["node"] not in nodes_used_list:
+                nodes_used_list.append(avg_upf_network_tx[pod_idx]["metric"]["node"])
 
             dict_interface_network_rx[
-                avg_upf_network_rx[pod]["metric"]["interface"]
-            ].append(float(avg_upf_network_rx[pod]["value"][1]))
-            if avg_upf_network_rx[pod]["metric"]["node"] not in nodes_used_list:
-                nodes_used_list.append(avg_upf_network_rx[pod]["metric"]["node"])
+                avg_upf_network_rx[pod_idx]["metric"]["interface"]
+            ].append(float(avg_upf_network_rx[pod_idx]["value"][1]))
+            if avg_upf_network_rx[pod_idx]["metric"]["node"] not in nodes_used_list:
+                nodes_used_list.append(avg_upf_network_rx[pod_idx]["metric"]["node"])
 
         for node in range(len(node_sizing)):
             if node_sizing[node]["metric"]["node"] in nodes_used_list:
@@ -159,10 +161,12 @@ class Driver:
 
         return observations
 
-    def get_infra_cost(self, list_of_sizes):
+    def get_infra_cost(self, list_of_sizes)-> float:
         """
         Calculates the hourly cost of the infrastructure based off the categorical value of size.
 
+        Assumes all nodes that existed within window were charged for the entire window duration
+        
         Parameters
         ----------
             list_of_sizes : list[String]
@@ -204,7 +208,7 @@ class Driver:
         hndl.fetch_update_push_upf_sizing()
         logging.info("Agent update complete!")
 
-    def take_action_get_next_timestep(self, action_step):
+    def take_action_get_next_timestep(self, action_step)-> TimeStep:
         """
         Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type).
         This is the method that allows driver to interact with the environment after time 0.
@@ -245,17 +249,17 @@ class Driver:
         )
         return next_time_step
 
-    def drive(self, max_steps=10, policy=-1, observer=-1):
+    def drive(self, max_steps=10, policy=-1, observer=-1) -> TimeStep:
         """
         Allows drive method to take an action and build the trajectory object for the next (discount, observation, reward, step_type).
         This is the method that allows driver to interact with the environment after time 0.
 
         Parameters
         ----------
-            max_steps :  Int
+            max_steps :  int
                 Number of steps to take per episode.
 
-            policy: tf_agents.policies object
+            policy: tf_agents.policies.TFPolicy 
                 This is the policy that the sits in the driver seat for this driver.
 
             observer: reverb_utils.ReverbAddTrajectoryObserver
@@ -304,4 +308,4 @@ class Driver:
             current_timestep = next_time_step
             policy_state = action_step.state
 
-        return current_timestep, policy_state
+        return current_timestep

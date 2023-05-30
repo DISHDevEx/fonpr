@@ -14,7 +14,7 @@ import tf_agents.specs
 from tf_agents.trajectories import time_step as ts
 from tf_agents.trajectories import trajectory
 import tf_agents
-
+from typing import Tuple
 
 class FonprDqn:
     """
@@ -32,7 +32,7 @@ class FonprDqn:
         fc_layer_params: Tuple
             Shape of the tuple defines number of layers. Contents define nuerons.
 
-        learning_rate: Int
+        learning_rate: int
             Determines the step size for stochastic gradient descent.
 
         agent: dqn_agent.DqnAgent()
@@ -52,7 +52,8 @@ class FonprDqn:
     ):
         """
         Parameters
-        ---------
+        --------- 
+            None
         Returns
         ---------
             None

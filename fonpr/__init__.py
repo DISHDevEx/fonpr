@@ -1,6 +1,6 @@
 """
 FONPR
-A package to react in real time to EKS cluster behavior 
+A package to react to EKS cluster behavior 
 to fine tune helm charts for deployed applications. 
 """
 from .utilities import prom_cpu_mem_queries

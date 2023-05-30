@@ -3,11 +3,15 @@
 ## Quick Deployment 
 DQN agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/dqn_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_dqn_agent.yml
 ```
 BBO agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/bbo_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_bbo_agent.yml
+```
+V0 agent deployment:
+```console
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_v0_agent.yml
 ```
 
 

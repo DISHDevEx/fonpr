@@ -74,17 +74,16 @@ class FONPR_Env(Env):
         # pods = {} # Can be used for debugging
         for i, pod in enumerate(prom_response[1]):
             
-            # isolate host_ip and timestamps
-            host_ip = pod['metric']['host_ip']
+            # isolate node label and timestamps
+            node = pod['metric']['node']
             values = pod['values']
             
-            # map host_ip to instance-type
-            node_name = 'ip-' + host_ip.replace('.', '-') + '.ec2.internal'
-            prom_client_advisor.set_queries_by_list(['kube_node_labels{node=\'' + node_name + '\'}'])
+            # map node to instance-type
+            prom_client_advisor.set_queries_by_list(['kube_node_labels{node=\'' + node + '\'}'])
             node_labels = prom_client_advisor.run_queries()
             instance_type = node_labels[0][0]['metric']['label_node_kubernetes_io_instance_type']
             
-            # pods[f'pod{i}'] = {'host_ip': host_ip, 'values': values, 'instance_type': instance_type} # Can be used for debugging
+            # pods[f'pod{i}'] = {'node': node, 'values': values, 'instance_type': instance_type} # Can be used for debugging
             
             # create on-flags for instance type
             df_pod = pd.DataFrame(values, columns=['DateTime', instance_type])

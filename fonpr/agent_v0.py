@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     logging.info(f"Update interval set to {args.interval}.")
     logging.info(f"Prometheus server endpoint: {args.prom_endpoint}")
-
+    logging.info(f"Yaml file to be updated: {args.gh_url}")
     while True:
         logging.info("Executing update cycle.")
         execute_agent_cycle(args.prom_endpoint, args.gh_url, args.dir_name)

@@ -29,15 +29,51 @@ class FONPR_Env(Env):
     
     ### Action Space
     
+    The actions available in this interface are discrete, and control the EC2
+    instance size to be utilized by the User Plane Function (UPF).
+    
+    | Num | Action                                |
+    |-----|---------------------------------------|
+    | 0   | NOOP - Take no action                 |
+    | 1   | Transition to the Large instance type |
+    | 2   | Transition to the Small instance type |
+    
     ### Observation Space
+    
+    The observation is a `ndarray` with shape `(self.samples, 3)` that provides
+    timeseries data about user plane network throughput, and which EC2 instance
+    types were being utilized over the window:
+    
+    | Num | Observation                  | Min                 | Max               |
+    |-----|------------------------------|---------------------|-------------------|
+    | 0   | User Plane Throughput        | 0                   | np.inf            |
+    | 1   | Large instance == "On"       | 0                   | 1                 |
+    | 2   | Small instance == "On"       | 0                   | 1                 |
     
     ### Rewards
     
+    The goal is to maximize profit in dollars by optimizing revenue, generated 
+    by throughput, against the infrastructure cost necessary for generating that
+    revenue. 
+    
+    TODO: incorporate Service Level Agreements (SLAs) and Quality of Service (QoS) 
+    metrics into the formula, as well.
+    
     ### Starting State
+    
+    The starting state is simply an observation of an already existing Respons-Nuances
+    cluster. The agent runs continuously, taking steps at periodic intervals and
+    learning from the user plane load patterns and its actions as they arrive.
+    This environment assumes no control over the load seen by the network.
     
     ### Episode Termination
     
+    This is a continuous environment and has no terminal state.
+    
     ### Arguments
+    
+    An env_config dictionary can be passed to update render mode, window size, 
+    sample rate, and the observation period at agent initialization.
 
     Attributes
     ----------

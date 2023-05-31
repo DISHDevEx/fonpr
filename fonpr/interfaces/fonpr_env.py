@@ -1,6 +1,6 @@
-'''
+"""
 Class defining the Gymnasium type environment for FONPR agents.
-'''
+"""
 
 import gymnasium as gym
 import pandas as pd
@@ -9,7 +9,7 @@ import logging
 import datetime
 from gymnasium import spaces, Env
 from time import sleep
-from typing import Tuple
+from typing import Tuple, Any, Optional
 
 from advisors import PromClient
 from utilities import prom_query_rl_upf_experiment1, ec2_cost_calculator
@@ -17,7 +17,87 @@ from action_handler import ActionHandler, get_token
 
 
 class FONPR_Env(Env):
+    """
+    ### Description
     
+    Environment defining the interface between reinforcement learning algorithms
+    and the respons-nuances 5G ecosystem, based off of Gymnasium environments.
+    
+    Provides a means for generating observations of a respons-nuances cluster,
+    calculating a reward function, and implementing updates to the controlling
+    values.yaml file on the remote repository.
+    
+    ### Action Space
+    
+    ### Observation Space
+    
+    ### Rewards
+    
+    ### Starting State
+    
+    ### Episode Termination
+    
+    ### Arguments
+
+    Attributes
+    ----------
+        window: int
+            How far back in time does the observation look, in minutes
+        sample_rate: int
+            How many observation samples are collected per minute
+        samples: int
+            Total number of samples to be collected at each observation
+        obs_period: int
+            How frequently does a new observation occur, in minutes
+        observation_space: gymnasium.spaces.Box
+            Defines the shape and acceptable range of values for state observations
+        action_space: gymnasium.spaces.Discrete
+            Defines the shape and acceptable range of values for agent actions
+        render_mode: Any
+            Selector for training and performance visualization types.
+        step_counter: int
+            Counter for how many steps have been taken using the current interface
+        large_instance_type: str
+            The AWS EC2 instance type in the Large instance Node Group
+        small_instance_type: str
+            The AWS EC2 instance type in the Small instance Node Group
+
+    Methods
+    -------
+        _get_obs() -> np.array:
+            Internal class method that queries the Prometheus server for state
+            information, returning a processed array of state values.
+            
+        _get_info() -> dict:
+            Return a dictionary of agent / environment information (currently empty)
+            
+        reset(*, seed: Optional[int], options: Optional[dict]) -> Tuple[np.array, dict]:
+            If running a simulator, this method resets the state of the environment
+            according to desired behavior (deterministic or stochastic), and then
+            returns an initial observation of the new environment and the info dictionary.
+            
+            Respons-Nuances clusters are not designed to be reset in this sense.
+            As such, reset provides an initial observation for beginning the training
+            process.
+            
+        step(action: int) -> Tuple[np.array, float, bool, bool, dict]:
+            Implement action, dwell for a specified period of time, then collect
+            next time step observation.
+            
+            Returns the new observation, new reward, if the new observed state is
+            considered terminated, if the new observed state is truncated, and info.
+            
+        render():
+            Not currently implemented.
+            
+            Used for visualizing training.
+            
+        close():
+            Not currently implemented.
+            
+            Used to close the environment and terminate external software that
+            may have been invoked during environment use.
+    """
     logging.basicConfig(level=logging.INFO)
     metadata = {"render_modes": []}
 

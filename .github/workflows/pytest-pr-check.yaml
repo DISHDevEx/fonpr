@@ -31,7 +31,7 @@ jobs:
         # Upgrade pip, install pytest, and all requirements. 
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements_v0.txt
+          pip install -r requirements.txt
       # Run the pytest module.
       - name: Test with pytest
         # The environment in pytest gets passed some secrets from the github secrets.

@@ -30,10 +30,10 @@ if __name__ == "__main__":
     ##TRAINING HYPERPERAMETERS
 
     # Random policy steps to take in order to fill up the replay buffer.
-    initial_collect_steps = 100
+    initial_collect_steps = 10
 
     # Num_episodes for the DQN to run.
-    num_episodes = 200
+    num_episodes = 2
 
     # Number_of_interactions the DQN makes per episode.
     number_of_interactions = 10
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     sequence_length = 2
 
     # Time in seconds to wait in between interactions to allow action to effect env.
-    wait_period_between_interactions = 900
+    wait_period_between_interactions = 2
 
     ##DQN ARCHITECTURE
 

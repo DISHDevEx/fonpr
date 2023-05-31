@@ -1,23 +1,23 @@
 FROM python:3.9.1
 
-#install wget
+# Install wget.
 RUN apt-get install curl wget
 
-# Let's change to  "$NB_USER" command so the image runs as a non root user by default
+# Let's change to  "$NB_USER" command so the image runs as a non root user by default.
 USER $NB_UID
 
-# ENTRYPOINT ["python" ]
+# ENTRYPOINT ["python" ].
 WORKDIR /app
 
-## Copy requirements over into working dir
+# Copy requirements over into working dir.
 COPY requirements_dqn.txt .
 
-# Install pip and install requireiments
+# Install pip and install requireiments.
 RUN pip install --upgrade pip
 RUN pip install -r requirements_dqn.txt
 
-# copy all files into working dir
+# Copy all files into working dir.
 COPY . .
 
-#using python3 run our agent
+# Using python3 run our agent.
 CMD [ "python3", "fonpr/dqn_agent.py"]

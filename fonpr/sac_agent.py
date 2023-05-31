@@ -11,8 +11,10 @@ if __name__ == "__main__":
     
     logging.basicConfig(level=logging.INFO)
     
+    # Setting observation period to 1 for initial training and evaluation
     env_config={'render_mode':None, 'window':15, 'sample_rate':4, 'obs_period':1}
     
+    # Updating default configs for initial training and evaluation
     config = (
         sac.SACConfig()
         .environment(env=FONPR_Env, env_config=env_config)

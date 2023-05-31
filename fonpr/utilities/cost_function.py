@@ -5,7 +5,7 @@ Create relationship between ec2 type and cost for the prometheus advisor.
 
 def ec2_cost_calculator(ec2_type="t2.micro"):
     """
-    Function to calculate the cost of an EC2 type, on an hourly basis.
+    Calculate the rate of cost (in units of dollars per hour) of an EC2 from its type.
 
     Parameters
     ---------
@@ -27,7 +27,7 @@ def ec2_cost_calculator(ec2_type="t2.micro"):
     }
 
     if ec2_type not in pricing_table:
-        raise Exception("sorry ec2 type not defined in pricing table")
+        raise Exception("Sorry ec2 type not defined in pricing table.")
 
     cost = pricing_table[ec2_type]
     return cost

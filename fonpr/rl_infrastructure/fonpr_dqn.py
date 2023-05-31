@@ -14,7 +14,6 @@ import tf_agents.specs
 from tf_agents.trajectories import time_step as ts
 from tf_agents.trajectories import trajectory
 import tf_agents
-from typing import Tuple
 
 class FonprDqn:
     """

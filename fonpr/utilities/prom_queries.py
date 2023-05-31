@@ -84,7 +84,7 @@ def prom_network_upf_query():
 
 def prom_network_upf_interfaces_query():
     """
-    Function to store and return queries that find network metrics in prometheus.
+    Store and return queries that find cpu/memory metrics in Prometheus.
     The first two queries built here capture the Rx,Tx for all interfaces on all UPF pods.
     The third query built here captures the node sizing and dimensioning information for UPF pods.
 

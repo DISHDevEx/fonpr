@@ -5,11 +5,12 @@ The driver utilizes the policy of an agent to interact with the environment.
 import time
 import logging
 from advisors import PromClient
+from action_handler import ActionHandler, get_token
 from utilities import (
     ec2_cost_calculator,
     prom_network_upf_interfaces_query,
 )
-from action_handler import ActionHandler, get_token
+
 import tensorflow as tf
 import numpy as np
 import tf_agents

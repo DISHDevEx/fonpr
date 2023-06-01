@@ -1,11 +1,18 @@
 """
 Module to contain respons agent. It is also the module that runs as a container in eks.
 """
+
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 import logging
 
-from rl_infrastructure import FonprDqn
-from rl_infrastructure import ReplayBuffer
-from rl_infrastructure import Driver
+from fonpr import FonprDqn
+from fonpr import ReplayBuffer
+from fonpr import Driver
 
 import numpy as np
 import tensorflow as tf

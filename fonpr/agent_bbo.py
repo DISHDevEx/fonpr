@@ -1,13 +1,19 @@
 """
 Module to contain respons agent. it is also the module that runs as a container in eks.
 """
+import sys
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 import time
 import logging
 from collections import defaultdict
-from advisors import PromClient
-from utilities import prom_network_upf_query, ec2_cost_calculator
-from action_handler import ActionHandler, get_token
-import argparse
+from fonpr import PromClient
+from fonpr import prom_network_upf_query, ec2_cost_calculator
+from fonpr import ActionHandler, get_token
+
 import logging
 from vizier.service import clients
 from vizier.service import pyvizier as vz
@@ -132,7 +138,7 @@ if __name__ == "__main__":
         vz.MetricInformation("reward", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
     )
     study = clients.Study.from_study_config(
-        study_config, owner="vinayak", study_id="smallProblemUPFSizing"
+        study_config, owner="viny", study_id="smallProblemUPFSiz"
     )
 
     ##Run BBO

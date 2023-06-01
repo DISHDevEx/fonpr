@@ -15,6 +15,7 @@ from tf_agents.trajectories import time_step as ts
 from tf_agents.trajectories import trajectory
 import tf_agents
 
+
 class FonprDqn:
     """
     FonprDqn helps to initialize tensorflow Deep-Q-Network agents.
@@ -51,7 +52,7 @@ class FonprDqn:
     ):
         """
         Parameters
-        --------- 
+        ---------
             None
         Returns
         ---------

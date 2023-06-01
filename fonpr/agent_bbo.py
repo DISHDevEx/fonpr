@@ -10,9 +10,9 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 import time
 import logging
 from collections import defaultdict
-from fonpr import PromClient
-from fonpr import prom_network_upf_query, ec2_cost_calculator
-from fonpr import ActionHandler, get_token
+from advisors import PromClient
+from utilities import prom_network_upf_query, ec2_cost_calculator
+from action_handler import ActionHandler, get_token
 
 import logging
 from vizier.service import clients
@@ -138,7 +138,7 @@ if __name__ == "__main__":
         vz.MetricInformation("reward", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
     )
     study = clients.Study.from_study_config(
-        study_config, owner="viny", study_id="smallProblemUPFSiz"
+        study_config, owner="vinny", study_id="smallProblemUPFSizing"
     )
 
     ##Run BBO

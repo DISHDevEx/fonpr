@@ -10,11 +10,11 @@ USER $NB_UID
 WORKDIR /app
 
 # Copy requirements over into working dir.
-COPY requirements_dqn.txt .
+COPY requirements_bbo.txt .
 
 # Install pip and install requireiments.
 RUN pip install --upgrade pip
-RUN pip install -r requirements_dqn.txt
+RUN pip install -r requirements_bbo.txt
 
 # Copy all files into working dir.
 COPY . .

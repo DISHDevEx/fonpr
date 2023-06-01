@@ -41,4 +41,4 @@ if __name__ == "__main__":
                 f'"{path_to_checkpoint}"'
                 )
             # Copy checkpoints over to s3
-            subprocess.run(['aws', 's3', 'sync', path_to_checkpoint, s3_uri])
+            subprocess.run(['aws', 's3', 'sync', '/root/ray_results/', s3_uri])

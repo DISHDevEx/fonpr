@@ -34,26 +34,26 @@ def reward_function(throughput, infra_cost):
     -------
         avg_upf_network: float
             The average network transmitted for the last hour from UPF pod.
-            
+
     Notes
     -------
     How the math works:
     (1)Throughput is in bytes/second
     (2)Cost conversion coefficient translates dollars to bytes
     (3)Multiplying 1 and 2: Bytes/Second * Dollars/Bytes --> Dollars/Second
-    (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable. 
-    (5) Then finally we can subtract 4 (which is revenue) by the infra cost (Dollars/Hour) to yield profit. 
+    (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable.
+    (5) Then finally we can subtract 4 (which is revenue) by the infra cost (Dollars/Hour) to yield profit.
     """
 
     # All cost is calculated on an hourly basis
     # Throughput must be in bytes/second.
     # The cost conversion coefficient converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
-    
-    
-    
-    cost_conversion_coefficient = 3.33 / (10**9) #3.33 dollars per 10^9 bytes
-    seconds_to_hours_conversion = 3600/1 #3600 seconds per hour
-    reward = (throughput) * (cost_conversion_coefficient)*seconds_to_hours_conversion - infra_cost
+
+    cost_conversion_coefficient = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
+    seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per hour
+    reward = (throughput) * (
+        cost_conversion_coefficient
+    ) * seconds_to_hours_conversion - infra_cost
     return reward
 
 

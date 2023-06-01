@@ -11,9 +11,9 @@ import time
 import logging
 from collections import defaultdict
 import pandas as pd
-from fonpr import PromClient
-from fonpr import prom_cpu_mem_queries
-from fonpr import ActionHandler, get_token
+from advisors import PromClient
+from utilities import prom_cpu_mem_queries
+from action_handler import ActionHandler, get_token
 import argparse
 import logging
 

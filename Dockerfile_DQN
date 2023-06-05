@@ -20,4 +20,4 @@ RUN pip install -r requirements_dqn.txt
 COPY . .
 
 # Using python3 run our agent.
-CMD [ "python3", "fonpr/dqn_agent.py"]
+CMD [ "python3", "fonpr/agent_dqn.py"]

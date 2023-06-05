@@ -11,9 +11,9 @@ from gymnasium import spaces, Env
 from time import sleep
 from typing import Tuple, Any, Optional
 
-from advisors import PromClient
-from utilities import prom_query_rl_upf_experiment1, ec2_cost_calculator
-from action_handler import ActionHandler, get_token
+from fonpr.advisors import PromClient
+from fonpr.utilities import prom_query_rl_upf_experiment1, ec2_cost_calculator
+from fonpr.action_handler import ActionHandler, get_token
 
 
 class FONPR_Env(Env):

@@ -37,9 +37,9 @@ def reward_function(self, throughput, infra_cost) -> float:
     Notes
     -------
     How the math works:
-    (1) Throughput is in bytes/second
-    (2) Cost conversion translates dollars to bytes
-    (3) Multiplying 1 and 2: Bytes/Second * Dollars/Bytes --> Dollars/Second
+    (1) Throughput is in bytes/second.
+    (2) Cost conversion translates dollars to bytes.
+    (3) Multiplying 1 and 2: Bytes/Second * Dollars/Bytes --> Dollars/Second.
     (4) Now we have to convert the Dollers/Second to Dollars/Hour by using a seconds_to_hours_conversion variable.
     (5) Subtract the result of (4) (which is revenue) by the infra cost (Dollars/Hour) to yield profit.
     """

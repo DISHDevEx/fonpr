@@ -86,11 +86,11 @@ class Driver:
         (5) Subtract the result of (4) (which is revenue) by the infra cost (Dollars/Hour) to yield profit.
         """
 
-        # All cost is calculated on an hourly basis
+        # All cost is calculated on an hourly basis.
         # Throughput must be in bytes per second.
         # The cost conversion converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
-        cost_conversion = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
-        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per
+        cost_conversion = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes.
+        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per.
 
         revenue = throughput * cost_conversion * seconds_to_hours_conversion
 
@@ -165,7 +165,7 @@ class Driver:
         """
         Calculates the hourly cost of the infrastructure based off the categorical value of size.
 
-        Assumes all nodes that existed within window were charged for the entire window duration
+        Assumes all nodes that existed within window were charged for the entire window duration.
 
         Parameters
         ----------

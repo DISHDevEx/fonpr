@@ -180,7 +180,7 @@ class FONPR_Env(Env):
     def _get_obs(self) -> np.array:
         # Request query from Prometheus
         prom_client_advisor = PromClient(self.prom_endpoint)
-        prom_client_advisor.set_queries_by_list(prom_query_rl_upf_throughput_pods())
+        prom_client_advisor.set_queries_by_list(prom_query_rl_upf_throughput_pods(self.window))
         prom_response = prom_client_advisor.run_queries()
         
         # Create dataframe for processing of query data

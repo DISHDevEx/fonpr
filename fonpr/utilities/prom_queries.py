@@ -131,11 +131,11 @@ def prom_network_upf_interfaces_query():
     ]
 
 
-def prom_query_rl_upf_throughput_pods():
+def prom_query_rl_upf_throughput_pods(window):
     # Get the last 15 minutes of combined user plane network traffic over all upf pods
-    throughput = "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'ogstun.*'}) by (time)[15m:]"
+    throughput = "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'ogstun.*'}) by (time)[" + f"{window}m:]"
     
     # Get pod info for all pods with open5gs-upf in its name over the past 15 minutes
-    active_pods = "kube_pod_info{pod=~'open5gs-upf.*'}[15m:]"
+    active_pods = "kube_pod_info{pod=~'open5gs-upf.*'}[" + f"{window}m:]"
 
     return [throughput, active_pods]

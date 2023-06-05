@@ -208,7 +208,6 @@ class FONPR_Env(Env):
         df = df.interpolate() # Linear interp again for any NaNs created by resample
         
         # Process pod info.
-        # pods = {} # Can be used for debugging
         for i, pod in enumerate(prom_response[1]):
             
             # isolate node label and timestamps.
@@ -219,8 +218,6 @@ class FONPR_Env(Env):
             prom_client_advisor.set_queries_by_list(['kube_node_labels{node=\'' + node + '\'}'])
             node_labels = prom_client_advisor.run_queries()
             instance_type = node_labels[0][0]['metric']['label_node_kubernetes_io_instance_type']
-            
-            # pods[f'pod{i}'] = {'node': node, 'values': values, 'instance_type': instance_type} # Can be used for debugging
             
             # create on-flags for instance type.
             df_pod = pd.DataFrame(values, columns=['DateTime', instance_type])
@@ -269,7 +266,6 @@ class FONPR_Env(Env):
             hndl.fetch_update_push_upf_sizing()
             
         sleep(self.obs_period * 60) # Sleep for observation period before retrieving next observation
-        # sleep(10) # For testing
         
         rxtx_value = 3.33e-9 # Rough estimate of dollars per byte over the network
         large_cost = ec2_cost_calculator(self.large_instance_type) # Cost of large instance in dollars per hour

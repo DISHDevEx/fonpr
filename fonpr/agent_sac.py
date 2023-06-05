@@ -2,7 +2,7 @@
 Script for running a Soft Actor Critic based agent using the FONPR_Env Interface.
 """
 
-from interfaces import FONPR_Env
+from rl_infrastructure import FONPR_Env
 from ray.tune.logger import pretty_print
 from ray.rllib.algorithms import sac
 import logging

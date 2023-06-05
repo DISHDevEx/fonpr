@@ -66,14 +66,14 @@ class Driver:
 
         Parameters
         ----------
-            throughput : Float
+            throughput : float
                 The average network transmitted for the last hour from UPF pod.
             infra_cost : float
                 The cost of running the ec2 sizing for the UPF pod.
 
         Returns
         -------
-            avg_upf_network: Float
+            avg_upf_network: float
                 The average network transmitted for the last hour from UPF pod.
 
         Notes
@@ -89,12 +89,13 @@ class Driver:
         # All cost is calculated on an hourly basis
         # Throughput must be in bytes per second.
         # The cost conversion converts 1 gigabyte to 3.33$(https://newsdirect.com/news/mobile-phone-data-costs-7x-more-in-the-us-than-the-uk-158885004?category=Communications).
-       
-        cost_conversion_coefficient = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
-        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per hour
-        reward = (throughput) * (
-            cost_conversion_coefficient
-        ) * seconds_to_hours_conversion - infra_cost
+        cost_conversion = 3.33 / (10**9)  # 3.33 dollars per 10^9 bytes
+        seconds_to_hours_conversion = 3600 / 1  # 3600 seconds per
+
+        revenue = throughput * cost_conversion * seconds_to_hours_conversion
+
+        reward = revenue - infra_cost
+
         return reward
 
     def get_observations(self) -> List[float]:
@@ -164,7 +165,7 @@ class Driver:
         """
         Calculates the hourly cost of the infrastructure based off the categorical value of size.
 
-        Assumes all nodes that existed within window were charged for the entire window duration.
+        Assumes all nodes that existed within window were charged for the entire window duration
 
         Parameters
         ----------

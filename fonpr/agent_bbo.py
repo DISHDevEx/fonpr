@@ -24,14 +24,14 @@ def reward_function(self, throughput, infra_cost) -> float:
 
     Parameters
     ----------
-        throughput : Float
+        throughput : float
             The average network transmitted for the last hour from UPF pod.
         infra_cost : float
             The cost of running the ec2 sizing for the UPF pod.
 
     Returns
     -------
-        avg_upf_network: Float
+        avg_upf_network: float
             The average network transmitted for the last hour from UPF pod.
 
     Notes

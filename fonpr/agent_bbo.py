@@ -56,6 +56,7 @@ def reward_function(self, throughput, infra_cost) -> float:
 
     return reward
 
+
 def get_throughput():
     """
     Calculates the average network bytes transmitted from the UPF pod for the last hour.

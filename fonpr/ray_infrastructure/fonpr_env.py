@@ -11,9 +11,9 @@ from gymnasium import spaces, Env
 from time import sleep
 from typing import Tuple, Any, Optional
 
-from fonpr.advisors import PromClient
-from fonpr.utilities import prom_query_rl_upf_experiment1, ec2_cost_calculator
-from fonpr.action_handler import ActionHandler, get_token
+from advisors import PromClient
+from utilities import prom_query_rl_upf_throughput_pods, ec2_cost_calculator
+from action_handler import ActionHandler, get_token
 
 
 class FONPR_Env(Env):
@@ -167,7 +167,7 @@ class FONPR_Env(Env):
     def _get_obs(self) -> np.array:
         # Request query from Prometheus
         prom_client_advisor = PromClient("http://10.0.104.52:9090")
-        prom_client_advisor.set_queries_by_function(prom_query_rl_upf_experiment1())
+        prom_client_advisor.set_queries_by_list(prom_query_rl_upf_throughput_pods())
         prom_response = prom_client_advisor.run_queries()
         
         # Create dataframe for processing of query data

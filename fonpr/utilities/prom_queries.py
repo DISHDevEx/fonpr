@@ -131,7 +131,7 @@ def prom_network_upf_interfaces_query():
     ]
 
 
-def prom_query_rl_upf_experiment1():
+def prom_query_rl_upf_throughput_pods():
     # Get the last 15 minutes of combined user plane network traffic over all upf pods
     throughput = "sum (container_network_transmit_bytes_total {pod=~'open5gs-upf.*', interface=~'ogstun.*'}) by (time)[15m:]"
     

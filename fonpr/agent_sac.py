@@ -12,9 +12,10 @@ if __name__ == "__main__":
     
     logging.basicConfig(level=logging.INFO)
     s3_uri = 's3://respons-agent-checkpoints/sac_v0.0.0/'
+    prom_endpoint = 'http://10.0.114.131:9090'
     
     # Setting observation period to 1 for initial training and evaluation
-    env_config={'render_mode':None, 'window':15, 'sample_rate':4, 'obs_period':1}
+    env_config={'render_mode':None, 'window':15, 'sample_rate':4, 'obs_period':1, 'prom_endpoint':prom_endpoint}
     
     # Updating default configs for initial training and evaluation
     config = (

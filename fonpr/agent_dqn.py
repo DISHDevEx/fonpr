@@ -10,9 +10,9 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 import logging
 
-from rl_infrastructure import FonprDqn
-from rl_infrastructure import ReplayBuffer
-from rl_infrastructure import Driver
+from tf_infrastructure import FonprDqn
+from tf_infrastructure import ReplayBuffer
+from tf_infrastructure import Driver
 
 import numpy as np
 import tensorflow as tf

@@ -32,7 +32,15 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.info("Launching FONPR DQN Agent")
 
-    #################DEFINE HYPERPERAMETERS#################
+    #################DEFINE ADVISOR AND ACTION HANDLER PARAMETERS#################
+
+    # prometheus server endpoint to gather data from
+    prom_endpoint = "http://10.0.114.131:9090"
+
+    # github yml file url that controls app to be modified
+    gh_url = "https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
+
+    #################DEFINE AGENT HYPERPERAMETERS#################
 
     ##TRAINING HYPERPERAMETERS
 
@@ -128,7 +136,7 @@ if __name__ == "__main__":
 
     #################CREATE DRIVER#################
 
-    driver = Driver(wait_period=wait_period_between_interactions)
+    driver = Driver(prom_endpoint = prom_endpoint, wait_period=wait_period_between_interactions,gh_url = gh_url)
 
     logging.info("Driver Established Successfully")
 

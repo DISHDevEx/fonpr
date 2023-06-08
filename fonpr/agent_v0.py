@@ -154,7 +154,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--prom_endpoint",
         type=str,
-        default="http://10.0.104.52:9090",
+        default="http://10.0.114.131:9090",
         required=False,
         help="Override default Prometheus server IP address / port.",
     )

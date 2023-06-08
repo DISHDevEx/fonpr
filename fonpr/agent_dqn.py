@@ -136,7 +136,11 @@ if __name__ == "__main__":
 
     #################CREATE DRIVER#################
 
-    driver = Driver(prom_endpoint = prom_endpoint, wait_period=wait_period_between_interactions,gh_url = gh_url)
+    driver = Driver(
+        prom_endpoint=prom_endpoint,
+        wait_period=wait_period_between_interactions,
+        gh_url=gh_url,
+    )
 
     logging.info("Driver Established Successfully")
 

@@ -35,6 +35,9 @@ General usage:
 * The Agent utilizes an Advisor function to set up a connection with the data source, and ingest data.
 * The Agent executes policy logic and updates cluster (Helm) configuration files in github via the Action Handler. 
 
+V0 agent:
+ * 
+
 ## __2. Advisor__
 An Advisor is responsible for connecting with a data source, ingesting data, and preprocessing / filtering that data prior to handing it off to the Agent.
 
@@ -58,37 +61,39 @@ General usage:
 ## __4. Docker__
 The Agent and its helper functions are containerized using Docker.
 
-To pull docker image from registry
-```console
-docker pull -t <imagename>:<version> . 
+* To pull docker image from registry:
+    
+    ```console
+    docker pull -t <imagename>:<version> . 
+    
+    # e.g.
+    docker pull -t teamrespons/respons_agent:v0.0 .
+    ```
 
-# e.g.
-docker pull -t teamrespons/respons_agent:v0.0 .
-```
-To run docker image locally as a container
-```console
-docker run <imageid>
-```
+* To run docker image locally as a container:
+    ```console
+    docker run <imageid>
+    ```
 
 To create new images and contribute them:
 
-1. Build docker image from an updated Dockerfile
+*  To Build docker image from an updated Dockerfile
+    
+    ```console
+    docker build -t teamrespons/respons_agent:<tagname> -f <dockerfile name> .  
+    
+    # e.g. 
+    docker build -t teamrespons/respons_agent:v0-agent -f Dockerfile_V0 .
+    ```
+* To run docker image locally as a container
+    ```console
+    docker run <imageid>
+    ```
 
-```console
-docker build -t teamrespons/respons_agent:<tagname> -f <dockerfile name> .  
-
-# e.g. 
-docker build -t teamrespons/respons_agent:v0-agent -f Dockerfile_V0 .
-```
-
-2. To run docker image locally as a container
-```console
-docker run <imageid>
-```
-3. To push docker image to dockerhub under the response-ml
-```console
-docker push teamrespons/respons_agent:<tagname>
-```
+* To push docker image to dockerhub under the response-ml
+    ```console
+    docker push teamrespons/respons_agent:<tagname>
+    ```
 
 ## __5. Agent Deployment__ 
 Pre-Requisites:
@@ -115,19 +120,20 @@ aws eks --region <region> update-kubeconfig --name <clustername>
 Deployment:
 1. Update deployment/respons_agent_manifest.yml
 
-    a. Update in the yaml file to specify which image you want deployed into the cluster.
+* Update in the yaml file to specify which image you want deployed into the cluster.
      - "file image: teamrespons/respons_agent:version"
+
 2. Agent deployments
 
-DQN agent deployment:
-```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_dqn_agent.yml
-```
-BBO agent deployment:
-```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_bbo_agent.yml
-```
-V0 agent deployment:
-```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_v0_agent.yml
-```
+    DQN agent deployment:
+    ```console
+    kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_dqn_agent.yml
+    ```
+    BBO agent deployment:
+    ```console
+    kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_bbo_agent.yml
+    ```
+    V0 agent deployment:
+    ```console
+    kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_v0_agent.yml
+    ```

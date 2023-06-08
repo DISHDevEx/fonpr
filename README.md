@@ -89,7 +89,9 @@ To target the server, the ip address and port number can be found as follows:
 An Action Handler is responsible for taking the requested cluster configuration updates (actions) and update the controlling configuration file accordingly.
 
 The current architecture leverages GitHub for revision control and housing of the cluster configuration files. When a config file is updated, it triggers redeployment of the network cluster via Flux.
-**PLEASE NOT OUR SECRET IS NOT PUBLIC, PLS MODIFY WITH YOUR OWN SECRET MANAGEMENT STRATEGY**
+
+**PLEASE NOTE OUR SECRET IS NOT PUBLIC, PLS MODIFY WITH YOUR OWN SECRET MANAGEMENT STRATEGY**
+
 General usage:
 * The ActionHandler class takes in a GitHub token, the target file path within the repository, branch name, and a dictionary of agent-requested value updates.
 * The current version of the value file is fetched from GitHub, updated with the new values, and then pushed back to the repository, triggering a new cluster deployment.

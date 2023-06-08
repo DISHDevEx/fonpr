@@ -3,15 +3,15 @@
 ## Quick Deployment 
 DQN agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_dqn_agent.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_dqn_agent.yml
 ```
 BBO agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_bbo_agent.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_bbo_agent.yml
 ```
 V0 agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/vinny/dqn/deployment/manifest_v0_agent.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_v0_agent.yml
 ```
 
 
@@ -117,11 +117,17 @@ Deployment:
 
     a. Update in the yaml file to specify which image you want deployed into the cluster.
      - "file image: teamrespons/respons_agent:version"
-2. Baseline Latest agent deployment
+2. Agent deployments
+
+DQN agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/respons_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_dqn_agent.yml
 ```
-3. BBO agent deployment
+BBO agent deployment:
 ```console
-kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/bbo_agent_manifest.yml
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_bbo_agent.yml
+```
+V0 agent deployment:
+```console
+kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_v0_agent.yml
 ```

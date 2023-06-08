@@ -29,14 +29,45 @@ kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deploym
 ## __1. Agent__
 An Agent is responsible for implementing a policy, i.e. mapping observed system state to desired control actions. The policy can be informed by subject matter experts, or learned independently by a reinforcement learning (RL) algorithm.
 
-General usage:
-* Agent lives as a script in the agent.py file.
+**General usage:** 
+* Agent lives as a script in the agent.py file.  
 * The Agent script is run automatically on deployment in the network cluster as a containerized application, and executes its logic at regular intervals.
 * The Agent utilizes an Advisor function to set up a connection with the data source, and ingest data.
 * The Agent executes policy logic and updates cluster (Helm) configuration files in github via the Action Handler. 
 
-V0 agent:
- * 
+**V0 agent:**
+
+    Modify hyperparameters in agent_v0.py for custom deployment
+
+ * The primary functionality for the V0 agent is to use hueristics in order to update limits and requests for AMF. 
+ * V0 agent allows for improved Kube-Scheduling. 
+ * Inputs: Max CPU for AMF, Avg. CPU for AMF, Max Memory for AMF, Avg. Memory for AMF. 
+ * Outputs: Update yml file limits and requests for AMF pods. 
+
+**BBO agent:**
+
+    Modify hyperparameters in agent_bbo.py for custom deployment
+    
+ * Google Vizier Library
+ * BBO agent treats the system as a black box. It allows for efficient search of paremeters to optimize a function. It does not understand the function.
+ * BBO is aware of X and Y of a function mapping via system: X->system->Y. 
+ * The X are the paremters the BBO Agent can modify. 
+ * The Y is the reward the BBO agent recieves after making its actions and allowing the actions to manifest in the system. 
+ * The current algorithm underneath the BBO agent is Gaussian Process Optimization. 
+ * Inputs BBO: Profit = SLO Price - Infra Cost
+ * Ouputs BBO: UPF Node Sizing
+
+**DQN agent:** 
+
+    Modify hyperparameters in agent_dqn.py for custom deployment
+
+
+ * Tensorflow Library 
+ * 7 x 20 x 20 x 20 Fully Connected Nueral Network.
+ * Uses replay buffer for training.
+ * Inputs: Action, Observation, Reward, Discount, Next Step Type, Policy Info, Current Step Type. 
+ * Outputs: Q-Value (maximum expected reward) for taking a small sizing action or large sizing action. 
+
 
 ## __2. Advisor__
 An Advisor is responsible for connecting with a data source, ingesting data, and preprocessing / filtering that data prior to handing it off to the Agent.
@@ -120,9 +151,10 @@ aws eks --region <region> update-kubeconfig --name <clustername>
 Deployment:
 1. Update deployment/respons_agent_manifest.yml
 
-* Update in the yaml file to specify which image you want deployed into the cluster.
-     - "file image: teamrespons/respons_agent:version"
-
+    Update in the yaml file to specify which image you want deployed into the cluster.
+        
+         "file image: teamrespons/respons_agent:version"
+        
 2. Agent deployments
 
     DQN agent deployment:

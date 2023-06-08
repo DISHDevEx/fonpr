@@ -137,7 +137,7 @@ if __name__ == "__main__":
     prom_endpoint = "http://10.0.114.131:9090"
 
     # github yml file url that controls app to be modified
-    gh_url = "https://github.com/DISHDevEx/napp/blob/vinny/2.6.2/napp/open5gs_values/test.yaml"
+    gh_url = "https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
 
     wait_time = 3600
     ############################################################################

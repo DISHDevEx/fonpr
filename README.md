@@ -29,6 +29,8 @@ kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deploym
 ## __1. Agent__
 An Agent is responsible for implementing a policy, i.e. mapping observed system state to desired control actions. The policy can be informed by subject matter experts, or learned independently by a reinforcement learning (RL) algorithm.
 
+**All agents currently ingest data via prometheus server, and take actions against a yml file that controls the target application.**
+
 **General usage:** 
 * Agent lives as a script in the agent.py file.  
 * The Agent script is run automatically on deployment in the network cluster as a containerized application, and executes its logic at regular intervals.
@@ -65,8 +67,11 @@ An Agent is responsible for implementing a policy, i.e. mapping observed system 
  * Tensorflow Library 
  * 7 x 20 x 20 x 20 Fully Connected Nueral Network.
  * Uses replay buffer for training.
- * Inputs: Action, Observation, Reward, Discount, Next Step Type, Policy Info, Current Step Type. 
- * Outputs: Q-Value (maximum expected reward) for taking a small sizing action or large sizing action. 
+ * DQN
+    * Inputs: Action, Observation, Reward, Discount, Next Step Type, Policy Info, Current Step Type. 
+    * Outputs: Q-Value (maximum expected reward) for taking a small sizing action or large sizing action. 
+* The agent itself outputs a modification of UPF Node Sizing 
+
 
 
 ## __2. Advisor__

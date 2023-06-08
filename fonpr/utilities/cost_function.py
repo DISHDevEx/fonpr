@@ -23,6 +23,7 @@ def ec2_cost_calculator(ec2_type="t2.micro"):
         "t2.micro": 0.0116,
         "m4.large": 0.10,
         "t3.medium": 0.0416,
+        "m4.xlarge": 0.20,
         "m4.2xlarge": 0.40,
     }
 

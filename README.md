@@ -39,7 +39,7 @@ An Agent is responsible for implementing a policy, i.e. mapping observed system 
 
 **V0 agent:**
 
-    Modify hyperparameters in agent_v0.py for custom deployment
+    Modify parameters in agent_v0.py for custom deployment
 
  * The primary functionality for the V0 agent is to use hueristics in order to update limits and requests for AMF. 
  * V0 agent allows for improved Kube-Scheduling. 
@@ -48,7 +48,7 @@ An Agent is responsible for implementing a policy, i.e. mapping observed system 
 
 **BBO agent:**
 
-    Modify hyperparameters in agent_bbo.py for custom deployment
+    Modify parameters in agent_bbo.py for custom deployment
     
  * Google Vizier Library
  * BBO agent treats the system as a black box. It allows for efficient search of paremeters to optimize a function. It does not understand the function.
@@ -61,7 +61,7 @@ An Agent is responsible for implementing a policy, i.e. mapping observed system 
 
 **DQN agent:** 
 
-    Modify hyperparameters in agent_dqn.py for custom deployment
+    Modify parameters in agent_dqn.py for custom deployment
 
 
  * Tensorflow Library 

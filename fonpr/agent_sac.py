@@ -11,7 +11,7 @@ import subprocess
 if __name__ == "__main__":
     
     logging.basicConfig(level=logging.INFO)
-    s3_uri = 's3://respons-agent-checkpoints/sac_v0.0.0/'
+    s3_checkpoint_uri = 's3://respons-agent-checkpoints/sac_v0.0.0/'
     prom_endpoint = 'http://10.0.114.131:9090'
     
     # Setting observation period to 1 for initial training and evaluation
@@ -42,4 +42,4 @@ if __name__ == "__main__":
                 f'"{path_to_checkpoint}"'
                 )
             # Copy checkpoints over to s3
-            subprocess.run(['aws', 's3', 'sync', '/root/ray_results/', s3_uri])
+            subprocess.run(['aws', 's3', 'sync', '/root/ray_results/', s3_checkpoint_uri])

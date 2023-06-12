@@ -10,11 +10,11 @@ USER $NB_UID
 WORKDIR /app
 
 ## Copy requirements over into working dir
-COPY requirements.txt .
+COPY requirements_sac.txt .
 
 # Install pip and install requirements
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r requirements_sac.txt
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"

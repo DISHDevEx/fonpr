@@ -25,4 +25,4 @@ RUN ./aws/install
 COPY . .
 
 #using python3 run our agent
-CMD [ "python3", "fonpr/sac_agent.py"]
+CMD [ "python3", "fonpr/agent_sac.py"]

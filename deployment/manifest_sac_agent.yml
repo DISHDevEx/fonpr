@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: respons-agent-sac
+  name: respons-agent-sac
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: respons-agent-sac
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: respons-agent-sac
+    spec:
+      nodeSelector:
+        eks.amazonaws.com/nodegroup: control-plane
+      containers:
+      - image: teamrespons/respons_agent:sac-agent
+        name: respons-agent-sac
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 8888 
+status: {}

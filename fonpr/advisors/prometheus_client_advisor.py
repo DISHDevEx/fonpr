@@ -121,7 +121,8 @@ class PromClient:
         # Aggregate all data.
         if len(self.queries) < 1:
             return None
-
+            
+        self.query_results = []
         for query in self.queries:
             self.query_results.append(self.prom.custom_query(query=query))
         return self.query_results

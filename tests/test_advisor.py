@@ -2,9 +2,15 @@
 Test all functions related to agent advisors.  
 """
 
+import sys
+import os
 from unittest.mock import patch
 from nose.tools import assert_is_not_none
-from fonpr import PromClient
+
+# # Set path for local imports
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname('/'.join(SCRIPT_DIR.split('/')[:-1]+['fonpr/advisors'])))
+from advisors import PromClient
 
 
 def test_prometheus_advisor(prom_memory_query, sample_response):
@@ -16,7 +22,7 @@ def test_prometheus_advisor(prom_memory_query, sample_response):
     """
     # Patch the run_queries function with the expected output.
     with patch(
-        "fonpr.advisors.prometheus_client_advisor.PrometheusConnect"
+        "advisors.prometheus_client_advisor.PrometheusConnect"
     ) as mock_get:
         mock_get.custom_query.return_value = sample_response
 

@@ -22,7 +22,7 @@ def test_prometheus_advisor(prom_memory_query, sample_response):
     """
     # Patch the run_queries function with the expected output.
     with patch(
-        "fonpr.advisors.prometheus_client_advisor.PrometheusConnect"
+        "advisors.prometheus_client_advisor.PrometheusConnect"
     ) as mock_get:
         mock_get.custom_query.return_value = sample_response
 

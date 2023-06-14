@@ -56,9 +56,15 @@ class Driver:
 
     """
 
-    def __init__(self, prom_endpoint="http://10.0.104.52:9090", wait_period=2):
+    def __init__(
+        self,
+        prom_endpoint="http://10.0.104.52:9090",
+        wait_period=2,
+        gh_url="https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml",
+    ):
         self.prom_endpoint = prom_endpoint
         self.wait_period = wait_period
+        self.gh_url = gh_url
 
     def reward_function(self, throughput, infra_cost) -> float:
         """
@@ -223,10 +229,10 @@ class Driver:
                 The timestep trajectory that is created from taking an action.
         """
         if action_step.action == 0:
-            self.update_yml(size="Small")
+            self.update_yml(size="Small", gh_url=self.gh_url)
 
         if action_step.action == 1:
-            self.update_yml(size="Large")
+            self.update_yml(size="Large", gh_url=self.gh_url)
 
         time.sleep(self.wait_period)
 

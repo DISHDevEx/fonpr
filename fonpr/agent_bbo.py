@@ -57,7 +57,7 @@ def reward_function(self, throughput, infra_cost) -> float:
     return reward
 
 
-def get_throughput():
+def get_throughput(prom_endpoint="http://10.0.104.52:9090"):
     """
     Calculates the average network bytes transmitted from the UPF pod for the last hour.
 
@@ -68,7 +68,7 @@ def get_throughput():
     """
 
     # Set the prometheus client endpoint for the prometheus server in Respons-Nuances.
-    prom_client_advisor = PromClient("http://10.0.104.52:9090")
+    prom_client_advisor = PromClient(prom_endpoint)
     prom_client_advisor.set_queries_by_function(prom_network_upf_query)
     avg_upf_network = prom_client_advisor.run_queries()
     avg_upf_network = float(avg_upf_network[0][0]["value"][1])
@@ -131,6 +131,17 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.info("Launching FONPR BBO Agent")
 
+    #################DEFINE ADVISOR AND ACTION HANDLER PARAMETERS#################
+
+    # prometheus server endpoint to gather data from
+    prom_endpoint = "http://10.0.114.131:9090"
+
+    # github yml file url that controls app to be modified
+    gh_url = "https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
+
+    wait_time = 3600
+    ############################################################################
+
     # Setup google vizier for BBO
     study_config = vz.StudyConfig(algorithm="GAUSSIAN_PROCESS_BANDIT")
     study_config.search_space.root.add_categorical_param("size", ["Small", "Large"])
@@ -148,16 +159,16 @@ if __name__ == "__main__":
         suggestions = study.suggest(count=1)
         for suggestion in suggestions:
             params = suggestion.parameters
-            update_yml(size=params["size"])
+            update_yml(size=params["size"], gh_url=gh_url)
 
             logging.info(f"Agent changing upf size to: {params['size']}")
 
             ##Sleep for 3600 seconds, to see the impact of changing sizing. (Update hourly).
-            time.sleep(3600)
+            time.sleep(wait_time)
 
             # Get the observations for the system to build out reward function.
             # Build observed throughput.
-            observed_throughput = get_throughput()
+            observed_throughput = get_throughput(prom_endpoint)
             logging.info(f"Observed throughput {observed_throughput}")
 
             # Build cost.

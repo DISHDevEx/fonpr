@@ -17,6 +17,10 @@ from action_handler import ActionHandler, get_token
 from vizier.service import clients
 from vizier.service import pyvizier as vz
 
+from absl.flags import FLAGS
+
+FLAGS([""])
+
 
 def reward_function(self, throughput, infra_cost) -> float:
     """
@@ -139,17 +143,23 @@ if __name__ == "__main__":
     # github yml file url that controls app to be modified
     gh_url = "https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
 
-    wait_time = 3600
+    wait_time = 5
     ############################################################################
 
     # Setup google vizier for BBO
-    study_config = vz.StudyConfig(algorithm="GAUSSIAN_PROCESS_BANDIT")
-    study_config.search_space.root.add_categorical_param("size", ["Small", "Large"])
-    study_config.metric_information.append(
-        vz.MetricInformation("reward", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
+    problem = vz.ProblemStatement()
+    
+    problem.search_space.root.add_categorical_param("size", ["Small", "Large"])
+    problem.metric_information.append(
+        vz.MetricInformation(name="reward", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
     )
+    
+    study_config = vz.StudyConfig.from_problem(problem)
+    study_config.algorithm = "GAUSSIAN_PROCESS_BANDIT"
+    
+
     study = clients.Study.from_study_config(
-        study_config, owner="vinny", study_id="smallProblemUPFSizing"
+        study_config, owner="respons", study_id="smallProblemUPFSizing"
     )
 
     ##Run BBO

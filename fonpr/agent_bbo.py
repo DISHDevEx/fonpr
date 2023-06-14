@@ -22,7 +22,7 @@ from absl.flags import FLAGS
 FLAGS([""])
 
 
-def reward_function(self, throughput, infra_cost) -> float:
+def reward_function(throughput, infra_cost) -> float:
     """
     Calculates the reward for the agent to receive based off of throughput and infrastructure cost.
 

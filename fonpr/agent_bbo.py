@@ -143,7 +143,7 @@ if __name__ == "__main__":
     # github yml file url that controls app to be modified
     gh_url = "https://github.com/DISHDevEx/napp/blob/aakash/hpa-nodegroups/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml"
 
-    wait_time = 5
+    wait_time = 3600
     ############################################################################
 
     # Setup google vizier for BBO

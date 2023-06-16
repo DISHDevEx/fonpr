@@ -148,15 +148,14 @@ if __name__ == "__main__":
 
     # Setup google vizier for BBO
     problem = vz.ProblemStatement()
-    
+
     problem.search_space.root.add_categorical_param("size", ["Small", "Large"])
     problem.metric_information.append(
         vz.MetricInformation(name="reward", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
     )
-    
+
     study_config = vz.StudyConfig.from_problem(problem)
     study_config.algorithm = "GAUSSIAN_PROCESS_BANDIT"
-    
 
     study = clients.Study.from_study_config(
         study_config, owner="respons", study_id="smallProblemUPFSizing"

@@ -1,9 +1,12 @@
 name: Docker-Push
 
+# on:
+#   push:
+#     branches:
+#       - 'main'
 on:
-  push:
-    branches:
-      - 'main'
+  pull_request:
+    branches: [main]
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -24,9 +27,34 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push V0
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: ./Dockerfile_V0
           push: true
-          tags: teamrespons/respons_agent:baseline-auto-build
+          tags: teamrespons/respons_agent:v0-agent
+      -
+        name: Build and push BBO
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile_BBO
+          push: true
+          tags: teamrespons/respons_agent:bbo-agent
+      -
+        name: Build and push DQN
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile_DQN
+          push: true
+          tags: teamrespons/respons_agent:dqn-agent
+      -
+        name: Build and push SAC
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile_SAC
+          push: true
+          tags: teamrespons/respons_agent:sac-agent

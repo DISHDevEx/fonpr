@@ -65,7 +65,7 @@ An Agent is responsible for implementing a policy, i.e. mapping observed system 
 
 
  * Tensorflow Library 
- * 7 x 20 x 20 x 20 Fully Connected Nueral Network.
+ * 7 x 20 x 20 x 2 Fully Connected Nueral Network.
  * Uses replay buffer for training.
  * DQN
     * Inputs: Action, Observation, Reward, Discount, Next Step Type, Policy Info, Current Step Type. 

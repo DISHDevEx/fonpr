@@ -7,16 +7,80 @@ from ray.tune.logger import pretty_print
 from ray.rllib.algorithms import sac
 import logging
 import subprocess
+import argparse
 
 if __name__ == "__main__":
     
     logging.basicConfig(level=logging.INFO)
-    s3_checkpoint_uri = 's3://respons-agent-checkpoints/sac_v0.0.0/'
-    prom_endpoint = 'http://10.0.114.131:9090'
+    logging.info("Launching FONPR SAC Agent")
+
+    parser = argparse.ArgumentParser(
+        prog="FONPR_Agent",
+        description="Executes policy implementation for closed loop 5G network control.",
+    )
+
+    parser.add_argument(
+        "--window",
+        type=int,
+        default=15,
+        required=False,
+        help="How far back in time to look for an observation, in minutes.",
+    )
+    parser.add_argument(
+        "--sample_rate",
+        type=int,
+        default=4,
+        required=False,
+        help="Samples per minute.",
+    )
+    parser.add_argument(
+        "--obs_period",
+        type=int,
+        default=1,
+        required=False,
+        help="Time in minutes between executions of the policy logic.",
+    )
+    parser.add_argument(
+        "--prom_endpoint",
+        type=str,
+        default="http://10.0.114.131:9090",
+        required=False,
+        help="Override default Prometheus server IP address / port.",
+    )
+    parser.add_argument(
+        "--s3_checkpoint_uri",
+        type=str,
+        default="s3://respons-agent-checkpoints/sac_v0.0.0/",
+        required=False,
+        help="Specify path to target S3 bucket for model checkpointing.",
+    )
+    parser.add_argument(
+        "--gh_url",
+        type=str,
+        default="https://github.com/DISHDevEx/napp/blob/vinny/2.6.2/napp/open5gs_values/test.yaml",
+        required=False,
+        help="Specify path to target value.yaml file on GitHub.",
+    )
+    parser.add_argument(
+        "--dir_name",
+        type=str,
+        default="napp",
+        required=False,
+        help="Specify root directory of value.yaml path in repo.",
+    )
     
-    # Setting observation period to 1 for initial training and evaluation
-    env_config={'render_mode':None, 'window':15, 'sample_rate':4, 'obs_period':1, 'prom_endpoint':prom_endpoint}
+    args = parser.parse_args()
     
+    env_config={
+        'render_mode': None,
+        'window': args.window,
+        'sample_rate': args.sample_rate,
+        'obs_period': args.obs_period,
+        'prom_endpoint': args.prom_endpoint,
+        'gh_url': args.gh_url,
+        'dir_name': args.dir_name
+    }
+
     # Updating default configs for initial training and evaluation
     config = (
         sac.SACConfig()
@@ -42,4 +106,4 @@ if __name__ == "__main__":
                 f'"{path_to_checkpoint}"'
                 )
             # Copy checkpoints over to s3
-            subprocess.run(['aws', 's3', 'sync', '/root/ray_results/', s3_checkpoint_uri])
+            subprocess.run(['aws', 's3', 'sync', '/root/ray_results/', args.s3_checkpoint_uri])

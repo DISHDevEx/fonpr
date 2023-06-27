@@ -57,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--gh_url",
         type=str,
-        default="https://github.com/DISHDevEx/napp/blob/vinny/2.6.2/napp/open5gs_values/test.yaml",
+        default="https://github.com/DISHDevEx/napp/blob/agent-sac/napp/open5gs_values/5gSA_no_ues_values_with_nodegroups.yaml",
         required=False,
         help="Specify path to target value.yaml file on GitHub.",
     )

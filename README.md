@@ -13,7 +13,7 @@ V0 agent deployment:
 ```console
 kubectl create -f https://raw.githubusercontent.com/DISHDevEx/fonpr/main/deployment/manifest_v0_agent.yml
 ```
-
+Docker Repo: https://hub.docker.com/r/teamrespons/respons_agent/tags
 
 ## First Open Network Pattern Reactors guide: 
 > This readme is intended to provide background on First Open Network Pattern Reactors and their deployment.
@@ -98,6 +98,8 @@ General usage:
 
 ## __4. Docker__
 The Agent and its helper functions are containerized using Docker.
+
+Repo:https://hub.docker.com/r/teamrespons/respons_agent/tags
 
 * To pull docker image from registry:
     
